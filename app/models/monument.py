@@ -7,6 +7,7 @@ from app.models.base import Base
 from app.models.mixins import SoftDeleteMixin, TimestampMixin
 
 if TYPE_CHECKING:
+    from app.models.monument_field_config import MonumentFieldConfig
     from app.models.monument_translation import MonumentTranslation
 
 
@@ -26,4 +27,9 @@ class Monument(Base, TimestampMixin, SoftDeleteMixin):
         back_populates="monument",
         cascade="all, delete-orphan",
         lazy="selectin",
+    )
+
+    field_configs: Mapped[list["MonumentFieldConfig"]] = relationship(
+        back_populates="monument",
+        cascade="all, delete-orphan",
     )
