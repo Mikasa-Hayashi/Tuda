@@ -59,25 +59,27 @@ async def get_monuments_paginated(
 async def search_monuments(
     db: AsyncSession,
     query: str,
+    lang: str,
     limit: int = 20,
-) -> list[Monument]:
-    id_stmt = (
-        select(MonumentTranslation.monument_id)
+):
+    stmt = (
+        select(
+            Monument.id,
+            Monument.lat,
+            Monument.lon,
+            Monument.image_url,
+            MonumentTranslation.field_value.label("name"),
+        )
+        .join(MonumentTranslation)
         .where(
+            Monument.deleted.is_(False),
             MonumentTranslation.field_key == "name",
+            MonumentTranslation.lang == lang,
             MonumentTranslation.field_value.ilike(f"%{query}%"),
         )
         .limit(limit)
     )
 
-    res = await db.execute(id_stmt)
-    ids = res.scalars().all()
-
-    if not ids:
-        return []
-
-    stmt = select(Monument).where(Monument.id.in_(ids))
-
     result = await db.execute(stmt)
 
-    return list(result.scalars().all())
+    return result.all()
