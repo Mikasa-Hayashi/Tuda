@@ -1,0 +1,14 @@
+[
+  {
+    "monument_id": "1",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "The Motherland Calls"
+  },
+  {
+    "monument_id": "1",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Родина-мать зовёт!"
+  }
+]
