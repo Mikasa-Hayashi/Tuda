@@ -121,6 +121,11 @@ async def sync_data(
         since,
     )
 
+    field_configs = await get_updated_field_configs(
+        db,
+        since,
+    )
+
     routes = await get_updated_routes(
         db,
         since,
@@ -149,6 +154,7 @@ async def sync_data(
     return {
         "monuments": monuments,
         "monument_translations": monument_translations,
+        "monument_field_configs": field_configs,
         "routes": routes,
         "route_stops": route_stops,
         "route_translations": route_translations,
