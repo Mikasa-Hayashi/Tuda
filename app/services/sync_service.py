@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.monument import Monument
+from app.models.monument_field_config import MonumentFieldConfig
 from app.models.monument_translation import MonumentTranslation
 from app.models.route import Route
 from app.models.route_stop import RouteStop
@@ -39,6 +40,19 @@ async def get_deleted_monument_ids(
     stmt = select(Monument.id).where(
         Monument.deleted.is_(True),
         Monument.updated_at > since,
+    )
+
+    result = await db.execute(stmt)
+
+    return list(result.scalars().all())
+
+
+async def get_updated_field_configs(
+    db: AsyncSession,
+    since: datetime,
+) -> list[MonumentFieldConfig]:
+    stmt = select(MonumentFieldConfig).where(
+        MonumentFieldConfig.updated_at > since,
     )
 
     result = await db.execute(stmt)
