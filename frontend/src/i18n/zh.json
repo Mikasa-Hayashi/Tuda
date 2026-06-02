@@ -1,0 +1,158 @@
+
+{
+  "settings": {
+    "title": "设置",
+    "preferences": "偏好",
+    "theme": "主题",
+    "language": "语言",
+    "storage": "存储",
+    "clearCache": "清除缓存",
+    "about": "关于",
+    "privacy": "隐私政策",
+    "contact": "联系我们",
+    "rate": "评价应用",
+    "theme_system": "跟随系统",
+    "theme_light": "浅色",
+    "theme_dark": "深色",
+    "chooseTheme": "选择主题",
+    "chooseLanguage": "选择语言",
+    "clearCacheTitle": "清除缓存",
+    "clearCacheMessage": "确定吗？临时图片将被删除。",
+    "cancel": "取消",
+    "clear": "清除",
+    "appVersion": "应用版本",
+    "developedWith": "使用以下技术开发",
+    "developedBy": "Ivan 和 Kseniya"
+  },
+  "info": {
+    "audioGuide": "收听语音导览",
+    "historyInfo": "历史与信息",
+    "architectureDetails": "建筑细节",
+    "tourismInfo": "旅游信息",
+    "play_quiz": "开始测验"
+  },
+  "quiz": {
+    "title": "测验",
+    "factQuestion": "关于{{name}}，以下哪一项是“{{label}}”的正确值？",
+    "progress": "第 {{current}} / {{total}} 题",
+    "next": "下一题",
+    "finish": "完成",
+    "completedTitle": "测验已完成！",
+    "score": "你的得分：{{score}} / {{total}}",
+    "backToMonument": "返回景点",
+    "retry": "再试一次",
+    "unavailableTitle": "测验暂不可用",
+    "unavailableText": "当前还没有足够的信息为这个景点生成测验。"
+  },
+  "menu": {
+    "searchPlaceholder": "按编号或名称搜索...",
+    "monuments": "纪念碑",
+    "notFound": "未找到",
+    "notFoundMessage": "未找到编号为 \"{{number}}\" 的纪念碑。",
+    "routes": "路线"
+  },
+  "overview": {
+    "sortRecommended": "推荐排序",
+    "sortName": "A–Z",
+    "sortPopularity": "热度",
+    "filters": "筛选",
+    "tagSearchPlaceholder": "搜索标签...",
+    "showMore": "展开",
+    "showLess": "收起",
+    "clearFilters": "清除筛选",
+    "tags": {
+      "top": "精选",
+      "museums": "博物馆",
+      "memorials": "纪念馆",
+      "nature": "自然与景观",
+      "architecture": "建筑",
+      "parks": "公园",
+      "history": "历史"
+    }
+  },
+  "route_info": {
+    "openOnMap": "在地图中打开",
+    "about": "关于路线",
+    "stops": "路线站点",
+    "stopsCount": "站点数：{{count}}"
+  },
+  "routesScreen": {
+    "searchPlaceholder": "搜索路线...",
+    "customRoute": "自定义路线"
+  },
+  "map": {
+    "title": "探索",
+    "details": "详情"
+  },
+  "tabs": {
+    "overview": "概览",
+    "map": "地图",
+    "routes": "路线"
+  },
+  "citySelector": {
+    "title": "选择城市",
+    "searchPlaceholder": "搜索城市...",
+    "objectsCount": "{{count}} 个对象",
+    "download": "下载",
+    "downloaded": "已下载",
+    "skip": "跳过",
+    "continue": "继续",
+    "noResults": "未找到城市",
+    "currentCity": "当前城市",
+    "notSelected": "未选择"
+  },
+  "cities": {
+    "maykop": "迈科普",
+    "astrakhan": "阿斯特拉罕",
+    "volgograd": "伏尔加格勒",
+    "elista": "埃利斯塔",
+    "krasnodar": "克拉斯诺达尔",
+    "rostov-on-don": "顿河畔罗斯托夫",
+    "sevastopol": "塞瓦斯托波尔"
+  },
+  "routes_data": {
+    "center": {
+      "name": "伏尔加格勒地标",
+      "description": "从马马耶夫岗的“祖国母亲在召唤”雕像，到河滨露天剧场与互动历史公园，一天内了解城市建筑与文化。"
+    },
+    "history": {
+      "name": "记忆之路",
+      "description": "途经斯大林格勒战役相关纪念地：秃山、全景博物馆旁的“军事列车”与首辆有轨电车纪念碑，适合军事历史主题游览。"
+    },
+    "poetic": {
+      "name": "诗意伏尔加格勒",
+      "description": "秃山、伏尔加河露天剧场与“军事列车”：战争记忆、滨河建筑与铁路传奇。"
+    }
+  },
+  "monument_fields": {
+    "year": "建造/开放年份",
+    "height": "高度",
+    "architect": "建筑师",
+    "sculptor": "雕塑家",
+    "material": "材料",
+    "visitors": "年参观人数",
+    "status": "状态",
+    "schedule": "开放时间",
+    "obelisk_height": "方尖碑高度",
+    "strategic_height": "战略高地",
+    "main_elements": "主要构成",
+    "locomotive_model": "机车型号",
+    "manufacturer": "制造厂",
+    "tram_model": "有轨电车车型",
+    "operation_period": "原物运营时期",
+    "base_wagon": "复原基础车体",
+    "total_area": "总面积",
+    "stage_area": "舞台面积",
+    "capacity": "容纳人数",
+    "number_of_columns": "立柱数量",
+    "column_material": "立柱材料",
+    "special_features": "特色",
+    "exhibition_count": "展览数量",
+    "main_exhibitions": "主要展览",
+    "technologies": "展陈技术",
+    "ticket_prices": "票价",
+    "guided_tours": "导览服务",
+    "additional_features": "附加元素",
+    "opening_date": "开放日期"
+  }
+}

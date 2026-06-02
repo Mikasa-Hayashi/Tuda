@@ -1,0 +1,170 @@
+{
+  "settings": {
+    "title": "Settings",
+    "preferences": "Preferences",
+    "theme": "Theme",
+    "language": "Language",
+    "storage": "Storage",
+    "clearCache": "Clear Cache",
+    "about": "About",
+    "privacy": "Privacy Policy",
+    "contact": "Contact Us",
+    "rate": "Rate the App",
+    "theme_system": "System Default",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "chooseTheme": "Choose Theme",
+    "chooseLanguage": "Choose Language",
+    "clearCacheTitle": "Clear Cache",
+    "clearCacheMessage": "Are you sure? This will remove temporary images.",
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "appVersion": "App Version",
+    "developedWith": "Developed with",
+    "developedBy": "by Ivan and Ksenia"
+  },
+
+  "info": {
+    "audioGuide": "Listen to Audio Guide",
+    "historyInfo": "History & Info",
+    "architectureDetails": "Architecture Details",
+    "tourismInfo": "Tourism Info",
+    "play_quiz": "Take the Quiz"
+  },
+
+  "quiz": {
+    "title": "Quiz",
+    "factQuestion": "For {{name}}, which value is correct for \"{{label}}\"?",
+    "progress": "Question {{current}} of {{total}}",
+    "next": "Next",
+    "finish": "Finish",
+    "completedTitle": "Quiz completed!",
+    "score": "Your score: {{score}} out of {{total}}",
+    "backToMonument": "Back to monument",
+    "retry": "Try again",
+    "unavailableTitle": "Quiz unavailable",
+    "unavailableText": "There are not enough facts yet to build a quiz for this monument."
+  },
+
+  "menu": {
+    "searchPlaceholder": "Search by number or name...",
+    "monuments": "Monuments",
+    "notFound": "Not Found",
+    "notFoundMessage": "No monument found with number \"{{number}}\".",
+    "titleFirst": "Volgo",
+    "titleSecond": "Gid",
+    "routes": "Routes"
+  },
+
+  "overview": {
+    "sortRecommended": "Recommended",
+    "sortName": "A–Z",
+    "sortPopularity": "Popular",
+    "filters": "Filters",
+    "tagSearchPlaceholder": "Search tags...",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "clearFilters": "Clear filters",
+    "tags": {
+      "top": "Top picks",
+      "museums": "Museums",
+      "memorials": "Memorials",
+      "nature": "Nature & views",
+      "architecture": "Architecture",
+      "parks": "Parks",
+      "history": "History"
+    }
+  },
+
+  "route_info": {
+    "openOnMap": "Open on map",
+    "about": "About the route",
+    "stops": "Route stops",
+    "stopsCount": "Stops: {{count}}"
+  },
+  "routesScreen": {
+    "searchPlaceholder": "Search routes...",
+    "customRoute": "Custom Route"
+  },
+
+  "routes_data": {
+    "center": {
+      "name": "Symbols of Volgograd",
+      "description": "A route through the city’s landmarks: from Motherland Calls on Mamayev Kurgan to the riverside amphitheater and the interactive history park. A good introduction to Volgograd’s architecture and culture in one day."
+    },
+    "history": {
+      "name": "Road of memory",
+      "description": "A path through memorials of the Battle of Stalingrad: Lysaya Gora, the Military Echelon near the panorama, and the first tram monument. Ideal for a themed walk focused on the city’s military history."
+    },
+    "poetic": {
+      "name": "Poetic Volgograd",
+      "description": "Lysaya Gora, the Volga amphitheater, and the Military Echelon: war memory, embankment architecture, and railway heritage in one route."
+    }
+  },
+
+  "map": {
+    "title": "Explore",
+    "details": "Details"
+  },
+
+  "tabs": {
+    "overview": "Overview",
+    "map": "Map",
+    "routes": "Routes"
+  },
+
+  "citySelector": {
+    "title": "Choose City",
+    "searchPlaceholder": "Search city...",
+    "objectsCount": "{{count}} objects",
+    "download": "Download",
+    "downloaded": "Downloaded",
+    "skip": "Skip",
+    "continue": "Continue",
+    "noResults": "No cities found",
+    "currentCity": "Current city",
+    "notSelected": "Not selected"
+  },
+
+  "cities": {
+    "maykop": "Maykop",
+    "astrakhan": "Astrakhan",
+    "volgograd": "Volgograd",
+    "elista": "Elista",
+    "krasnodar": "Krasnodar",
+    "rostov-on-don": "Rostov-on-Don",
+    "sevastopol": "Sevastopol"
+  },
+
+  "monument_fields": {
+    "year": "Year of construction/opening",
+    "height": "Height",
+    "architect": "Architect",
+    "sculptor": "Sculptor",
+    "material": "Material",
+    "visitors": "Annual number of visitors",
+    "status": "Status",
+    "schedule": "Opening hours",
+    "obelisk_height": "Obelisk height",
+    "strategic_height": "Strategic height",
+    "main_elements": "Main elements",
+    "locomotive_model": "Locomotive model",
+    "manufacturer": "Manufacturer",
+    "tram_model": "Tram model",
+    "operation_period": "Operation period of the original",
+    "base_wagon": "Base wagon for reconstruction",
+    "total_area": "Total area",
+    "stage_area": "Stage area",
+    "capacity": "Capacity",
+    "number_of_columns": "Number of columns",
+    "column_material": "Column material",
+    "special_features": "Special features",
+    "exhibition_count": "Number of exhibitions",
+    "main_exhibitions": "Main exhibitions",
+    "technologies": "Exhibition technologies",
+    "ticket_prices": "Ticket prices",
+    "guided_tours": "Guided tours",
+    "additional_features": "Additional features",
+    "opening_date": "Opening date"
+  }
+}

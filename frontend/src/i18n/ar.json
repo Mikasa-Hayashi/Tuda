@@ -1,0 +1,168 @@
+{
+  "settings": {
+    "title": "الإعدادات",
+    "preferences": "التفضيلات",
+    "theme": "المظهر",
+    "language": "اللغة",
+    "storage": "التخزين",
+    "clearCache": "مسح ذاكرة التخزين المؤقت",
+    "about": "حول التطبيق",
+    "privacy": "سياسة الخصوصية",
+    "contact": "اتصل بنا",
+    "rate": "تقييم التطبيق",
+    "theme_system": "كما في النظام",
+    "theme_light": "فاتح",
+    "theme_dark": "داكن",
+    "chooseTheme": "اختيار المظهر",
+    "chooseLanguage": "اختيار اللغة",
+    "clearCacheTitle": "مسح ذاكرة التخزين المؤقت",
+    "clearCacheMessage": "هل أنت متأكد؟ سيتم حذف الصور المؤقتة.",
+    "cancel": "إلغاء",
+    "clear": "مسح",
+    "appVersion": "إصدار التطبيق",
+    "developedWith": "تم التطوير باستخدام",
+    "developedBy": "إيفان وكسانيا"
+  },
+  
+  "info": {
+    "audioGuide": "استمع إلى الدليل الصوتي",
+    "historyInfo": "التاريخ والمعلومات",
+    "architectureDetails": "تفاصيل معمارية",
+    "tourismInfo": "معلومات للسياح",
+    "play_quiz": "ابدأ الاختبار"
+  },
+
+  "quiz": {
+    "title": "اختبار",
+    "factQuestion": "بالنسبة إلى {{name}}، ما القيمة الصحيحة للحقل «{{label}}»؟",
+    "progress": "السؤال {{current}} من {{total}}",
+    "next": "التالي",
+    "finish": "إنهاء",
+    "completedTitle": "اكتمل الاختبار!",
+    "score": "نتيجتك: {{score}} من {{total}}",
+    "backToMonument": "العودة إلى المعلم",
+    "retry": "إعادة المحاولة",
+    "unavailableTitle": "الاختبار غير متاح الآن",
+    "unavailableText": "لا توجد معلومات كافية بعد لإنشاء اختبار لهذا المعلم."
+  },
+
+  "menu": {
+    "searchPlaceholder": "ابحث بالرقم أو الاسم...",
+    "monuments": "المعالم الأثرية",
+    "notFound": "غير موجود",
+    "notFoundMessage": "لم يتم العثور على نصب بالرقم \"{{number}}\".",
+    "routes": "المسارات"
+  },
+
+  "overview": {
+    "sortRecommended": "موصى به",
+    "sortName": "أ–ي",
+    "sortPopularity": "الأكثر شعبية",
+    "filters": "عوامل التصفية",
+    "tagSearchPlaceholder": "بحث في الوسوم...",
+    "showMore": "عرض المزيد",
+    "showLess": "عرض أقل",
+    "clearFilters": "مسح عوامل التصفية",
+    "tags": {
+      "top": "مميز",
+      "museums": "متاحف",
+      "memorials": "نصب تذكارية",
+      "nature": "طبيعة وإطلالات",
+      "architecture": "عمارة",
+      "parks": "حدائق",
+      "history": "تاريخ"
+    }
+  },
+
+  "route_info": {
+    "openOnMap": "فتح على الخريطة",
+    "about": "عن المسار",
+    "stops": "محطات المسار",
+    "stopsCount": "عدد المحطات: {{count}}"
+  },
+  "routesScreen": {
+    "searchPlaceholder": "ابحث عن المسارات...",
+    "customRoute": "مسار مخصص"
+  },
+
+  "map": {
+    "title": "استكشاف",
+    "details": "التفاصيل"
+  },
+
+  "tabs": {
+    "overview": "نظرة عامة",
+    "map": "الخريطة",
+    "routes": "المسارات"
+  },
+
+  "citySelector": {
+    "title": "اختر المدينة",
+    "searchPlaceholder": "ابحث عن مدينة...",
+    "objectsCount": "{{count}} عنصر",
+    "download": "تنزيل",
+    "downloaded": "تم التنزيل",
+    "skip": "تخطي",
+    "continue": "متابعة",
+    "noResults": "لم يتم العثور على مدن",
+    "currentCity": "المدينة الحالية",
+    "notSelected": "غير محددة"
+  },
+
+  "cities": {
+    "maykop": "مايكوب",
+    "astrakhan": "أستراخان",
+    "volgograd": "فولغوغراد",
+    "elista": "إليستا",
+    "krasnodar": "كراسنودار",
+    "rostov-on-don": "روستوف على الدون",
+    "sevastopol": "سيفاستوبول"
+  },
+
+  "routes_data": {
+    "center": {
+      "name": "رموز فولغوغراد",
+      "description": "مسار يمر بأهم معالم المدينة: من تمثال الأم وطن على تل ماماي إلى المسرح الروماني على الضفة والحديقة التاريخية التفاعلية."
+    },
+    "history": {
+      "name": "طريق الذاكرة",
+      "description": "مسار عبر نصب معركة ستالينجراد: تل ليسايا غورا، القطار العسكري بجانب البانوراما، ونصب أول ترام. مناسب لجولة تاريخية عسكرية."
+    },
+    "poetic": {
+      "name": "فولغوغراد الشاعرية",
+      "description": "ليسايا غورا، المسرح الروماني على الفولغا، والقطار العسكري: ذكرى الحرب وعمارة الشاطئ وإرث السكك الحديدية."
+    }
+  },
+
+  "monument_fields": {
+    "year": "سنة البناء/الافتتاح",
+    "height": "الارتفاع",
+    "architect": "المهندس المعماري",
+    "sculptor": "النحات",
+    "material": "المادة",
+    "visitors": "عدد الزوار السنوي",
+    "status": "الحالة",
+    "schedule": "مواعيد العمل",
+    "obelisk_height": "ارتفاع المسلة",
+    "strategic_height": "الارتفاع الاستراتيجي",
+    "main_elements": "العناصر الرئيسية",
+    "locomotive_model": "طراز القاطرة",
+    "manufacturer": "الشركة المصنعة",
+    "tram_model": "طراز الترام",
+    "operation_period": "فترة تشغيل الأصل",
+    "base_wagon": "أساس إعادة البناء",
+    "total_area": "المساحة الإجمالية",
+    "stage_area": "مساحة المسرح",
+    "capacity": "السعة",
+    "number_of_columns": "عدد الأعمدة",
+    "column_material": "مادة الأعمدة",
+    "special_features": "الميزات الخاصة",
+    "exhibition_count": "عدد المعارض",
+    "main_exhibitions": "المعارض الرئيسية",
+    "technologies": "تقنيات العرض",
+    "ticket_prices": "سعر التذكرة",
+    "guided_tours": "الجولات الإرشادية",
+    "additional_features": "عناصر إضافية",
+    "opening_date": "تاريخ الافتتاح"
+  }
+}

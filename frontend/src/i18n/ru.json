@@ -1,0 +1,170 @@
+{
+  "settings": {
+    "title": "Настройки",
+    "preferences": "Предпочтения",
+    "theme": "Тема",
+    "language": "Язык",
+    "storage": "Хранилище",
+    "clearCache": "Очистить кэш",
+    "about": "О приложении",
+    "privacy": "Политика конфиденциальности",
+    "contact": "Связаться с нами",
+    "rate": "Оценить приложение",
+    "theme_system": "Как в системе",
+    "theme_light": "Светлая",
+    "theme_dark": "Тёмная",
+    "chooseTheme": "Выбор темы",
+    "chooseLanguage": "Выбор языка",
+    "clearCacheTitle": "Очистка кэша",
+    "clearCacheMessage": "Вы уверены? Временные изображения будут удалены.",
+    "cancel": "Отмена",
+    "clear": "Очистить",
+    "appVersion": "Версия приложения",
+    "developedWith": "Разработано с",
+    "developedBy": "Иваном и Ксенией"
+  },
+  
+  "info": {
+    "audioGuide": "Слушать аудиогид",
+    "historyInfo": "История и информация",
+    "architectureDetails": "Архитектурные детали",
+    "tourismInfo": "Информация для туристов",
+    "play_quiz": "Пройти викторину"
+  },
+
+  "quiz": {
+    "title": "Викторина",
+    "factQuestion": "Для «{{name}}», какое значение верно для поля «{{label}}»?",
+    "progress": "Вопрос {{current}} из {{total}}",
+    "next": "Далее",
+    "finish": "Завершить",
+    "completedTitle": "Викторина завершена!",
+    "score": "Твой результат: {{score}} из {{total}}",
+    "backToMonument": "Вернуться к памятнику",
+    "retry": "Пройти еще раз",
+    "unavailableTitle": "Викторина пока недоступна",
+    "unavailableText": "Для этого памятника пока не удалось собрать достаточно вопросов."
+  },
+
+  "menu": {
+    "searchPlaceholder": "Поиск по номеру или названию...",
+    "monuments": "Монументы",
+    "notFound": "Не найдено",
+    "notFoundMessage": "Монумент с номером \"{{number}}\" не найден.",
+    "titleFirst": "Волго",
+    "titleSecond": "Гид",
+    "routes": "Маршруты"
+  },
+
+  "overview": {
+    "sortRecommended": "Как в приложении",
+    "sortName": "А–Я",
+    "sortPopularity": "Популярные",
+    "filters": "Фильтры",
+    "tagSearchPlaceholder": "Поиск по тегам...",
+    "showMore": "Показать ещё",
+    "showLess": "Свернуть",
+    "clearFilters": "Сбросить фильтры",
+    "tags": {
+      "top": "Топ",
+      "museums": "Музеи",
+      "memorials": "Мемориалы",
+      "nature": "Природа и виды",
+      "architecture": "Архитектура",
+      "parks": "Парки",
+      "history": "История"
+    }
+  },
+
+  "route_info": {
+    "openOnMap": "Открыть на карте",
+    "about": "О маршруте",
+    "stops": "Остановки маршрута",
+    "stopsCount": "Точек: {{count}}"
+  },
+  "routesScreen": {
+    "searchPlaceholder": "Поиск маршрутов...",
+    "customRoute": "Свой маршрут"
+  },
+
+  "routes_data": {
+    "center": {
+      "name": "Символы Волгограда",
+      "description": "Маршрут по ключевым местам современного города: от «Родины-матери» на Мамаевом кургане к амфитеатру на набережной и интерактивному историческому парку. Удобен для знакомства с архитектурой и культурой Волгограда за один день."
+    },
+    "history": {
+      "name": "Дорога памяти",
+      "description": "Путь через мемориалы Сталинградской битвы: Лысая гора, «Воинский эшелон» у панорамы и памятник первому трамваю. Подходит для тематической экскурсии по военной истории города."
+    },
+    "poetic": {
+      "name": "Поэтичный Волгоград",
+      "description": "Лысая гора, амфитеатр на Волге и «Воинский эшелон»: сочетание памяти о войне, архитектуры набережной и железнодорожной легенды."
+    }
+  },
+
+  "map": {
+    "title": "Исследовать",
+    "details": "Детали"
+  },
+
+  "tabs": {
+    "overview": "Обзор",
+    "map": "Карта",
+    "routes": "Маршруты"
+  },
+
+  "citySelector": {
+    "title": "Выберите город",
+    "searchPlaceholder": "Поиск города...",
+    "objectsCount": "{{count}} объектов",
+    "download": "Скачать",
+    "downloaded": "Скачано",
+    "skip": "Пропустить",
+    "continue": "Продолжить",
+    "noResults": "Города не найдены",
+    "currentCity": "Текущий город",
+    "notSelected": "Не выбран"
+  },
+
+  "cities": {
+    "maykop": "Майкоп",
+    "astrakhan": "Астрахань",
+    "volgograd": "Волгоград",
+    "elista": "Элиста",
+    "krasnodar": "Краснодар",
+    "rostov-on-don": "Ростов-на-Дону",
+    "sevastopol": "Севастополь"
+  },
+
+  "monument_fields": {
+    "year": "Год постройки/открытия",
+    "height": "Высота",
+    "architect": "Архитектор",
+    "sculptor": "Скульптор",
+    "material": "Материал",
+    "visitors": "Ежегодное число посетителей",
+    "status": "Статус",
+    "schedule": "Режим работы",
+    "obelisk_height": "Высота обелиска",
+    "strategic_height": "Стратегическая высота",
+    "main_elements": "Основные элементы",
+    "locomotive_model": "Модель паровоза",
+    "manufacturer": "Завод‑изготовитель",
+    "tram_model": "Модель трамвая",
+    "operation_period": "Период эксплуатации оригинала",
+    "base_wagon": "Основа для воссоздания",
+    "total_area": "Общая площадь",
+    "stage_area": "Площадь сцены",
+    "capacity": "Вместимость",
+    "number_of_columns": "Количество колонн",
+    "column_material": "Материал колонн",
+    "special_features": "Особенности",
+    "exhibition_count": "Количество выставок",
+    "main_exhibitions": "Основные выставки",
+    "technologies": "Технологии экспозиции",
+    "ticket_prices": "Стоимость билета",
+    "guided_tours": "Экскурсии",
+    "additional_features": "Дополнительные элементы",
+    "opening_date": "Дата открытия"
+  }
+}
