@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:17
+    container_name: tuda_db
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: tuda
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+    
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    
+  backend:
+    build: .
+
+    container_name: tuda_backend
+
+    depends_on:
+      - db
+
+    env_file:
+      - .env
+    
+    ports:
+      - "8000:8000"
+    
+volumes:
+  postgres_data:
