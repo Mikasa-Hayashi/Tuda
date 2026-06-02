@@ -18,6 +18,24 @@ async def get_monuments(db: AsyncSession) -> list[Monument]:
     return list(result.scalars().all())
 
 
+async def get_monument_by_city(
+    db: AsyncSession,
+    city_id: str,
+) -> list[Monument]:
+    stmt = (
+        select(Monument)
+        .where(
+            Monument.deleted.is_(False),
+            Monument.city_id == city_id,
+        )
+        .order_by(Monument.sort_order)
+    )
+
+    result = await db.execute(stmt)
+
+    return list(result.scalars().all())
+
+
 async def get_monument_by_id(
     db: AsyncSession,
     monument_id: str,
