@@ -24,6 +24,7 @@ async def import_monuments(session: AsyncSession):
         session.add(
             Monument(
                 id=item["id"],
+                city_id=item["city_id"],
                 lat=item["lat"],
                 lon=item["lon"],
                 image_url=item["image_url"],

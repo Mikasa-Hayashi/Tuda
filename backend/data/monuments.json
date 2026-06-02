@@ -1,6 +1,7 @@
 [
   {
     "id": "1",
+    "city_id": "1",
     "lat": 48.742,
     "lon": 44.537,
     "image_url": "https://example.com/image.webp",
