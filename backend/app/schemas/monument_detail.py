@@ -13,6 +13,7 @@ class MonumentTranslationResponse(BaseModel):
 
 class MonumentDetailResponse(BaseModel):
     id: str
+    city_id: str
     lat: float
     lon: float
     image_url: str
