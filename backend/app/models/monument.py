@@ -15,6 +15,7 @@ class Monument(Base, TimestampMixin, SoftDeleteMixin):
     __tablename__ = "monuments"
 
     id: Mapped[str] = mapped_column(String, primary_key=True)
+    city_id: Mapped[str] = mapped_column(String, index=True)
 
     lat: Mapped[float] = mapped_column(Float)
     lon: Mapped[float] = mapped_column(Float)
