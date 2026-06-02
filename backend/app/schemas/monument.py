@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 class MonumentResponse(BaseModel):
     id: str
+    city_id: str
     lat: float
     lon: float
     image_url: str
