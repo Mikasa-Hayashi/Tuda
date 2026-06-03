@@ -18,10 +18,13 @@ def load_json(filename: str):
         return json.load(file)
 
 
+async def clear_database(session: AsyncSession):
+    await session.execute(delete(MonumentTranslation))
+    await session.execute(delete(Monument))
+
+
 async def import_monuments(session: AsyncSession):
     monuments = load_json("monuments.json")
-
-    await session.execute(delete(Monument))
 
     for item in monuments:
         session.add(
@@ -58,6 +61,7 @@ async def import_monument_translations(session: AsyncSession):
 
 async def main():
     async with AsyncSessionLocal() as session:
+        await clear_database(session)
         await import_monuments(session)
         await import_monument_translations(session)
 
