@@ -53,3 +53,13 @@ export async function toggleCityDownloaded(cityId: string): Promise<string[]> {
   await setDownloadedCityIds(next);
   return next;
 }
+
+export async function markCityDownloaded(cityId: string): Promise<void> {
+  const ids = await getDownloadedCityIds();
+  if (ids.includes(cityId)) return;
+  await setDownloadedCityIds([...ids, cityId]);
+}
+
+export async function clearDownloadedCityIds(): Promise<void> {
+  await AsyncStorage.removeItem(DOWNLOADED_CITY_IDS_KEY);
+}
