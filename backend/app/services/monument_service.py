@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -85,7 +85,7 @@ async def search_monuments(
         MonumentTranslation.lang == lang,
         MonumentTranslation.field_value.ilike(f"%{query}%"),
     ]
-    if city_id is None:
+    if city_id is not None:
         filters.append(Monument.city_id == city_id)
 
     stmt = (
@@ -104,3 +104,15 @@ async def search_monuments(
     result = await db.execute(stmt)
 
     return result.all()
+
+
+async def get_monument_counts_by_city(db: AsyncSession) -> dict[str, int]:
+    stmt = (
+        select(Monument.city_id, func.count())
+        .where(Monument.deleted.is_(False))
+        .group_by(Monument.city_id)
+    )
+
+    result = await db.execute(stmt)
+
+    return {city_id: count for city_id, count in result.all()}
