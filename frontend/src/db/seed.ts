@@ -632,3 +632,12 @@ export function syncCitiesAndMonumentCityIds(): void {
     }
   });
 }
+
+export function seedCitiesOnly(): void {
+  db.withTransactionSync(() => {
+    for (const city of CITIES) {
+      db.runSync(`INSERT OR IGNORE INTO cities (slug) VALUES (?)`, [city.id]);
+    }
+  });
+  markSeeded();
+}
