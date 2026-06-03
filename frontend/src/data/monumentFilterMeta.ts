@@ -19,7 +19,7 @@ export type MonumentFilterEntry = {
   popularity: number;
 };
 
-/** Seeded monument ids — keep in sync with seed.ts */
+/** Optional tags/popularity by monument slug (backend-synced ids). */
 export const monumentFilterMeta: Record<string, MonumentFilterEntry> = {
   'motherland-calls': { tags: ['top', 'memorials', 'architecture', 'history'], popularity: 100 },
   'lysaya-gora-memorial': { tags: ['memorials', 'nature', 'history'], popularity: 72 },
