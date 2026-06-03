@@ -1,3 +1,4 @@
+import { onMonumentCacheCleared } from '@/src/db/monumentCacheEvents';
 import { getAllRoutes } from '@/src/db/routeRepository';
 import { getSelectedCityId } from '@/src/storage/citySelection';
 import { headerStyles } from '@/src/theme/headerStyles';
@@ -97,11 +98,14 @@ export default function RoutesTabScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [cacheRevision, setCacheRevision] = useState(0);
   useScrollToTop(scrollRef);
+
+  React.useEffect(() => onMonumentCacheCleared(() => setCacheRevision((n) => n + 1)), []);
 
   const routes = useMemo(
     () => getAllRoutes(i18n.language, selectedCityId),
-    [i18n.language, selectedCityId],
+    [i18n.language, selectedCityId, cacheRevision],
   );
   const filteredRoutes = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
