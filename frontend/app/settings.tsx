@@ -15,6 +15,8 @@ import { headerStyles } from '@/src/theme/headerStyles';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../src/theme/ThemeContext';
+import { clearMonumentCache } from '@/src/db/monumentRepository';
+import { clearDownloadedCityIds } from '@/src/storage/citySelection';
 // import i18n from '@/src/i18n/i18n';
 import { useTranslation } from "react-i18next";
 
@@ -145,7 +147,15 @@ export default function SettingsScreen() {
   const handleClearCache = () => {
     Alert.alert(t("settings.clearCacheTitle"), t("settings.clearCacheMessage"), [
       { text: t("settings.cancel"), style: "cancel" },
-      { text: t("settings.clear"), style: "destructive", onPress: () => console.log("Cache cleared") }
+      {
+        text: t("settings.clear"),
+        style: "destructive",
+        onPress: async () => {
+          clearMonumentCache();
+          await clearDownloadedCityIds();
+          Alert.alert(t("settings.clearCacheTitle"), t("settings.clear"));
+        },
+      }
     ]);
   };
 
