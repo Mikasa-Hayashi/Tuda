@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   Alert,
   Modal,
@@ -15,7 +16,8 @@ import { headerStyles } from '@/src/theme/headerStyles';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../src/theme/ThemeContext';
-import { clearMonumentCache } from '@/src/db/monumentRepository';
+import { clearMonumentCache, getLocalCacheItemCount } from '@/src/db/monumentRepository';
+import { notifyMonumentCacheCleared } from '@/src/db/monumentCacheEvents';
 import { clearDownloadedCityIds } from '@/src/storage/citySelection';
 // import i18n from '@/src/i18n/i18n';
 import { useTranslation } from "react-i18next";
@@ -139,6 +141,17 @@ export default function SettingsScreen() {
   const currentLanguage = i18n.language as LanguageType;
   const [themeModalVisible, setThemeModalVisible] = useState(false);
   const [langModalVisible, setLangModalVisible] = useState(false);
+  const [cacheItemCount, setCacheItemCount] = useState(0);
+
+  const refreshCacheSize = useCallback(() => {
+    setCacheItemCount(getLocalCacheItemCount());
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshCacheSize();
+    }, [refreshCacheSize]),
+  );
 
   // Находим красивые названия для текущих выбранных пунктов
   const currentThemeLabel = themeMode ? t(THEMES.find(t => t.id === themeMode)?.labelKey || '') : '';
@@ -153,7 +166,9 @@ export default function SettingsScreen() {
         onPress: async () => {
           clearMonumentCache();
           await clearDownloadedCityIds();
-          Alert.alert(t("settings.clearCacheTitle"), t("settings.clear"));
+          notifyMonumentCacheCleared();
+          refreshCacheSize();
+          Alert.alert(t("settings.clearCacheTitle"), t("settings.cacheCleared"));
         },
       }
     ]);
@@ -205,7 +220,7 @@ export default function SettingsScreen() {
           <SettingsRow 
             icon="trash-bin-outline" 
             title={t("settings.clearCache")}
-            value="124 MB" 
+            value={t('settings.cacheItems', { count: cacheItemCount })}
             onPress={handleClearCache} 
             color="#FF4444" // Кастомный красный цвет для этой кнопки
             isLast 
