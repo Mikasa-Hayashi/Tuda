@@ -7,6 +7,7 @@ from app.schemas.monument_detail import MonumentDetailResponse
 from app.services.monument_service import (
     get_monument_by_city,
     get_monument_by_id,
+    get_monument_counts_by_city,
     get_monuments,
     get_monuments_paginated,
     search_monuments,
@@ -40,6 +41,14 @@ async def search(
     db: AsyncSession = Depends(get_db),
 ):
     return await search_monuments(db, q, lang, limit, city_id)
+
+
+@router.get(
+    "/counts",
+    response_model=dict[str, int],
+)
+async def monument_counts(db: AsyncSession = Depends(get_db)):
+    return await get_monument_counts_by_city(db)
 
 
 @router.get(
