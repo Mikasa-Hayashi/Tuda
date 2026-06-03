@@ -16,7 +16,7 @@
 
 import { DB_SCHEMA_VERSION, db, ensureMetaTable, getSchemaVersion, initDatabase, isSeeded, resetDomainTables, setSchemaVersion } from './database';
 import { syncMonumentFilterMetadata } from './monumentRepository';
-import { seedDatabase, syncCitiesAndMonumentCityIds } from './seed';
+import { seedCitiesOnly } from './seed';
 
 export function setupDatabase(): void {
   // 1. Read schema version before creating/querying domain tables.
@@ -32,17 +32,16 @@ export function setupDatabase(): void {
   }
   initDatabase();
 
-  // 2. Заливаем начальные данные (только при первом запуске)
+  // 2. Создаем только записи городов. Данные памятников приходят из backend sync.
   if (!isSeeded()) {
-    console.log('[DB] First launch — seeding database...');
-    seedDatabase();
-    console.log('[DB] Seed complete.');
+    console.log('[DB] First launch — creating city rows...');
+    seedCitiesOnly();
+    console.log('[DB] City bootstrap complete.');
   } else {
     console.log('[DB] Database already seeded.');
   }
 
   syncMonumentFilterMetadata();
-  syncCitiesAndMonumentCityIds();
 }
 
 
