@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 
 class MonumentTranslationResponse(BaseModel):
+    monument_id: str
     lang: str
     field_key: str
     field_value: str
