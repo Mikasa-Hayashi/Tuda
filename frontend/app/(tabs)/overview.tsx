@@ -240,10 +240,10 @@ export default function OverviewTabScreen() {
 
         setIsBootstrapping(true);
         try {
-          const localCount = getMonumentCountByCity(cityId);
           const syncSince = getSyncMeta(cityId, 'last_sync') ?? '1970-01-01T00:00:00.000Z';
           await runSync(cityId, syncSince);
 
+          const localCount = getMonumentCountByCity(cityId);
           const storedOffset = Number(getSyncMeta(cityId, 'next_offset') ?? String(localCount));
           setNextOffset(Number.isFinite(storedOffset) ? storedOffset : localCount);
 
