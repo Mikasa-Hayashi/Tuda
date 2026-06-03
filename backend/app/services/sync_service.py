@@ -16,7 +16,10 @@ async def get_updated_monuments(
     since: datetime,
     city_id: str | None = None,
 ) -> list[Monument]:
-    stmt = select(Monument).where(Monument.updated_at > since)
+    stmt = select(Monument).where(
+        Monument.deleted.is_(False),
+        Monument.updated_at > since,
+    )
     if city_id is not None:
         stmt = stmt.where(Monument.city_id == city_id)
 
