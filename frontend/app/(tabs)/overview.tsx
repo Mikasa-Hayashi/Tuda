@@ -10,6 +10,7 @@ import {
   upsertMonumentTranslationsFromApi,
 } from '@/src/db/monumentRepository';
 import { MONUMENT_TAG_IDS } from '@/src/data/monumentFilterMeta';
+import { onMonumentCacheCleared } from '@/src/db/monumentCacheEvents';
 import { fetchMonumentDetail, fetchMonumentsPage, searchMonumentsRemote, syncCityData } from '@/src/services/monumentsApi';
 import { headerStyles } from '@/src/theme/headerStyles';
 import { Ionicons } from '@expo/vector-icons';
@@ -193,6 +194,16 @@ export default function OverviewTabScreen() {
   const refreshLocalMonuments = React.useCallback((cityId: string | null, language: string) => {
     setAllMonuments(getAllMonumentPreviews(language, cityId));
   }, []);
+
+  React.useEffect(() => {
+    return onMonumentCacheCleared(() => {
+      setAllMonuments([]);
+      setSearchResults(null);
+      setNextOffset(0);
+      setHasMore(true);
+      void getSelectedCityId().then((cityId) => refreshLocalMonuments(cityId, lang));
+    });
+  }, [lang, refreshLocalMonuments]);
 
   const storeMonumentDetails = React.useCallback(async (monumentIds: string[]) => {
     const details = await Promise.all(monumentIds.map((id) => fetchMonumentDetail(id)));
