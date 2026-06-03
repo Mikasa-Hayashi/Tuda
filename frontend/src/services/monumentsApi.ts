@@ -64,6 +64,11 @@ async function readJson<T>(response: Response): Promise<T> {
   return (await response.json()) as T;
 }
 
+export async function fetchMonumentCountsByCity(): Promise<Record<string, number>> {
+  const response = await fetch(`${API_BASE_URL}/monuments/counts`);
+  return readJson<Record<string, number>>(response);
+}
+
 export async function syncCityData(cityId: string, sinceIso: string): Promise<SyncPayload> {
   const url = buildUrl('/sync/', { city_id: cityId, since: sinceIso });
   const response = await fetch(url);
