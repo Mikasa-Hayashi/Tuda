@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import AsyncSessionLocal
 from app.models.monument import Monument
+from app.models.monument_translation import MonumentTranslation
 
 BASE_DIR = Path(__file__).parent.parent
 DATA_DIR = BASE_DIR / "data"
@@ -20,6 +21,8 @@ def load_json(filename: str):
 async def import_monuments(session: AsyncSession):
     monuments = load_json("monuments.json")
 
+    await session.execute(delete(Monument))
+
     for item in monuments:
         session.add(
             Monument(
@@ -32,13 +35,31 @@ async def import_monuments(session: AsyncSession):
             )
         )
 
-    await session.execute(delete(Monument))
+    await session.commit()
+
+
+async def import_monument_translations(session: AsyncSession):
+    monument_translations = load_json("monument_translations.json")
+
+    await session.execute(delete(MonumentTranslation))
+
+    for item in monument_translations:
+        session.add(
+            MonumentTranslation(
+                monument_id=item["monument_id"],
+                lang=item["lang"],
+                field_key=item["field_key"],
+                field_value=item["field_value"],
+            )
+        )
+
     await session.commit()
 
 
 async def main():
     async with AsyncSessionLocal() as session:
         await import_monuments(session)
+        await import_monument_translations(session)
 
 
 if __name__ == "__main__":
