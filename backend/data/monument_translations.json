@@ -34,5 +34,17 @@
     "lang": "ru",
     "field_key": "name",
     "field_value": "Тест3"
+  },
+  {
+    "monument_id": "4",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Test4"
+  },
+  {
+    "monument_id": "4",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Тест4"
   }
 ]
