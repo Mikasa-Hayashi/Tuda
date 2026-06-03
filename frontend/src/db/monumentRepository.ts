@@ -306,8 +306,19 @@ export function getSyncMeta(citySlug: string, key: string): string | null {
   return row?.value ?? null;
 }
 
+export function getLocalCacheItemCount(): number {
+  const monuments =
+    db.getFirstSync<{ cnt: number }>(`SELECT COUNT(*) as cnt FROM monuments`)?.cnt ?? 0;
+  const routes = db.getFirstSync<{ cnt: number }>(`SELECT COUNT(*) as cnt FROM routes`)?.cnt ?? 0;
+  return monuments + routes;
+}
+
 export function clearMonumentCache(): void {
   db.withTransactionSync(() => {
+    // route_stops.monument_id uses ON DELETE RESTRICT — remove routes before monuments
+    db.runSync(`DELETE FROM route_stops`);
+    db.runSync(`DELETE FROM route_translations`);
+    db.runSync(`DELETE FROM routes`);
     db.runSync(`DELETE FROM monument_field_config`);
     db.runSync(`DELETE FROM monument_translations`);
     db.runSync(`DELETE FROM monuments`);
