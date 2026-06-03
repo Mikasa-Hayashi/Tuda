@@ -1,4 +1,5 @@
 from app.models.monument import Monument
+from app.models.monument_field_config import MonumentFieldConfig
 from app.models.monument_translation import MonumentTranslation
 from app.models.route import Route
 from app.models.route_stop import RouteStop
