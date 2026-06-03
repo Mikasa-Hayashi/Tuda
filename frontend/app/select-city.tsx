@@ -1,5 +1,6 @@
 import { CITIES } from '@/src/data/cities';
 import { getMonumentCountsByCity } from '@/src/db/monumentRepository';
+import { fetchMonumentCountsByCity } from '@/src/services/monumentsApi';
 import {
   getDownloadedCityIds,
   getSelectedCityId,
@@ -96,7 +97,22 @@ export default function SelectCityScreen() {
       const [selected, downloaded] = await Promise.all([getSelectedCityId(), getDownloadedCityIds()]);
       setSelectedCityIdState(selected);
       setDownloadedCityIdsState(downloaded);
-      setObjectCountsByCity(getMonumentCountsByCity());
+
+      const localCounts = getMonumentCountsByCity();
+      let mergedCounts = { ...localCounts };
+      try {
+        const apiCounts = await fetchMonumentCountsByCity();
+        const cityIds = new Set([...Object.keys(localCounts), ...Object.keys(apiCounts)]);
+        mergedCounts = Object.fromEntries(
+          [...cityIds].map((cityId) => [
+            cityId,
+            Math.max(localCounts[cityId] ?? 0, apiCounts[cityId] ?? 0),
+          ]),
+        );
+      } catch {
+        mergedCounts = localCounts;
+      }
+      setObjectCountsByCity(mergedCounts);
     };
     load();
   }, []);
