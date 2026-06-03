@@ -5,6 +5,11 @@
  */
 
 import { monumentFilterMeta } from '../data/monumentFilterMeta';
+import type {
+  ApiMonument,
+  ApiMonumentFieldConfig,
+  ApiMonumentTranslation,
+} from '../services/monumentsApi';
 import { db } from './database';
 
 /** Writes tags_json + popularity from monumentFilterMeta (idempotent; run each launch). */
@@ -255,4 +260,113 @@ export function getNearbyMonuments(
     })
     .filter(r => r.distanceKm <= radiusKm)
     .sort((a, b) => a.distanceKm - b.distanceKm);
+}
+
+function isAudioField(fieldKey: string): boolean {
+  return fieldKey.toLowerCase().includes('audio');
+}
+
+function ensureCityRow(citySlug: string): number {
+  db.runSync(`INSERT OR IGNORE INTO cities (slug) VALUES (?)`, [citySlug]);
+  const row = db.getFirstSync<{ id: number }>(`SELECT id FROM cities WHERE slug = ?`, [citySlug]);
+  if (!row) throw new Error(`City '${citySlug}' was not created`);
+  return row.id;
+}
+
+function getMonumentDbIdBySlug(slug: string): number | null {
+  return db.getFirstSync<{ id: number }>(
+    `SELECT id FROM monuments WHERE slug = ?`,
+    [slug],
+  )?.id ?? null;
+}
+
+export function getMonumentCountByCity(citySlug: string): number {
+  const row = db.getFirstSync<{ cnt: number }>(
+    `SELECT COUNT(*) as cnt
+     FROM monuments m
+     JOIN cities c ON c.id = m.city_id
+     WHERE c.slug = ?`,
+    [citySlug],
+  );
+  return row?.cnt ?? 0;
+}
+
+export function setSyncMeta(citySlug: string, key: string, value: string): void {
+  db.runSync(
+    `INSERT OR REPLACE INTO app_meta (key, value) VALUES (?, ?)`,
+    [`sync:${citySlug}:${key}`, value],
+  );
+}
+
+export function getSyncMeta(citySlug: string, key: string): string | null {
+  const row = db.getFirstSync<{ value: string }>(
+    `SELECT value FROM app_meta WHERE key = ?`,
+    [`sync:${citySlug}:${key}`],
+  );
+  return row?.value ?? null;
+}
+
+export function clearMonumentCache(): void {
+  db.withTransactionSync(() => {
+    db.runSync(`DELETE FROM monument_field_config`);
+    db.runSync(`DELETE FROM monument_translations`);
+    db.runSync(`DELETE FROM monuments`);
+    db.runSync(`DELETE FROM app_meta WHERE key LIKE 'sync:%'`);
+  });
+}
+
+export function upsertMonumentsFromApi(citySlug: string, monuments: ApiMonument[]): void {
+  const cityDbId = ensureCityRow(citySlug);
+  db.withTransactionSync(() => {
+    for (const monument of monuments) {
+      db.runSync(
+        `INSERT INTO monuments (city_id, slug, lat, lon, image_url, sort_order)
+         VALUES (?, ?, ?, ?, ?, ?)
+         ON CONFLICT(city_id, slug) DO UPDATE SET
+           lat = excluded.lat,
+           lon = excluded.lon,
+           image_url = excluded.image_url,
+           sort_order = excluded.sort_order,
+           updated_at = CURRENT_TIMESTAMP`,
+        [cityDbId, monument.id, monument.lat, monument.lon, monument.image_url, monument.sort_order],
+      );
+    }
+  });
+}
+
+export function upsertMonumentTranslationsFromApi(translations: ApiMonumentTranslation[]): void {
+  db.withTransactionSync(() => {
+    for (const tr of translations) {
+      if (isAudioField(tr.field_key)) continue;
+      const monumentDbId = getMonumentDbIdBySlug(tr.monument_id);
+      if (!monumentDbId) continue;
+      db.runSync(
+        `INSERT INTO monument_translations (monument_id, lang, field_key, field_value)
+         VALUES (?, ?, ?, ?)
+         ON CONFLICT(monument_id, lang, field_key) DO UPDATE SET
+           field_value = excluded.field_value`,
+        [monumentDbId, tr.lang, tr.field_key, tr.field_value],
+      );
+    }
+  });
+}
+
+export function upsertMonumentFieldConfigsFromApi(fieldConfigs: ApiMonumentFieldConfig[]): void {
+  db.withTransactionSync(() => {
+    const touchedMonuments = new Set<number>();
+    for (const cfg of fieldConfigs) {
+      if (cfg.field_key && isAudioField(cfg.field_key)) continue;
+      const monumentDbId = getMonumentDbIdBySlug(cfg.monument_id);
+      if (!monumentDbId) continue;
+      if (!touchedMonuments.has(monumentDbId)) {
+        db.runSync(`DELETE FROM monument_field_config WHERE monument_id = ?`, [monumentDbId]);
+        touchedMonuments.add(monumentDbId);
+      }
+      db.runSync(
+        `INSERT INTO monument_field_config (monument_id, section, order_index, label_key, field_key, static_value)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [monumentDbId, cfg.section, cfg.order_index, cfg.label_key, cfg.field_key, cfg.static_value],
+      );
+    }
+  });
 }
