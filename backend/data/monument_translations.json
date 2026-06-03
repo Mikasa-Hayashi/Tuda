@@ -10,5 +10,29 @@
     "lang": "ru",
     "field_key": "name",
     "field_value": "Родина-мать зовёт!"
+  },
+  {
+    "monument_id": "2",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Test2"
+  },
+  {
+    "monument_id": "2",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Тест2"
+  },
+  {
+    "monument_id": "3",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Test3"
+  },
+  {
+    "monument_id": "3",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Тест3"
   }
 ]
