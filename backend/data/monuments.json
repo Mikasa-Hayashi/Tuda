@@ -30,5 +30,21 @@
     "lon": 44.537,
     "image_url": "https://example.com/image.webp",
     "sort_order": 1
+  },
+  {
+    "id": "5",
+    "city_id": "elista",
+    "lat": 48.742,
+    "lon": 44.537,
+    "image_url": "https://example.com/image.webp",
+    "sort_order": 1
+  },
+  {
+    "id": "6",
+    "city_id": "maykop",
+    "lat": 48.742,
+    "lon": 44.537,
+    "image_url": "https://example.com/image.webp",
+    "sort_order": 1
   }
 ]

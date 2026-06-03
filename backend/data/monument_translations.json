@@ -46,5 +46,29 @@
     "lang": "ru",
     "field_key": "name",
     "field_value": "Тест4"
+  },
+  {
+    "monument_id": "5",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Elista5"
+  },
+  {
+    "monument_id": "5",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Элиста5"
+  },
+  {
+    "monument_id": "6",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "MaykopTest6"
+  },
+  {
+    "monument_id": "6",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "МайкопТест6"
   }
 ]
