@@ -2,7 +2,17 @@
 
 Backend service for the Tuda mobile application.
 
-## Stack
+## API (prefix `/api`)
+
+| Area | Endpoints |
+|------|-----------|
+| Monuments | `GET /monuments/counts`, `/monuments`, `/monuments/`, `/monuments/search`, `/monuments/{id}` |
+| Sync | `GET /sync/?since=&city_id=` |
+| Routes | `GET /routes`, `/routes/{id}` |
+
+OpenAPI: `http://127.0.0.1:8000/docs`
+
+## Tech Stack
 
 * Python 3.13
 * FastAPI
