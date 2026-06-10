@@ -266,14 +266,14 @@ function isAudioField(fieldKey: string): boolean {
   return fieldKey.toLowerCase().includes('audio');
 }
 
-function ensureCityRow(citySlug: string): number {
+export function ensureCityRow(citySlug: string): number {
   db.runSync(`INSERT OR IGNORE INTO cities (slug) VALUES (?)`, [citySlug]);
   const row = db.getFirstSync<{ id: number }>(`SELECT id FROM cities WHERE slug = ?`, [citySlug]);
   if (!row) throw new Error(`City '${citySlug}' was not created`);
   return row.id;
 }
 
-function getMonumentDbIdBySlug(slug: string): number | null {
+export function getMonumentDbIdBySlug(slug: string): number | null {
   return db.getFirstSync<{ id: number }>(
     `SELECT id FROM monuments WHERE slug = ?`,
     [slug],

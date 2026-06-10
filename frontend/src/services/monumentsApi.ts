@@ -25,10 +25,36 @@ export type ApiMonumentFieldConfig = {
   static_value: string | null;
 };
 
+export type ApiRoute = {
+  id: string;
+  cover_monument_id: string | null;
+  sort_order: number;
+};
+
+export type ApiRouteStop = {
+  route_id: string;
+  monument_id: string;
+  order_index: number;
+};
+
+export type ApiRouteTranslation = {
+  route_id: string;
+  lang: string;
+  name: string;
+  description: string;
+};
+
 export type SyncPayload = {
   monuments: ApiMonument[];
   monument_translations: ApiMonumentTranslation[];
   monument_field_configs: ApiMonumentFieldConfig[];
+  routes: ApiRoute[];
+  route_stops: ApiRouteStop[];
+  route_translations: ApiRouteTranslation[];
+  deleted_ids: {
+    monuments: string[];
+    routes: string[];
+  };
 };
 
 export type ApiMonumentDetail = {
@@ -72,8 +98,11 @@ export async function fetchMonumentCountsByCity(): Promise<Record<string, number
 export async function syncCityData(cityId: string, sinceIso: string): Promise<SyncPayload> {
   const url = buildUrl('/sync/', { city_id: cityId, since: sinceIso });
   const response = await fetch(url);
-  const payload = await readJson<SyncPayload>(response);
-  return payload;
+  return readJson<SyncPayload>(response);
+}
+
+export async function downloadCityData(cityId: string): Promise<SyncPayload> {
+  return syncCityData(cityId, '1970-01-01T00:00:00.000Z');
 }
 
 export async function fetchMonumentsPage(

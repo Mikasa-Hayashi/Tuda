@@ -1,60 +1,76 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
-
-// 1. Наши палитры цветов (одинаковые ключи, разные значения)
-export const lightColors = {
-  background: '#F2F2F7', // Светло-серый фон как в iOS
-  card: '#FFFFFF',       // Белые карточки
-  text: '#000000',       // Черный текст
-  oppositeText: '#FFFFFF',
-  textMuted: '#8E8E93',  // Серый текст для описаний
-  primary: '#FFD700',    // Наш желтый акцент (оставляем одинаковым)
-  border: '#E5E5EA',     // Линии разделения
-  icon: '#3C3C43',
-};
-
-// yellow: '#FFD700',  // gold
-// green:  '#34C759',  // iOS system green
-// red:    '#FF3B30',  // iOS system red
-// blue:   '#007AFF',  // iOS system blue
 
 export const darkColors = {
   background: '#000000',
   card: '#1C1C1E',
+  cardElevated: '#2C2C2E',
   text: '#FFFFFF',
+  textSecondary: '#EBEBF5CC',
+  textMuted: '#8E8E93',
+  primary: '#FFD60A',
+  primaryDim: '#FFD60A33',
+  border: '#38383A',
+  separator: '#38383A',
+  icon: '#EBEBF5',
   oppositeText: '#000000',
-  textMuted: '#A0A0A0',
-  primary: '#FFD700',
-  border: '#2C2C2E',
-  icon: '#FFFFFF',
+  danger: '#FF453A',
+  success: '#30D158',
+  overlay: 'rgba(0,0,0,0.6)',
 };
 
-// Типы для нашего контекста
+export const lightColors = {
+  background: '#F2F2F7',
+  card: '#FFFFFF',
+  cardElevated: '#EFEFF4',
+  text: '#000000',
+  textSecondary: '#3C3C4399',
+  textMuted: '#6C6C70',
+  primary: '#C47900',
+  primaryDim: '#C4790022',
+  border: '#E5E5EA',
+  separator: '#C6C6C8',
+  icon: '#3C3C43',
+  oppositeText: '#FFFFFF',
+  danger: '#FF3B30',
+  success: '#34C759',
+  overlay: 'rgba(0,0,0,0.4)',
+};
+
 type ThemeType = 'light' | 'dark' | 'system';
 type ThemeContextType = {
   themeMode: ThemeType;
-  colors: typeof lightColors;
+  colors: typeof darkColors;
   setThemeMode: (mode: ThemeType) => void;
   isDark: boolean;
 };
 
-// 2. Создаем сам Контекст
+const THEME_KEY = 'app.themeMode';
+
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-// 3. Создаем Провайдер (Оболочку)
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  // Хук useColorScheme слушает, какая тема стоит в настройках самого телефона (iOS/Android)
-  const systemColorScheme = useColorScheme(); 
-  
-  // Стейт, который хранит выбор пользователя (по умолчанию пусть будет система)
-  const [themeMode, setThemeMode] = useState<ThemeType>('system');
+  const systemColorScheme = useColorScheme();
+  const [themeMode, setThemeModeState] = useState<ThemeType>('dark');
 
-  // Вычисляем, какая тема РЕАЛЬНО сейчас должна отображаться
-  const isDark = 
-    themeMode === 'dark' || 
+  useEffect(() => {
+    AsyncStorage.getItem(THEME_KEY).then((saved) => {
+      if (saved === 'light' || saved === 'dark' || saved === 'system') {
+        setThemeModeState(saved);
+      }
+    });
+  }, []);
+
+  const setThemeMode = (mode: ThemeType) => {
+    setThemeModeState(mode);
+    AsyncStorage.setItem(THEME_KEY, mode);
+  };
+
+  const isDark =
+    themeMode === 'dark' ||
     (themeMode === 'system' && systemColorScheme === 'dark');
 
-  // Выбираем нужную палитру
   const colors = isDark ? darkColors : lightColors;
 
   return (
@@ -64,9 +80,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// 4. Удобный хук, чтобы доставать цвета в любом экране
 export const useTheme = () => {
   const context = useContext(ThemeContext);
-  if (!context) throw new Error("useTheme must be used within a ThemeProvider");
+  if (!context) throw new Error('useTheme must be used within a ThemeProvider');
   return context;
 };

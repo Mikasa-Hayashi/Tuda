@@ -2,8 +2,9 @@
  * routeRepository.ts — заменяет старый routeStore.ts
  */
 
+import type { ApiRoute, ApiRouteStop, ApiRouteTranslation } from '../services/monumentsApi';
 import { db } from './database';
-import { getMonumentCoords } from './monumentRepository';
+import { ensureCityRow, getMonumentCoords, getMonumentDbIdBySlug } from './monumentRepository';
 
 // ─── Типы ────────────────────────────────────────────────────────────────────
 
@@ -205,6 +206,67 @@ export function getResolvedRouteMapPoints(
     });
   }
   return result;
+}
+
+function getRouteDbIdBySlug(slug: string): number | null {
+  return db.getFirstSync<{ id: number }>(
+    `SELECT id FROM routes WHERE slug = ?`,
+    [slug],
+  )?.id ?? null;
+}
+
+export function upsertRoutesFromSync(citySlug: string, routes: ApiRoute[]): void {
+  const cityDbId = ensureCityRow(citySlug);
+  db.withTransactionSync(() => {
+    for (const route of routes) {
+      const coverMonumentDbId = route.cover_monument_id
+        ? getMonumentDbIdBySlug(route.cover_monument_id)
+        : null;
+      db.runSync(
+        `INSERT INTO routes (city_id, slug, cover_monument_id, sort_order)
+         VALUES (?, ?, ?, ?)
+         ON CONFLICT(city_id, slug) DO UPDATE SET
+           cover_monument_id = excluded.cover_monument_id,
+           sort_order = excluded.sort_order,
+           updated_at = CURRENT_TIMESTAMP`,
+        [cityDbId, route.id, coverMonumentDbId, route.sort_order],
+      );
+    }
+  });
+}
+
+export function upsertRouteStopsFromSync(routeStops: ApiRouteStop[]): void {
+  db.withTransactionSync(() => {
+    for (const stop of routeStops) {
+      const routeDbId = getRouteDbIdBySlug(stop.route_id);
+      const monumentDbId = getMonumentDbIdBySlug(stop.monument_id);
+      if (!routeDbId || !monumentDbId) continue;
+      db.runSync(
+        `INSERT INTO route_stops (route_id, monument_id, order_index)
+         VALUES (?, ?, ?)
+         ON CONFLICT(route_id, order_index) DO UPDATE SET
+           monument_id = excluded.monument_id`,
+        [routeDbId, monumentDbId, stop.order_index],
+      );
+    }
+  });
+}
+
+export function upsertRouteTranslationsFromSync(translations: ApiRouteTranslation[]): void {
+  db.withTransactionSync(() => {
+    for (const tr of translations) {
+      const routeDbId = getRouteDbIdBySlug(tr.route_id);
+      if (!routeDbId) continue;
+      db.runSync(
+        `INSERT INTO route_translations (route_id, lang, name, short_description, description)
+         VALUES (?, ?, ?, '', ?)
+         ON CONFLICT(route_id, lang) DO UPDATE SET
+           name = excluded.name,
+           description = excluded.description`,
+        [routeDbId, tr.lang, tr.name, tr.description],
+      );
+    }
+  });
 }
 
 /** Ссылка на Яндекс.Карты с маршрутом */

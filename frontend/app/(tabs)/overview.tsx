@@ -9,18 +9,27 @@ import {
   upsertMonumentsFromApi,
   upsertMonumentTranslationsFromApi,
 } from '@/src/db/monumentRepository';
+import {
+  upsertRoutesFromSync,
+  upsertRouteStopsFromSync,
+  upsertRouteTranslationsFromSync,
+} from '@/src/db/routeRepository';
 import { MONUMENT_TAG_IDS } from '@/src/data/monumentFilterMeta';
 import { onMonumentCacheCleared } from '@/src/db/monumentCacheEvents';
-import { fetchMonumentDetail, fetchMonumentsPage, searchMonumentsRemote, syncCityData } from '@/src/services/monumentsApi';
+import {
+  fetchMonumentDetail,
+  fetchMonumentsPage,
+  searchMonumentsRemote,
+  syncCityData,
+} from '@/src/services/monumentsApi';
 import { headerStyles } from '@/src/theme/headerStyles';
 import { SearchBar } from '@/src/components/SearchBar';
+import { SkeletonRow } from '@/src/components/SkeletonCard';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  ActivityIndicator,
-  Alert,
   Dimensions,
   Image,
   NativeSyntheticEvent,
@@ -42,7 +51,15 @@ import { useFocusEffect, useScrollToTop } from '@react-navigation/native';
 type SortMode = 'default' | 'name' | 'popularity';
 type Colors = ReturnType<typeof useTheme>['colors'];
 
-const OverviewHeader = ({ onSettings, colors, t }: { onSettings(): void; colors: Colors; t: (key: string) => string }) => (
+const OverviewHeader = ({
+  onSettings,
+  colors,
+  t,
+}: {
+  onSettings(): void;
+  colors: Colors;
+  t: (key: string) => string;
+}) => (
   <SafeAreaView edges={['top']} style={[headerStyles.headerContainer, { backgroundColor: colors.background }]}>
     <View style={headerStyles.headerContent}>
       <View style={headerStyles.iconButton} />
@@ -57,7 +74,15 @@ const OverviewHeader = ({ onSettings, colors, t }: { onSettings(): void; colors:
   </SafeAreaView>
 );
 
-const MonumentCard = ({ item, onPress, colors }: { item: MonumentPreview; onPress: () => void; colors: Colors }) => (
+const MonumentCard = ({
+  item,
+  onPress,
+  colors,
+}: {
+  item: MonumentPreview;
+  onPress: () => void;
+  colors: Colors;
+}) => (
   <TouchableOpacity
     style={[styles.cardContainer, { backgroundColor: colors.card }]}
     onPress={onPress}
@@ -74,6 +99,15 @@ const EmptyState = ({ t, colors }: { t: (key: string) => string; colors: Colors 
   <View style={styles.emptyContainer}>
     <Ionicons name="search-outline" size={60} color={colors.textMuted} />
     <Text style={[styles.emptyTitle, { color: colors.text }]}>{t('menu.notFound')}</Text>
+  </View>
+);
+
+const OfflineBanner = ({ colors }: { colors: Colors }) => (
+  <View style={[styles.offlineBanner, { backgroundColor: colors.cardElevated, borderColor: colors.border }]}>
+    <Ionicons name="cloud-offline-outline" size={16} color={colors.textMuted} />
+    <Text style={[styles.offlineBannerText, { color: colors.textMuted }]}>
+      Offline — showing local results
+    </Text>
   </View>
 );
 
@@ -110,7 +144,7 @@ export default function OverviewTabScreen() {
   const [hasMore, setHasMore] = useState(true);
   const [nextOffset, setNextOffset] = useState(0);
   const [searchResults, setSearchResults] = useState<MonumentPreview[] | null>(null);
-  const [searchErrorOffline, setSearchErrorOffline] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
 
   const lang = i18n.language;
 
@@ -176,6 +210,9 @@ export default function OverviewTabScreen() {
     upsertMonumentsFromApi(cityId, payload.monuments);
     upsertMonumentTranslationsFromApi(payload.monument_translations);
     upsertMonumentFieldConfigsFromApi(payload.monument_field_configs);
+    upsertRoutesFromSync(cityId, payload.routes);
+    upsertRouteStopsFromSync(payload.route_stops);
+    upsertRouteTranslationsFromSync(payload.route_translations);
     setSyncMeta(cityId, 'last_sync', new Date().toISOString());
   }, []);
 
@@ -208,6 +245,7 @@ export default function OverviewTabScreen() {
         if (!cityId) return;
 
         setIsBootstrapping(true);
+        setIsOffline(false);
         try {
           const syncSince = getSyncMeta(cityId, 'last_sync') ?? '1970-01-01T00:00:00.000Z';
           await runSync(cityId, syncSince);
@@ -224,9 +262,7 @@ export default function OverviewTabScreen() {
             refreshLocalMonuments(cityId, lang);
           }
         } catch {
-          if (getMonumentCountByCity(cityId) === 0) {
-            Alert.alert('Internet required', 'First launch requires internet to download monuments.');
-          }
+          setIsOffline(getMonumentCountByCity(cityId) === 0);
           refreshLocalMonuments(cityId, lang);
         } finally {
           setIsBootstrapping(false);
@@ -244,7 +280,7 @@ export default function OverviewTabScreen() {
     const query = searchQuery.trim();
     if (!selectedCityId || query === '') {
       setSearchResults(null);
-      setSearchErrorOffline(false);
+      setIsOffline(false);
       return;
     }
     const timer = setTimeout(async () => {
@@ -262,10 +298,10 @@ export default function OverviewTabScreen() {
             tags: [],
           })),
         );
-        setSearchErrorOffline(false);
+        setIsOffline(false);
       } catch {
         setSearchResults(searchMonuments(query, lang, selectedCityId));
-        setSearchErrorOffline(true);
+        setIsOffline(true);
       }
     }, 300);
     return () => clearTimeout(timer);
@@ -342,7 +378,7 @@ export default function OverviewTabScreen() {
                     styles.sortChip,
                     {
                       borderColor: active ? colors.primary : colors.border,
-                      backgroundColor: active ? colors.card : 'transparent',
+                      backgroundColor: active ? colors.primaryDim : 'transparent',
                     },
                   ]}
                 >
@@ -359,7 +395,7 @@ export default function OverviewTabScreen() {
 
           {filterPanelOpen && (
             <View style={[styles.filterPanel, { borderColor: colors.border, backgroundColor: colors.card }]}>
-              <View style={[styles.tagSearchContainer, { backgroundColor: colors.background }]}>
+              <View style={[styles.tagSearchContainer, { backgroundColor: colors.cardElevated }]}>
                 <Ionicons name="pricetag-outline" size={18} color={colors.textMuted} style={styles.tagSearchIcon} />
                 <TextInput
                   style={[styles.tagSearchInput, { color: colors.text }]}
@@ -422,17 +458,12 @@ export default function OverviewTabScreen() {
 
         <View style={styles.sectionsWrap}>
           <Text style={[styles.sectionTitle, { color: colors.primary }]}>{t('menu.monuments')}</Text>
-          {isBootstrapping && (
-            <View style={styles.loadingWrap}>
-              <ActivityIndicator color={colors.primary} />
-            </View>
-          )}
-          {searchErrorOffline && (
-            <Text style={[styles.searchFallbackText, { color: colors.textMuted }]}>
-              Offline mode: showing local search results
-            </Text>
-          )}
-          {filteredMonuments.length === 0 ? (
+
+          {isOffline && <OfflineBanner colors={colors} />}
+
+          {isBootstrapping ? (
+            Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} />)
+          ) : filteredMonuments.length === 0 ? (
             <EmptyState t={t} colors={colors} />
           ) : (
             monumentRows.map((row, rowIndex) => (
@@ -449,11 +480,8 @@ export default function OverviewTabScreen() {
               </View>
             ))
           )}
-          {isLoadingMore && (
-            <View style={styles.loadingWrap}>
-              <ActivityIndicator color={colors.primary} />
-            </View>
-          )}
+
+          {isLoadingMore && !isBootstrapping && <SkeletonRow />}
         </View>
       </ScrollView>
     </View>
@@ -541,20 +569,29 @@ const styles = StyleSheet.create({
   cardImage: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
   cardOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(0,0,0,0.45)',
     justifyContent: 'flex-end',
     padding: 12,
   },
   cardTitle: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
+    textShadowColor: 'rgba(0,0,0,0.8)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 6,
   },
   emptyContainer: { alignItems: 'center', justifyContent: 'center', paddingTop: 40, paddingBottom: 20 },
   emptyTitle: { fontSize: 20, fontWeight: 'bold', marginTop: 15 },
-  loadingWrap: { paddingVertical: 16, alignItems: 'center', justifyContent: 'center' },
-  searchFallbackText: { marginBottom: 8, fontSize: 12, fontWeight: '500' },
+  offlineBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+    borderWidth: 1,
+    marginBottom: 12,
+  },
+  offlineBannerText: { fontSize: 13, fontWeight: '500' },
 });
