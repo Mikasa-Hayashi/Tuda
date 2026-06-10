@@ -13,9 +13,10 @@ import { MONUMENT_TAG_IDS } from '@/src/data/monumentFilterMeta';
 import { onMonumentCacheCleared } from '@/src/db/monumentCacheEvents';
 import { fetchMonumentDetail, fetchMonumentsPage, searchMonumentsRemote, syncCityData } from '@/src/services/monumentsApi';
 import { headerStyles } from '@/src/theme/headerStyles';
+import { SearchBar } from '@/src/components/SearchBar';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
@@ -39,17 +40,16 @@ import { getSelectedCityId, markCityDownloaded } from '@/src/storage/citySelecti
 import { useFocusEffect, useScrollToTop } from '@react-navigation/native';
 
 type SortMode = 'default' | 'name' | 'popularity';
+type Colors = ReturnType<typeof useTheme>['colors'];
 
-const OverviewHeader = ({ onSettings, colors, t }: { onSettings(): void; colors: any; t: any }) => (
+const OverviewHeader = ({ onSettings, colors, t }: { onSettings(): void; colors: Colors; t: (key: string) => string }) => (
   <SafeAreaView edges={['top']} style={[headerStyles.headerContainer, { backgroundColor: colors.background }]}>
     <View style={headerStyles.headerContent}>
       <View style={headerStyles.iconButton} />
-
       <Text style={[headerStyles.headerTitle, { color: colors.text }]}>
         {t('menu.titleFirst')}
         <Text style={{ color: colors.primary }}>{t('menu.titleSecond')}</Text>
       </Text>
-
       <TouchableOpacity onPress={onSettings} style={headerStyles.iconButton}>
         <Ionicons name="settings-outline" size={28} color={colors.text} />
       </TouchableOpacity>
@@ -57,44 +57,7 @@ const OverviewHeader = ({ onSettings, colors, t }: { onSettings(): void; colors:
   </SafeAreaView>
 );
 
-const SearchBar = ({
-  value,
-  onChange,
-  colors,
-  t,
-}: {
-  value: string;
-  onChange: (text: string) => void;
-  colors: any;
-  t: any;
-}) => (
-  <View style={[styles.searchContainer, { backgroundColor: colors.card }]}>
-    <Ionicons name="search" size={20} color={colors.textMuted} style={styles.searchIcon} />
-    <TextInput
-      style={[styles.searchInput, { color: colors.text }]}
-      placeholder="Search"
-      placeholderTextColor={colors.textMuted}
-      value={value}
-      onChangeText={onChange}
-      returnKeyType="done"
-    />
-    {value.length > 0 && (
-      <TouchableOpacity onPress={() => onChange('')} style={styles.clearButton}>
-        <Ionicons name="close-circle" size={20} color={colors.textMuted} />
-      </TouchableOpacity>
-    )}
-  </View>
-);
-
-const MonumentCard = ({
-  item,
-  onPress,
-  colors,
-}: {
-  item: MonumentPreview;
-  onPress: () => void;
-  colors: any;
-}) => (
+const MonumentCard = ({ item, onPress, colors }: { item: MonumentPreview; onPress: () => void; colors: Colors }) => (
   <TouchableOpacity
     style={[styles.cardContainer, { backgroundColor: colors.card }]}
     onPress={onPress}
@@ -102,14 +65,12 @@ const MonumentCard = ({
   >
     <Image source={{ uri: item.imageUrl }} style={styles.cardImage} />
     <View style={styles.cardOverlay}>
-      <Text style={styles.cardTitle} numberOfLines={2}>
-        {item.name}
-      </Text>
+      <Text style={styles.cardTitle} numberOfLines={2}>{item.name}</Text>
     </View>
   </TouchableOpacity>
 );
 
-const EmptyState = ({ t, colors }: { t: any; colors: any }) => (
+const EmptyState = ({ t, colors }: { t: (key: string) => string; colors: Colors }) => (
   <View style={styles.emptyContainer}>
     <Ionicons name="search-outline" size={60} color={colors.textMuted} />
     <Text style={[styles.emptyTitle, { color: colors.text }]}>{t('menu.notFound')}</Text>
@@ -122,12 +83,19 @@ function chunkPairs<T>(items: T[]): T[][] {
   return rows;
 }
 
+const SORT_OPTIONS: { mode: SortMode; labelKey: string }[] = [
+  { mode: 'default', labelKey: 'overview.sortRecommended' },
+  { mode: 'name', labelKey: 'overview.sortName' },
+  { mode: 'popularity', labelKey: 'overview.sortPopularity' },
+];
+
 export default function OverviewTabScreen() {
   const { t, i18n } = useTranslation();
   const { colors, isDark } = useTheme();
   const router = useRouter();
   const scrollRef = useRef<ScrollView>(null);
   useScrollToTop(scrollRef);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const [selectedCityName, setSelectedCityName] = useState<string | null>(null);
@@ -143,6 +111,7 @@ export default function OverviewTabScreen() {
   const [nextOffset, setNextOffset] = useState(0);
   const [searchResults, setSearchResults] = useState<MonumentPreview[] | null>(null);
   const [searchErrorOffline, setSearchErrorOffline] = useState(false);
+
   const lang = i18n.language;
 
   const textFiltered = useMemo(() => {
@@ -161,10 +130,7 @@ export default function OverviewTabScreen() {
     if (sortMode === 'name') {
       list.sort((a, b) => a.name.localeCompare(b.name, lang, { sensitivity: 'base' }));
     } else if (sortMode === 'popularity') {
-      list.sort(
-        (a, b) =>
-          b.popularity - a.popularity || a.name.localeCompare(b.name, lang, { sensitivity: 'base' }),
-      );
+      list.sort((a, b) => b.popularity - a.popularity || a.name.localeCompare(b.name, lang, { sensitivity: 'base' }));
     } else {
       list.sort((a, b) => a.sortOrder - b.sortOrder || a.id.localeCompare(b.id));
     }
@@ -175,11 +141,7 @@ export default function OverviewTabScreen() {
 
   const visibleTagIds = useMemo(() => {
     const q = tagSearchQuery.trim().toLowerCase();
-    return MONUMENT_TAG_IDS.filter((id) => {
-      if (!q) return true;
-      const label = t(`overview.tags.${id}`).toLowerCase();
-      return label.includes(q);
-    });
+    return MONUMENT_TAG_IDS.filter((id) => !q || t(`overview.tags.${id}`).toLowerCase().includes(q));
   }, [tagSearchQuery, t]);
 
   const displayedTagIds = useMemo(
@@ -187,25 +149,21 @@ export default function OverviewTabScreen() {
     [visibleTagIds, tagsExpanded],
   );
 
-  const toggleTag = (id: string) => {
-    setSelectedTags((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
-  };
-
-  const refreshLocalMonuments = React.useCallback((cityId: string | null, language: string) => {
+  const refreshLocalMonuments = useCallback((cityId: string | null, language: string) => {
     setAllMonuments(getAllMonumentPreviews(language, cityId));
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return onMonumentCacheCleared(() => {
       setAllMonuments([]);
       setSearchResults(null);
       setNextOffset(0);
       setHasMore(true);
-      void getSelectedCityId().then((cityId) => refreshLocalMonuments(cityId, lang));
+      getSelectedCityId().then((cityId) => refreshLocalMonuments(cityId, lang));
     });
   }, [lang, refreshLocalMonuments]);
 
-  const storeMonumentDetails = React.useCallback(async (monumentIds: string[]) => {
+  const storeMonumentDetails = useCallback(async (monumentIds: string[]) => {
     const details = await Promise.all(monumentIds.map((id) => fetchMonumentDetail(id)));
     const translations = details.flatMap((d) =>
       d.translations.map((tr) => ({ ...tr, monument_id: d.id })),
@@ -213,7 +171,7 @@ export default function OverviewTabScreen() {
     upsertMonumentTranslationsFromApi(translations);
   }, []);
 
-  const runSync = React.useCallback(async (cityId: string, sinceIso: string) => {
+  const runSync = useCallback(async (cityId: string, sinceIso: string) => {
     const payload = await syncCityData(cityId, sinceIso);
     upsertMonumentsFromApi(cityId, payload.monuments);
     upsertMonumentTranslationsFromApi(payload.monument_translations);
@@ -221,7 +179,7 @@ export default function OverviewTabScreen() {
     setSyncMeta(cityId, 'last_sync', new Date().toISOString());
   }, []);
 
-  const loadNextPage = React.useCallback(async (cityId: string, force = false) => {
+  const loadNextPage = useCallback(async (cityId: string, force = false) => {
     if (!force && (isLoadingMore || !hasMore)) return;
     setIsLoadingMore(true);
     try {
@@ -240,7 +198,7 @@ export default function OverviewTabScreen() {
   }, [hasMore, isLoadingMore, lang, nextOffset, refreshLocalMonuments, storeMonumentDetails]);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       const loadCityAndSync = async () => {
         const cityId = await getSelectedCityId();
         setSelectedCityId(cityId);
@@ -278,18 +236,17 @@ export default function OverviewTabScreen() {
     }, [lang, loadNextPage, refreshLocalMonuments, runSync, t]),
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     refreshLocalMonuments(selectedCityId, lang);
   }, [lang, refreshLocalMonuments, selectedCityId]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const query = searchQuery.trim();
     if (!selectedCityId || query === '') {
       setSearchResults(null);
       setSearchErrorOffline(false);
       return;
     }
-
     const timer = setTimeout(async () => {
       try {
         const remote = await searchMonumentsRemote(selectedCityId, query, lang, 30);
@@ -311,30 +268,23 @@ export default function OverviewTabScreen() {
         setSearchErrorOffline(true);
       }
     }, 300);
-
     return () => clearTimeout(timer);
   }, [lang, searchQuery, selectedCityId]);
 
-  const onScroll = React.useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    if (!selectedCityId || searchQuery.trim() !== '') return;
-    const { layoutMeasurement, contentOffset, contentSize } = e.nativeEvent;
-    const distanceToBottom = contentSize.height - (layoutMeasurement.height + contentOffset.y);
-    if (distanceToBottom < 240) {
-      void loadNextPage(selectedCityId);
-    }
-  }, [loadNextPage, searchQuery, selectedCityId]);
-
-  const sortOptions: { mode: SortMode; labelKey: string }[] = [
-    { mode: 'default', labelKey: 'overview.sortRecommended' },
-    { mode: 'name', labelKey: 'overview.sortName' },
-    { mode: 'popularity', labelKey: 'overview.sortPopularity' },
-  ];
+  const onScroll = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      if (!selectedCityId || searchQuery.trim() !== '') return;
+      const { layoutMeasurement, contentOffset, contentSize } = e.nativeEvent;
+      const distanceToBottom = contentSize.height - (layoutMeasurement.height + contentOffset.y);
+      if (distanceToBottom < 240) void loadNextPage(selectedCityId);
+    },
+    [loadNextPage, searchQuery, selectedCityId],
+  );
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <OverviewHeader onSettings={() => router.push('/settings')} colors={colors} t={t} />
-
       <ScrollView
         ref={scrollRef}
         style={styles.scroll}
@@ -361,7 +311,7 @@ export default function OverviewTabScreen() {
 
           <View style={styles.searchRow}>
             <View style={styles.searchRowInputWrap}>
-              <SearchBar value={searchQuery} onChange={setSearchQuery} colors={colors} t={t} />
+              <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder="Search" />
             </View>
             <TouchableOpacity
               onPress={() => setFilterPanelOpen((o) => !o)}
@@ -373,16 +323,16 @@ export default function OverviewTabScreen() {
               accessibilityLabel={t('overview.filters')}
             >
               <Ionicons name="funnel-outline" size={22} color={colors.text} />
-              {selectedTags.length > 0 ? (
+              {selectedTags.length > 0 && (
                 <View style={[styles.filterBadge, { backgroundColor: colors.primary }]}>
                   <Text style={[styles.filterBadgeText, { color: colors.oppositeText }]}>{selectedTags.length}</Text>
                 </View>
-              ) : null}
+              )}
             </TouchableOpacity>
           </View>
 
           <View style={styles.sortRow}>
-            {sortOptions.map(({ mode, labelKey }) => {
+            {SORT_OPTIONS.map(({ mode, labelKey }) => {
               const active = sortMode === mode;
               return (
                 <TouchableOpacity
@@ -407,7 +357,7 @@ export default function OverviewTabScreen() {
             })}
           </View>
 
-          {filterPanelOpen ? (
+          {filterPanelOpen && (
             <View style={[styles.filterPanel, { borderColor: colors.border, backgroundColor: colors.card }]}>
               <View style={[styles.tagSearchContainer, { backgroundColor: colors.background }]}>
                 <Ionicons name="pricetag-outline" size={18} color={colors.textMuted} style={styles.tagSearchIcon} />
@@ -419,20 +369,23 @@ export default function OverviewTabScreen() {
                   onChangeText={setTagSearchQuery}
                   returnKeyType="done"
                 />
-                {tagSearchQuery.length > 0 ? (
+                {tagSearchQuery.length > 0 && (
                   <TouchableOpacity onPress={() => setTagSearchQuery('')}>
                     <Ionicons name="close-circle" size={18} color={colors.textMuted} />
                   </TouchableOpacity>
-                ) : null}
+                )}
               </View>
-
               <View style={styles.tagChipsWrap}>
                 {displayedTagIds.map((tagId) => {
                   const selected = selectedTags.includes(tagId);
                   return (
                     <TouchableOpacity
                       key={tagId}
-                      onPress={() => toggleTag(tagId)}
+                      onPress={() =>
+                        setSelectedTags((prev) =>
+                          prev.includes(tagId) ? prev.filter((x) => x !== tagId) : [...prev, tagId],
+                        )
+                      }
                       style={[
                         styles.tagChip,
                         {
@@ -451,39 +404,34 @@ export default function OverviewTabScreen() {
                   );
                 })}
               </View>
-
-              {visibleTagIds.length > 4 ? (
+              {visibleTagIds.length > 4 && (
                 <TouchableOpacity onPress={() => setTagsExpanded((e) => !e)} style={styles.showMoreBtn}>
                   <Text style={[styles.showMoreText, { color: colors.primary }]}>
                     {t(tagsExpanded ? 'overview.showLess' : 'overview.showMore')}
                   </Text>
                 </TouchableOpacity>
-              ) : null}
-
-              {selectedTags.length > 0 ? (
-                <TouchableOpacity
-                  onPress={() => setSelectedTags([])}
-                  style={styles.clearFiltersBtn}
-                >
+              )}
+              {selectedTags.length > 0 && (
+                <TouchableOpacity onPress={() => setSelectedTags([])} style={styles.clearFiltersBtn}>
                   <Text style={[styles.clearFiltersText, { color: colors.textMuted }]}>{t('overview.clearFilters')}</Text>
                 </TouchableOpacity>
-              ) : null}
+              )}
             </View>
-          ) : null}
+          )}
         </View>
 
         <View style={styles.sectionsWrap}>
           <Text style={[styles.sectionTitle, { color: colors.primary }]}>{t('menu.monuments')}</Text>
-          {isBootstrapping ? (
+          {isBootstrapping && (
             <View style={styles.loadingWrap}>
               <ActivityIndicator color={colors.primary} />
             </View>
-          ) : null}
-          {searchErrorOffline ? (
+          )}
+          {searchErrorOffline && (
             <Text style={[styles.searchFallbackText, { color: colors.textMuted }]}>
               Offline mode: showing local search results
             </Text>
-          ) : null}
+          )}
           {filteredMonuments.length === 0 ? (
             <EmptyState t={t} colors={colors} />
           ) : (
@@ -501,11 +449,11 @@ export default function OverviewTabScreen() {
               </View>
             ))
           )}
-          {isLoadingMore ? (
+          {isLoadingMore && (
             <View style={styles.loadingWrap}>
               <ActivityIndicator color={colors.primary} />
             </View>
-          ) : null}
+          )}
         </View>
       </ScrollView>
     </View>
@@ -558,19 +506,9 @@ const styles = StyleSheet.create({
   },
   filterBadgeText: { fontSize: 11, fontWeight: '800' },
   sortRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
-  sortChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
+  sortChip: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, borderWidth: 1 },
   sortChipText: { fontSize: 13, fontWeight: '600' },
-  filterPanel: {
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 4,
-  },
+  filterPanel: { borderWidth: 1, borderRadius: 12, padding: 12, marginBottom: 4 },
   tagSearchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -582,13 +520,7 @@ const styles = StyleSheet.create({
   tagSearchIcon: { marginRight: 8 },
   tagSearchInput: { flex: 1, fontSize: 15, height: '100%' },
   tagChipsWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  tagChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    maxWidth: '100%',
-  },
+  tagChip: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, borderWidth: 1, maxWidth: '100%' },
   tagChipText: { fontSize: 13, fontWeight: '600' },
   showMoreBtn: { marginTop: 10, alignSelf: 'flex-start' },
   showMoreText: { fontSize: 14, fontWeight: '700' },
@@ -603,16 +535,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     marginTop: 8,
   },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    height: 50,
-  },
-  searchIcon: { marginRight: 10 },
-  searchInput: { flex: 1, fontSize: 16, height: '100%' },
-  clearButton: { padding: 5 },
   rowWrapper: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },
   cardPlaceholder: { width: CARD_WIDTH },
   cardContainer: { width: CARD_WIDTH, height: CARD_WIDTH * 1.3, borderRadius: 16, overflow: 'hidden' },

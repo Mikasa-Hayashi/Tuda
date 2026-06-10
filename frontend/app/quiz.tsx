@@ -15,19 +15,24 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../src/theme/ThemeContext';
 
-const QuizHeader = ({ onBack, title, colors, t }: { onBack(): void; title: string; colors: any; t: any }) => (
+const QuizHeader = ({
+  onBack,
+  title,
+  colors,
+}: {
+  onBack(): void;
+  title: string;
+  colors: ReturnType<typeof useTheme>['colors'];
+}) => (
   <SafeAreaView edges={['top']} style={[headerStyles.headerContainer, { backgroundColor: colors.background }]}>
     <View style={headerStyles.headerContent}>
       <TouchableOpacity onPress={onBack} style={headerStyles.iconButton}>
         <Ionicons name="close" size={28} color={colors.text} />
       </TouchableOpacity>
-
       <Text style={[headerStyles.headerTitle, { color: colors.text, fontSize: 18, fontWeight: 'bold' }]}>
         {title}
       </Text>
-
-      {/* Пустая вьюшка справа для баланса, так как настройки в квизе обычно не нужны */}
-      <View style={{ width: 40 }} />
+      <View style={headerStyles.iconButton} />
     </View>
   </SafeAreaView>
 );
@@ -36,7 +41,7 @@ export default function QuizScreen() {
   const { colors, isDark } = useTheme();
   const router = useRouter();
   const { t, i18n } = useTranslation();
-  const { id, name } = useLocalSearchParams<{ id: string, name: string }>();
+  const { id, name } = useLocalSearchParams<{ id: string; name: string }>();
   const quizQuestions = id ? getQuizQuestions({ monumentId: id, lang: i18n.language, t }) : [];
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -48,22 +53,16 @@ export default function QuizScreen() {
   const isLastQuestion = currentQuestionIndex === quizQuestions.length - 1;
   const quizTitle = name || t('quiz.title');
 
-  const handleBack = () => {
-    router.back();
-  };
-
   const handleNext = () => {
     if (selectedOption === null || !currentQuestion) return;
-
     if (selectedOption === currentQuestion.correctIndex) {
-      setScore(prev => prev + 1);
+      setScore((prev) => prev + 1);
     }
-
     if (isLastQuestion) {
       setIsFinished(true);
     } else {
-      setCurrentQuestionIndex(prev => prev + 1);
-      setSelectedOption(null); // Сбрасываем выбор для следующего вопроса
+      setCurrentQuestionIndex((prev) => prev + 1);
+      setSelectedOption(null);
     }
   };
 
@@ -76,7 +75,7 @@ export default function QuizScreen() {
 
   if (!id) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center', padding: 20 }]}>
+      <View style={[styles.container, styles.centered, { backgroundColor: colors.background }]}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
@@ -86,14 +85,17 @@ export default function QuizScreen() {
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
         <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
-        <QuizHeader onBack={handleBack} title={quizTitle} colors={colors} t={t} />
-        <View style={[styles.emptyState, { padding: 20 }]}>
+        <QuizHeader onBack={() => router.back()} title={quizTitle} colors={colors} />
+        <View style={styles.emptyState}>
           <Ionicons name="alert-circle-outline" size={72} color={colors.primary} />
           <Text style={[styles.resultTitle, { color: colors.text }]}>{t('quiz.unavailableTitle')}</Text>
           <Text style={[styles.resultText, { color: colors.textMuted, textAlign: 'center' }]}>
             {t('quiz.unavailableText')}
           </Text>
-          <TouchableOpacity style={[styles.nextButton, { backgroundColor: colors.primary, marginTop: 32, width: '100%' }]} onPress={handleBack}>
+          <TouchableOpacity
+            style={[styles.nextButton, styles.nextButtonFull, { backgroundColor: colors.primary, marginTop: 32 }]}
+            onPress={() => router.back()}
+          >
             <Text style={styles.nextButtonText}>{t('quiz.backToMonument')}</Text>
           </TouchableOpacity>
         </View>
@@ -103,19 +105,20 @@ export default function QuizScreen() {
 
   if (isFinished) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center', padding: 20 }]}>
-        <Ionicons name="trophy" size={80} color={colors.primary} style={{ marginBottom: 20 }} />
+      <View style={[styles.container, styles.centered, { backgroundColor: colors.background }]}>
+        <Ionicons name="trophy" size={80} color={colors.primary} style={styles.trophyIcon} />
         <Text style={[styles.resultTitle, { color: colors.text }]}>{t('quiz.completedTitle')}</Text>
         <Text style={[styles.resultText, { color: colors.textMuted }]}>
           {t('quiz.score', { score, total: quizQuestions.length })}
         </Text>
-
-        <TouchableOpacity style={[styles.nextButton, { backgroundColor: colors.primary, marginTop: 40, width: '100%' }]} onPress={handleBack}>
+        <TouchableOpacity
+          style={[styles.nextButton, styles.nextButtonFull, { backgroundColor: colors.primary, marginTop: 40 }]}
+          onPress={() => router.back()}
+        >
           <Text style={styles.nextButtonText}>{t('quiz.backToMonument')}</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity style={{ marginTop: 20 }} onPress={restartQuiz}>
-          <Text style={{ color: colors.primary, fontSize: 16, fontWeight: 'bold' }}>{t('quiz.retry')}</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={restartQuiz}>
+          <Text style={[styles.retryText, { color: colors.primary }]}>{t('quiz.retry')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -124,25 +127,23 @@ export default function QuizScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
-
-      <QuizHeader onBack={handleBack} title={quizTitle} colors={colors} t={t} />
-
+      <QuizHeader onBack={() => router.back()} title={quizTitle} colors={colors} />
       <View style={styles.content}>
         <Text style={[styles.progressText, { color: colors.textMuted }]}>
           {t('quiz.progress', { current: currentQuestionIndex + 1, total: quizQuestions.length })}
         </Text>
-
         <View style={styles.progressBarBg}>
-          <View style={[
-            styles.progressBarFill, 
-            { backgroundColor: colors.primary, width: `${((currentQuestionIndex + 1) / quizQuestions.length) * 100}%` }
-          ]} />
+          <View
+            style={[
+              styles.progressBarFill,
+              {
+                backgroundColor: colors.primary,
+                width: `${((currentQuestionIndex + 1) / quizQuestions.length) * 100}%`,
+              },
+            ]}
+          />
         </View>
-
-        <Text style={[styles.questionText, { color: colors.text }]}>
-          {currentQuestion.question}
-        </Text>
-
+        <Text style={[styles.questionText, { color: colors.text }]}>{currentQuestion.question}</Text>
         <View style={styles.optionsContainer}>
           {currentQuestion.options.map((option, index) => {
             const isSelected = selectedOption === index;
@@ -152,15 +153,17 @@ export default function QuizScreen() {
                 style={[
                   styles.optionButton,
                   { borderColor: colors.border },
-                  isSelected && { borderColor: colors.primary, backgroundColor: colors.primary + '20' }
+                  isSelected && { borderColor: colors.primary, backgroundColor: colors.primary + '20' },
                 ]}
                 onPress={() => setSelectedOption(index)}
               >
-                <View style={[
-                  styles.radioCircle,
-                  { borderColor: colors.textMuted },
-                  isSelected && { borderColor: colors.primary, backgroundColor: colors.primary }
-                ]}>
+                <View
+                  style={[
+                    styles.radioCircle,
+                    { borderColor: colors.textMuted },
+                    isSelected && { borderColor: colors.primary, backgroundColor: colors.primary },
+                  ]}
+                >
                   {isSelected && <View style={styles.innerRadio} />}
                 </View>
                 <Text style={[styles.optionText, { color: colors.text }]}>{option}</Text>
@@ -169,21 +172,16 @@ export default function QuizScreen() {
           })}
         </View>
       </View>
-
-      {/* Кнопка Далее фиксируется внизу */}
       <View style={[styles.footer, { borderTopColor: colors.border }]}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[
-            styles.nextButton, 
-            { backgroundColor: selectedOption !== null ? colors.primary : colors.border }
+            styles.nextButton,
+            { backgroundColor: selectedOption !== null ? colors.primary : colors.border },
           ]}
           disabled={selectedOption === null}
           onPress={handleNext}
         >
-          <Text style={[
-            styles.nextButtonText, 
-            { color: selectedOption !== null ? 'black' : colors.textMuted }
-          ]}>
+          <Text style={[styles.nextButtonText, { color: selectedOption !== null ? 'black' : colors.textMuted }]}>
             {isLastQuestion ? t('quiz.finish') : t('quiz.next')}
           </Text>
         </TouchableOpacity>
@@ -193,19 +191,10 @@ export default function QuizScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    padding: 20,
-  },
-  progressText: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
-    textTransform: 'uppercase',
-  },
+  container: { flex: 1 },
+  centered: { justifyContent: 'center', alignItems: 'center', padding: 20 },
+  content: { flex: 1, padding: 20 },
+  progressText: { fontSize: 14, fontWeight: '600', marginBottom: 8, textTransform: 'uppercase' },
   progressBarBg: {
     height: 6,
     backgroundColor: '#E0E0E0',
@@ -213,19 +202,9 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     overflow: 'hidden',
   },
-  progressBarFill: {
-    height: '100%',
-    borderRadius: 3,
-  },
-  questionText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    lineHeight: 32,
-  },
-  optionsContainer: {
-    gap: 12,
-  },
+  progressBarFill: { height: '100%', borderRadius: 3 },
+  questionText: { fontSize: 24, fontWeight: 'bold', marginBottom: 30, lineHeight: 32 },
+  optionsContainer: { gap: 12 },
   optionButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -242,44 +221,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 12,
   },
-  innerRadio: {
-    height: 10,
-    width: 10,
-    borderRadius: 5,
-    backgroundColor: 'black', // или белый, в зависимости от твоей темы
-  },
-  optionText: {
-    fontSize: 16,
-    flex: 1,
-  },
-  footer: {
-    padding: 20,
-    paddingBottom: 40, // Отступ для челки на айфонах
-    borderTopWidth: 1,
-  },
-  nextButton: {
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  nextButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  // Стили экрана результатов
-  resultTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  resultText: {
-    fontSize: 18,
-  },
-  emptyState: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 12,
-  },
+  innerRadio: { height: 10, width: 10, borderRadius: 5, backgroundColor: 'black' },
+  optionText: { fontSize: 16, flex: 1 },
+  footer: { padding: 20, paddingBottom: 40, borderTopWidth: 1 },
+  nextButton: { paddingVertical: 16, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+  nextButtonFull: { width: '100%' },
+  nextButtonText: { fontSize: 18, fontWeight: 'bold' },
+  trophyIcon: { marginBottom: 20 },
+  resultTitle: { fontSize: 28, fontWeight: 'bold', marginBottom: 10 },
+  resultText: { fontSize: 18 },
+  emptyState: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 12, padding: 20 },
+  retryButton: { marginTop: 20 },
+  retryText: { fontSize: 16, fontWeight: 'bold' },
 });

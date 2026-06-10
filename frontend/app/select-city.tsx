@@ -10,53 +10,38 @@ import {
 } from '@/src/storage/citySelection';
 import { headerStyles } from '@/src/theme/headerStyles';
 import { useTheme } from '@/src/theme/ThemeContext';
-import { Ionicons } from '@expo/vector-icons';
+import { SearchBar } from '@/src/components/SearchBar';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Pressable,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+type Colors = ReturnType<typeof useTheme>['colors'];
 
 type CityRowProps = {
-  id: string;
   cityName: string;
   objectsCount: number;
   selected: boolean;
   downloaded: boolean;
   onSelect: () => void;
   onToggleDownload: () => void;
-  t: (key: string, options?: any) => string;
-  colors: any;
+  t: (key: string, options?: Record<string, unknown>) => string;
+  colors: Colors;
 };
 
-const CityRow = ({
-  cityName,
-  objectsCount,
-  selected,
-  downloaded,
-  onSelect,
-  onToggleDownload,
-  t,
-  colors,
-}: CityRowProps) => (
+const CityRow = ({ cityName, objectsCount, selected, downloaded, onSelect, onToggleDownload, t, colors }: CityRowProps) => (
   <Pressable
     onPress={onSelect}
-    style={[
-      styles.card,
-      {
-        backgroundColor: colors.card,
-        borderColor: selected ? colors.primary : colors.border,
-      },
-    ]}
+    style={[styles.card, { backgroundColor: colors.card, borderColor: selected ? colors.primary : colors.border }]}
   >
     <View style={styles.cardLeft}>
       <Text style={[styles.cityName, { color: colors.text }]}>{cityName}</Text>
@@ -66,17 +51,9 @@ const CityRow = ({
     </View>
     <TouchableOpacity
       onPress={onToggleDownload}
-      style={[
-        styles.downloadButton,
-        { backgroundColor: downloaded ? colors.border : colors.primary },
-      ]}
+      style={[styles.downloadButton, { backgroundColor: downloaded ? colors.border : colors.primary }]}
     >
-      <Text
-        style={[
-          styles.downloadButtonText,
-          { color: downloaded ? colors.text : colors.oppositeText },
-        ]}
-      >
+      <Text style={[styles.downloadButtonText, { color: downloaded ? colors.text : colors.oppositeText }]}>
         {downloaded ? t('citySelector.downloaded') : t('citySelector.download')}
       </Text>
     </TouchableOpacity>
@@ -99,38 +76,30 @@ export default function SelectCityScreen() {
       setDownloadedCityIdsState(downloaded);
 
       const localCounts = getMonumentCountsByCity();
-      let mergedCounts = { ...localCounts };
       try {
         const apiCounts = await fetchMonumentCountsByCity();
         const cityIds = new Set([...Object.keys(localCounts), ...Object.keys(apiCounts)]);
-        mergedCounts = Object.fromEntries(
-          [...cityIds].map((cityId) => [
-            cityId,
-            Math.max(localCounts[cityId] ?? 0, apiCounts[cityId] ?? 0),
-          ]),
+        setObjectCountsByCity(
+          Object.fromEntries(
+            [...cityIds].map((cityId) => [cityId, Math.max(localCounts[cityId] ?? 0, apiCounts[cityId] ?? 0)]),
+          ),
         );
       } catch {
-        mergedCounts = localCounts;
+        setObjectCountsByCity(localCounts);
       }
-      setObjectCountsByCity(mergedCounts);
     };
     load();
   }, []);
 
-  const cityNameById = (cityId: string) => t(`cities.${cityId}`);
-
   const filteredCities = useMemo(() => {
     const q = search.trim().toLowerCase();
-    const base = !q ? CITIES : CITIES.filter((city) => cityNameById(city.id).toLowerCase().includes(q));
+    const base = !q
+      ? CITIES
+      : CITIES.filter((city) => t(`cities.${city.id}`).toLowerCase().includes(q));
     return [...base].sort((a, b) =>
-      cityNameById(a.id).localeCompare(cityNameById(b.id), i18n.language, { sensitivity: 'base' }),
+      t(`cities.${a.id}`).localeCompare(t(`cities.${b.id}`), i18n.language, { sensitivity: 'base' }),
     );
   }, [search, t, i18n.language]);
-
-  const handleSkip = async () => {
-    await setOnboardingDone(true);
-    router.replace('/overview');
-  };
 
   const handleContinue = async () => {
     if (!selectedCityId) return;
@@ -138,7 +107,10 @@ export default function SelectCityScreen() {
     router.replace('/overview');
   };
 
-  const ctaIsContinue = Boolean(selectedCityId);
+  const handleSkip = async () => {
+    await setOnboardingDone(true);
+    router.replace('/overview');
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -147,25 +119,13 @@ export default function SelectCityScreen() {
         <View style={[headerStyles.headerContent, styles.header]}>
           <Text style={[headerStyles.headerTitle, { color: colors.text }]}>{t('citySelector.title')}</Text>
         </View>
-
         <View style={styles.searchWrap}>
-          <View style={[styles.searchContainer, { backgroundColor: colors.card }]}>
-            <Ionicons name="search" size={20} color={colors.textMuted} style={styles.searchIcon} />
-            <TextInput
-              style={[styles.searchInput, { color: colors.text }]}
-              value={search}
-              onChangeText={setSearch}
-              placeholder={t('citySelector.searchPlaceholder')}
-              placeholderTextColor={colors.textMuted}
-            />
-            {search.length > 0 && (
-              <TouchableOpacity onPress={() => setSearch('')}>
-                <Ionicons name="close-circle" size={20} color={colors.textMuted} />
-              </TouchableOpacity>
-            )}
-          </View>
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder={t('citySelector.searchPlaceholder')}
+          />
         </View>
-
         <ScrollView
           style={styles.list}
           contentContainerStyle={styles.listContent}
@@ -175,8 +135,7 @@ export default function SelectCityScreen() {
           {filteredCities.map((city) => (
             <CityRow
               key={city.id}
-              id={city.id}
-              cityName={cityNameById(city.id)}
+              cityName={t(`cities.${city.id}`)}
               objectsCount={objectCountsByCity[city.id] ?? 0}
               selected={city.id === selectedCityId}
               downloaded={downloadedCityIds.includes(city.id)}
@@ -195,14 +154,13 @@ export default function SelectCityScreen() {
             </View>
           )}
         </ScrollView>
-
         <View style={[styles.bottomBar, { backgroundColor: colors.background, borderTopColor: colors.border }]}>
           <TouchableOpacity
             style={[styles.ctaButton, { backgroundColor: colors.primary }]}
-            onPress={ctaIsContinue ? handleContinue : handleSkip}
+            onPress={selectedCityId ? handleContinue : handleSkip}
           >
             <Text style={styles.ctaText}>
-              {ctaIsContinue ? t('citySelector.continue') : t('citySelector.skip')}
+              {selectedCityId ? t('citySelector.continue') : t('citySelector.skip')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -215,15 +173,6 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   header: { justifyContent: 'center', paddingHorizontal: 20 },
   searchWrap: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    height: 50,
-  },
-  searchIcon: { marginRight: 10 },
-  searchInput: { flex: 1, fontSize: 16 },
   list: { flex: 1 },
   listContent: { paddingHorizontal: 20, paddingBottom: 16, gap: 10 },
   card: {
@@ -242,12 +191,7 @@ const styles = StyleSheet.create({
   downloadButtonText: { fontSize: 13, fontWeight: '700' },
   emptyWrap: { alignItems: 'center', paddingTop: 24 },
   emptyText: { fontSize: 16 },
-  bottomBar: {
-    borderTopWidth: 1,
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 10,
-  },
+  bottomBar: { borderTopWidth: 1, paddingHorizontal: 20, paddingTop: 12, paddingBottom: 10 },
   ctaButton: { borderRadius: 12, alignItems: 'center', justifyContent: 'center', height: 52 },
   ctaText: { color: 'black', fontSize: 17, fontWeight: '700' },
 });

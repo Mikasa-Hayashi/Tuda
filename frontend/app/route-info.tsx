@@ -1,5 +1,6 @@
+import { ActionButton } from '@/src/components/ActionButton';
 import { headerStyles } from '@/src/theme/headerStyles';
-import { getRouteById } from '@/src/db/routeRepository'; // ← было: routeStore + monumentStore
+import { getRouteById } from '@/src/db/routeRepository';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
@@ -17,32 +18,15 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../src/theme/ThemeContext';
 
-const RouteInfoHeader = ({ onBack, colors }: { onBack(): void; colors: any }) => (
+const RouteInfoHeader = ({ onBack, colors }: { onBack(): void; colors: ReturnType<typeof useTheme>['colors'] }) => (
   <SafeAreaView edges={['top']} style={[headerStyles.headerContainer, { backgroundColor: colors.background }]}>
     <View style={headerStyles.headerContent}>
       <TouchableOpacity onPress={onBack} style={headerStyles.iconButton}>
         <Ionicons name="chevron-back" size={28} color={colors.text} />
       </TouchableOpacity>
-      <View style={{ width: 40 }} />
+      <View style={headerStyles.iconButton} />
     </View>
   </SafeAreaView>
-);
-
-const ActionButton = ({
-  icon,
-  label,
-  onPress,
-  colors,
-}: {
-  icon: React.ComponentProps<typeof Ionicons>['name'];
-  label: string;
-  onPress: () => void;
-  colors: any;
-}) => (
-  <TouchableOpacity style={[styles.actionButton, { backgroundColor: colors.primary }]} onPress={onPress}>
-    <Ionicons name={icon} size={24} color="black" />
-    <Text style={styles.actionButtonText}>{label}</Text>
-  </TouchableOpacity>
 );
 
 export default function RouteInfoScreen() {
@@ -51,21 +35,12 @@ export default function RouteInfoScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t, i18n } = useTranslation();
 
-  // Один запрос — маршрут со всеми переведёнными остановками
   const route = getRouteById(id ?? '', i18n.language);
-
-  const handleBack = () => {
-    router.back();
-  };
-
-  const handleOpenMap = () => {
-    if (route) router.push({ pathname: '/', params: { routeId: route.id } });
-  };
 
   if (!route) {
     return (
       <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <RouteInfoHeader onBack={handleBack} colors={colors} />
+        <RouteInfoHeader onBack={() => router.back()} colors={colors} />
       </View>
     );
   }
@@ -73,23 +48,22 @@ export default function RouteInfoScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
-
-      <RouteInfoHeader onBack={handleBack} colors={colors} />
-
+      <RouteInfoHeader onBack={() => router.back()} colors={colors} />
       <ScrollView contentContainerStyle={styles.scrollContent} bounces={false}>
         <View style={styles.heroContainer}>
           <Image source={{ uri: route.coverImageUrl }} style={styles.heroImage} resizeMode="cover" />
           <View style={styles.heroTextOverlay}>
-            {/* name и description уже переведены в репозитории */}
-            <Text style={[styles.routeName, { color: 'white' }]}>{route.name}</Text>
-            <Text style={styles.stopsHint}>
-              {t('route_info.stopsCount', { count: route.stopCount })}
-            </Text>
+            <Text style={styles.routeName}>{route.name}</Text>
+            <Text style={styles.stopsHint}>{t('route_info.stopsCount', { count: route.stopCount })}</Text>
           </View>
         </View>
 
         <View style={styles.actionRow}>
-          <ActionButton icon="map" label={t('route_info.openOnMap')} onPress={handleOpenMap} colors={colors} />
+          <ActionButton
+            icon="map"
+            label={t('route_info.openOnMap')}
+            onPress={() => router.push({ pathname: '/', params: { routeId: route.id } })}
+          />
         </View>
 
         <View style={styles.sectionContainer}>
@@ -100,7 +74,6 @@ export default function RouteInfoScreen() {
         <View style={styles.sectionContainer}>
           <Text style={[styles.sectionTitle, { color: colors.primary }]}>{t('route_info.stops')}</Text>
           <View style={[styles.stopsCard, { backgroundColor: colors.card }]}>
-            {/* route.stops — массив { id, name } с переведёнными именами */}
             {route.stops.map((stop, index) => (
               <View
                 key={stop.id}
@@ -125,20 +98,10 @@ export default function RouteInfoScreen() {
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 20,
-  },
-  heroContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  heroImage: {
-    width,
-    height: 320,
-  },
+  container: { flex: 1 },
+  scrollContent: { paddingBottom: 20 },
+  heroContainer: { alignItems: 'center', marginBottom: 20 },
+  heroImage: { width, height: 320 },
   heroTextOverlay: {
     position: 'absolute',
     bottom: 0,
@@ -147,37 +110,10 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: 'rgba(0,0,0,0.6)',
   },
-  routeName: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 6,
-  },
-  stopsHint: {
-    color: '#E0E0E0',
-    fontSize: 15,
-    fontWeight: '500',
-  },
-  actionRow: {
-    paddingHorizontal: 20,
-    marginBottom: 25,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 14,
-    borderRadius: 12,
-    gap: 8,
-  },
-  actionButtonText: {
-    color: 'black',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  sectionContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 25,
-  },
+  routeName: { color: 'white', fontSize: 28, fontWeight: 'bold', marginBottom: 6 },
+  stopsHint: { color: '#E0E0E0', fontSize: 15, fontWeight: '500' },
+  actionRow: { paddingHorizontal: 20, marginBottom: 25 },
+  sectionContainer: { paddingHorizontal: 20, marginBottom: 25 },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
@@ -185,27 +121,9 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
-  descriptionText: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  stopsCard: {
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  stopRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-  },
-  stopIndex: {
-    fontSize: 16,
-    fontWeight: '700',
-    width: 28,
-  },
-  stopName: {
-    fontSize: 16,
-    flex: 1,
-  },
+  descriptionText: { fontSize: 16, lineHeight: 24 },
+  stopsCard: { borderRadius: 12, overflow: 'hidden' },
+  stopRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 16 },
+  stopIndex: { fontSize: 16, fontWeight: '700', width: 28 },
+  stopName: { fontSize: 16, flex: 1 },
 });
