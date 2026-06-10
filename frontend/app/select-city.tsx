@@ -80,9 +80,6 @@ const CityRow = ({
       ]}
     >
       <View style={styles.cardLeft}>
-        {selected && (
-          <View style={[styles.selectedDot, { backgroundColor: colors.primary }]} />
-        )}
         <View style={styles.cardText}>
           <Text style={[styles.cityName, { color: colors.text }]}>{cityName}</Text>
           <Text style={[styles.objectsCount, { color: colors.textMuted }]}>
@@ -238,8 +235,6 @@ export default function SelectCityScreen() {
     router.replace('/overview');
   };
 
-  const handleBack = () => router.back();
-
   const showGeoBanner = detectedCityId && !geoDismissed && !selectedCityId;
   const detectedCityName = detectedCityId ? t(`cities.${detectedCityId}`) : '';
 
@@ -248,15 +243,7 @@ export default function SelectCityScreen() {
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <SafeAreaView style={{ flex: 1 }}>
         <View style={[headerStyles.headerContent, styles.header]}>
-          {!isOnboarding ? (
-            <TouchableOpacity onPress={handleBack} style={headerStyles.iconButton}>
-              <Ionicons name="chevron-back" size={28} color={colors.text} />
-            </TouchableOpacity>
-          ) : (
-            <View style={headerStyles.iconButton} />
-          )}
           <Text style={[headerStyles.headerTitle, { color: colors.text }]}>{t('citySelector.title')}</Text>
-          <View style={headerStyles.iconButton} />
         </View>
 
         {showGeoBanner && (
@@ -340,7 +327,7 @@ export default function SelectCityScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { justifyContent: 'space-between', paddingHorizontal: 8 },
+  header: { justifyContent: 'center', paddingHorizontal: 20 },
   searchWrap: { paddingHorizontal: 20, paddingTop: 4, paddingBottom: 12 },
   list: { flex: 1 },
   listContent: { paddingHorizontal: 20, paddingBottom: 16, gap: 10 },
@@ -353,8 +340,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  cardLeft: { flex: 1, flexDirection: 'row', alignItems: 'center', paddingRight: 12 },
-  selectedDot: { width: 8, height: 8, borderRadius: 4, marginRight: 10 },
+  cardLeft: { flex: 1, paddingRight: 12 },
   cardText: { flex: 1 },
   cityName: { fontSize: 17, fontWeight: '700', marginBottom: 3 },
   objectsCount: { fontSize: 13, fontWeight: '500' },
