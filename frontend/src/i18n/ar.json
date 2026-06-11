@@ -31,7 +31,8 @@
     "historyInfo": "التاريخ والمعلومات",
     "architectureDetails": "تفاصيل معمارية",
     "tourismInfo": "معلومات للسياح",
-    "play_quiz": "ابدأ الاختبار"
+    "play_quiz": "ابدأ الاختبار",
+    "readMore": "اقرأ المزيد"
   },
 
   "quiz": {
@@ -88,7 +89,8 @@
     "openOnMap": "فتح على الخريطة",
     "about": "عن المسار",
     "stops": "محطات المسار",
-    "stopsCount": "عدد المحطات: {{count}}"
+    "stopsCount": "عدد المحطات: {{count}}",
+    "startRoute": "ابدأ المسار"
   },
   "routesScreen": {
     "searchPlaceholder": "ابحث عن المسارات...",

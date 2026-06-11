@@ -31,7 +31,8 @@
     "historyInfo": "История и информация",
     "architectureDetails": "Архитектурные детали",
     "tourismInfo": "Информация для туристов",
-    "play_quiz": "Пройти викторину"
+    "play_quiz": "Пройти викторину",
+    "readMore": "читать дальше"
   },
 
   "quiz": {
@@ -90,7 +91,8 @@
     "openOnMap": "Открыть на карте",
     "about": "О маршруте",
     "stops": "Остановки маршрута",
-    "stopsCount": "Точек: {{count}}"
+    "stopsCount": "Точек: {{count}}",
+    "startRoute": "Начать маршрут"
   },
   "routesScreen": {
     "searchPlaceholder": "Поиск маршрутов...",

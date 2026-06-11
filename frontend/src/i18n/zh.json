@@ -31,7 +31,8 @@
     "historyInfo": "历史与信息",
     "architectureDetails": "建筑细节",
     "tourismInfo": "旅游信息",
-    "play_quiz": "开始测验"
+    "play_quiz": "开始测验",
+    "readMore": "阅读更多"
   },
   "quiz": {
     "title": "测验",
@@ -84,7 +85,8 @@
     "openOnMap": "在地图中打开",
     "about": "关于路线",
     "stops": "路线站点",
-    "stopsCount": "站点数：{{count}}"
+    "stopsCount": "站点数：{{count}}",
+    "startRoute": "开始路线"
   },
   "routesScreen": {
     "searchPlaceholder": "搜索路线...",

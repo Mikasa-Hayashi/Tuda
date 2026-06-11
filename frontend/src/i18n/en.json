@@ -31,7 +31,8 @@
     "historyInfo": "History & Info",
     "architectureDetails": "Architecture Details",
     "tourismInfo": "Tourism Info",
-    "play_quiz": "Take the Quiz"
+    "play_quiz": "Take the Quiz",
+    "readMore": "read more"
   },
 
   "quiz": {
@@ -90,7 +91,8 @@
     "openOnMap": "Open on map",
     "about": "About the route",
     "stops": "Route stops",
-    "stopsCount": "Stops: {{count}}"
+    "stopsCount": "Stops: {{count}}",
+    "startRoute": "Start route"
   },
   "routesScreen": {
     "searchPlaceholder": "Search routes...",
