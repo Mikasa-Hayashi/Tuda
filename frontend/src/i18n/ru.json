@@ -159,6 +159,12 @@
 
   "citySelector": {
     "title": "Выберите город",
+    "whereAreWeGoing": "Куда едем?",
+    "whereDesc": "Выберите город. Контент загрузится для офлайн-доступа.",
+    "popular": "Популярные",
+    "selectHint": "Выберите город для продолжения",
+    "detected": "Определено:",
+    "select": "Выбрать",
     "searchPlaceholder": "Поиск города...",
     "objectsCount": "{{count}} объектов",
     "download": "Скачать",

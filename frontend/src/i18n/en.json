@@ -159,6 +159,12 @@
 
   "citySelector": {
     "title": "Choose City",
+    "whereAreWeGoing": "Where are we going?",
+    "whereDesc": "Choose a city. Content will download for offline access.",
+    "popular": "Popular",
+    "selectHint": "Select a city to continue",
+    "detected": "Detected:",
+    "select": "Select",
     "searchPlaceholder": "Search city...",
     "objectsCount": "{{count}} objects",
     "download": "Download",

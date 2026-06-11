@@ -135,6 +135,12 @@
   },
   "citySelector": {
     "title": "选择城市",
+    "whereAreWeGoing": "去哪里？",
+    "whereDesc": "选择城市，内容将下载供离线使用。",
+    "popular": "热门",
+    "selectHint": "请选择城市以继续",
+    "detected": "已检测到：",
+    "select": "选择",
     "searchPlaceholder": "搜索城市...",
     "objectsCount": "{{count}} 个对象",
     "download": "下载",
