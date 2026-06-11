@@ -62,6 +62,14 @@
     "showMore": "展开",
     "showLess": "收起",
     "clearFilters": "清除筛选",
+    "sortTitle": "排序",
+    "sortButton": "排序",
+    "filterTitle": "筛选",
+    "filterReset": "重置",
+    "filterCategory": "分类",
+    "filterApply": "应用",
+    "allObjects": "全部景点",
+    "locationLabel": "当前城市",
     "tags": {
       "top": "精选",
       "museums": "博物馆",
@@ -80,7 +88,37 @@
   },
   "routesScreen": {
     "searchPlaceholder": "搜索路线...",
-    "customRoute": "自定义路线"
+    "customRoute": "自定义路线",
+    "filterAll": "全部",
+    "filterKids": "亲子",
+    "filterMilitary": "军事",
+    "filterWalking": "步行",
+    "sortTitle": "排序",
+    "aiPromo": "★ 新功能",
+    "aiPromoTitle": "AI 定制路线",
+    "aiPromoDesc": "根据您的时间、兴趣和年龄量身定制"
+  },
+
+  "profile": {
+    "title": "我的",
+    "guestTitle": "您是访客",
+    "guestDesc": "登录以收藏景点、记录已访问地点并获取成就。",
+    "loginButton": "登录或创建账户",
+    "settings": "设置",
+    "about": "关于"
+  },
+
+  "about": {
+    "title": "关于应用",
+    "version": "版本",
+    "support": "支持",
+    "rate": "评价应用",
+    "contact": "联系我们",
+    "documents": "文档",
+    "privacy": "隐私政策",
+    "terms": "使用条款",
+    "developers": "开发者",
+    "developerTeam": "由 Tuda 团队用 ❤️ 制作\nIvan — 开发\nKsenia — 内容与用户体验"
   },
   "map": {
     "title": "探索",
@@ -89,7 +127,9 @@
   "tabs": {
     "overview": "概览",
     "map": "地图",
-    "routes": "路线"
+    "routes": "路线",
+    "home": "首页",
+    "profile": "我的"
   },
   "citySelector": {
     "title": "选择城市",

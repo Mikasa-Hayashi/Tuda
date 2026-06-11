@@ -8,21 +8,21 @@ const CARD_WIDTH = (width - 40 - CARD_MARGIN * 2) / 2;
 const CARD_HEIGHT = CARD_WIDTH * 1.3;
 
 function SkeletonCard() {
-  const { isDark } = useTheme();
+  const { colors } = useTheme();
   const shimmer = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
-        Animated.timing(shimmer, { toValue: 1, duration: 800, useNativeDriver: false }),
-        Animated.timing(shimmer, { toValue: 0, duration: 800, useNativeDriver: false }),
+        Animated.timing(shimmer, { toValue: 1, duration: 900, useNativeDriver: false }),
+        Animated.timing(shimmer, { toValue: 0, duration: 900, useNativeDriver: false }),
       ]),
     ).start();
   }, [shimmer]);
 
   const backgroundColor = shimmer.interpolate({
     inputRange: [0, 1],
-    outputRange: isDark ? ['#2C2C2E', '#3C3C3F'] : ['#E5E5EA', '#D1D1D6'],
+    outputRange: [colors.cardElevated, colors.separator],
   });
 
   return <Animated.View style={[styles.card, { backgroundColor }]} />;

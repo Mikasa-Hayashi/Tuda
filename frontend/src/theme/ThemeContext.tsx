@@ -2,46 +2,52 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
 
-export const darkColors = {
-  background: '#000000',
-  card: '#1C1C1E',
-  cardElevated: '#2C2C2E',
-  text: '#FFFFFF',
-  textSecondary: '#EBEBF5CC',
-  textMuted: '#8E8E93',
-  primary: '#FFD60A',
-  primaryDim: '#FFD60A33',
-  border: '#38383A',
-  separator: '#38383A',
-  icon: '#EBEBF5',
-  oppositeText: '#000000',
-  danger: '#FF453A',
-  success: '#30D158',
-  overlay: 'rgba(0,0,0,0.6)',
+export const lightColors = {
+  background: '#F6F2EA',
+  card: '#FFFFFF',
+  cardElevated: '#F3EEE3',
+  text: '#1C1A17',
+  textSecondary: '#5B554C',
+  textMuted: '#9A9388',
+  primary: '#C8782A',
+  primaryDim: '#C8782A22',
+  primaryDeep: '#A65E1B',
+  border: '#E7E0D4',
+  separator: '#E7E0D4',
+  icon: '#5B554C',
+  oppositeText: '#FFFFFF',
+  danger: '#E0563B',
+  success: '#3E7A5E',
+  overlay: 'rgba(20,14,6,0.4)',
+  like: '#E0563B',
+  tabBar: 'rgba(246,242,234,0.95)',
 };
 
-export const lightColors = {
-  background: '#F2F2F7',
-  card: '#FFFFFF',
-  cardElevated: '#EFEFF4',
-  text: '#000000',
-  textSecondary: '#3C3C4399',
-  textMuted: '#6C6C70',
-  primary: '#C47900',
-  primaryDim: '#C4790022',
-  border: '#E5E5EA',
-  separator: '#C6C6C8',
-  icon: '#3C3C43',
+export const darkColors = {
+  background: '#1C1A17',
+  card: '#2A2620',
+  cardElevated: '#332E28',
+  text: '#F6F2EA',
+  textSecondary: '#C8BFB0',
+  textMuted: '#9A9388',
+  primary: '#D8882A',
+  primaryDim: '#D8882A33',
+  primaryDeep: '#E89540',
+  border: '#3D3830',
+  separator: '#3D3830',
+  icon: '#C8BFB0',
   oppositeText: '#FFFFFF',
-  danger: '#FF3B30',
-  success: '#34C759',
-  overlay: 'rgba(0,0,0,0.4)',
+  danger: '#E0563B',
+  success: '#3E7A5E',
+  overlay: 'rgba(0,0,0,0.6)',
+  like: '#E0563B',
+  tabBar: 'rgba(28,26,23,0.95)',
 };
 
 type ThemeType = 'light' | 'dark' | 'system';
 type ThemeContextType = {
   themeMode: ThemeType;
-  colors: typeof darkColors;
+  colors: typeof lightColors;
   setThemeMode: (mode: ThemeType) => void;
   isDark: boolean;
 };
@@ -52,7 +58,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const systemColorScheme = useColorScheme();
-  const [themeMode, setThemeModeState] = useState<ThemeType>('dark');
+  const [themeMode, setThemeModeState] = useState<ThemeType>('system');
 
   useEffect(() => {
     AsyncStorage.getItem(THEME_KEY).then((saved) => {

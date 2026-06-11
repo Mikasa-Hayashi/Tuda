@@ -67,6 +67,14 @@
     "showMore": "Show more",
     "showLess": "Show less",
     "clearFilters": "Clear filters",
+    "sortTitle": "Sort",
+    "sortButton": "Sort",
+    "filterTitle": "Filters",
+    "filterReset": "Reset",
+    "filterCategory": "Category",
+    "filterApply": "Apply",
+    "allObjects": "All objects",
+    "locationLabel": "You're now in",
     "tags": {
       "top": "Top picks",
       "museums": "Museums",
@@ -86,7 +94,37 @@
   },
   "routesScreen": {
     "searchPlaceholder": "Search routes...",
-    "customRoute": "Custom Route"
+    "customRoute": "Custom Route",
+    "filterAll": "All",
+    "filterKids": "For kids",
+    "filterMilitary": "Military",
+    "filterWalking": "Walking",
+    "sortTitle": "Sort",
+    "aiPromo": "★ New",
+    "aiPromoTitle": "Custom AI Route",
+    "aiPromoDesc": "Tailored to your time, interests and age"
+  },
+
+  "profile": {
+    "title": "Profile",
+    "guestTitle": "You're a guest",
+    "guestDesc": "Sign in to save favourites, mark visited spots, and collect achievements.",
+    "loginButton": "Sign in or create account",
+    "settings": "Settings",
+    "about": "About"
+  },
+
+  "about": {
+    "title": "About",
+    "version": "version",
+    "support": "Support",
+    "rate": "Rate the App",
+    "contact": "Contact Us",
+    "documents": "Documents",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "developers": "Developers",
+    "developerTeam": "Made with ❤️ by the Tuda team\nIvan — development\nKsenia — content & UX"
   },
 
   "routes_data": {
@@ -112,7 +150,9 @@
   "tabs": {
     "overview": "Overview",
     "map": "Map",
-    "routes": "Routes"
+    "routes": "Routes",
+    "home": "Home",
+    "profile": "Profile"
   },
 
   "citySelector": {

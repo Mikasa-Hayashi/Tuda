@@ -67,6 +67,14 @@
     "showMore": "Показать ещё",
     "showLess": "Свернуть",
     "clearFilters": "Сбросить фильтры",
+    "sortTitle": "Сортировать",
+    "sortButton": "Сорт.",
+    "filterTitle": "Фильтры",
+    "filterReset": "Сбросить",
+    "filterCategory": "Категория",
+    "filterApply": "Применить",
+    "allObjects": "Все объекты",
+    "locationLabel": "Сейчас вы в",
     "tags": {
       "top": "Топ",
       "museums": "Музеи",
@@ -86,7 +94,37 @@
   },
   "routesScreen": {
     "searchPlaceholder": "Поиск маршрутов...",
-    "customRoute": "Свой маршрут"
+    "customRoute": "Свой маршрут",
+    "filterAll": "Все",
+    "filterKids": "Для детей",
+    "filterMilitary": "Военные",
+    "filterWalking": "Пешком",
+    "sortTitle": "Сортировать",
+    "aiPromo": "★ Новое",
+    "aiPromoTitle": "Свой маршрут с ИИ",
+    "aiPromoDesc": "Под ваше время, интересы и возраст"
+  },
+
+  "profile": {
+    "title": "Профиль",
+    "guestTitle": "Вы пока гость",
+    "guestDesc": "Войдите, чтобы сохранять избранное, отмечать посещённое и собирать достижения.",
+    "loginButton": "Войти или создать аккаунт",
+    "settings": "Настройки",
+    "about": "О приложении"
+  },
+
+  "about": {
+    "title": "О приложении",
+    "version": "версия",
+    "support": "Поддержать",
+    "rate": "Оценить приложение",
+    "contact": "Связаться с нами",
+    "documents": "Документы",
+    "privacy": "Политика конфиденциальности",
+    "terms": "Условия использования",
+    "developers": "Разработчики",
+    "developerTeam": "Сделано с ❤️ командой Туда\nИван — разработка\nКсения — контент и UX"
   },
 
   "routes_data": {
@@ -112,7 +150,9 @@
   "tabs": {
     "overview": "Обзор",
     "map": "Карта",
-    "routes": "Маршруты"
+    "routes": "Маршруты",
+    "home": "Главная",
+    "profile": "Профиль"
   },
 
   "citySelector": {

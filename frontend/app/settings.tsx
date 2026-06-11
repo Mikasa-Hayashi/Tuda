@@ -11,22 +11,22 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { headerStyles } from '@/src/theme/headerStyles';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../src/theme/ThemeContext';
 import { clearMonumentCache, getLocalCacheItemCount } from '@/src/db/monumentRepository';
 import { notifyMonumentCacheCleared } from '@/src/db/monumentCacheEvents';
-import { clearDownloadedCityIds } from '@/src/storage/citySelection';
+import { clearDownloadedCityIds, getSelectedCityId } from '@/src/storage/citySelection';
 import { useTranslation } from 'react-i18next';
+import { CITIES } from '@/src/data/cities';
 
 type ThemeType = 'light' | 'dark' | 'system';
 type LanguageType = 'en' | 'ru' | 'ar' | 'zh';
 
-const THEMES: { id: ThemeType; labelKey: string; icon: React.ComponentProps<typeof Ionicons>['name'] }[] = [
-  { id: 'system', labelKey: 'settings.theme_system', icon: 'phone-portrait-outline' },
-  { id: 'light', labelKey: 'settings.theme_light', icon: 'sunny-outline' },
-  { id: 'dark', labelKey: 'settings.theme_dark', icon: 'moon-outline' },
+const THEMES: { id: ThemeType; label: string; icon: React.ComponentProps<typeof Ionicons>['name'] }[] = [
+  { id: 'system', label: 'settings.theme_system', icon: 'phone-portrait-outline' },
+  { id: 'light', label: 'settings.theme_light', icon: 'sunny-outline' },
+  { id: 'dark', label: 'settings.theme_dark', icon: 'moon-outline' },
 ];
 
 const LANGUAGES: { id: LanguageType; label: string; flag: string }[] = [
@@ -37,61 +37,6 @@ const LANGUAGES: { id: LanguageType; label: string; flag: string }[] = [
 ];
 
 type Colors = ReturnType<typeof useTheme>['colors'];
-
-const SettingsHeader = ({ onBack, colors, t }: { onBack(): void; colors: Colors; t: (key: string) => string }) => (
-  <SafeAreaView edges={['top']} style={[headerStyles.headerContainer, { backgroundColor: colors.background }]}>
-    <View style={headerStyles.headerContent}>
-      <TouchableOpacity onPress={onBack} style={headerStyles.iconButton}>
-        <Ionicons name="chevron-back" size={28} color={colors.text} />
-      </TouchableOpacity>
-      <Text style={[headerStyles.headerTitle, { color: colors.text }]}>{t('settings.title')}</Text>
-      <View style={headerStyles.iconButton} />
-    </View>
-  </SafeAreaView>
-);
-
-const SettingsSection = ({ title, children, colors }: { title: string; children: React.ReactNode; colors: Colors }) => (
-  <View style={styles.section}>
-    <Text style={[styles.sectionTitle, { color: colors.primary }]}>{title}</Text>
-    <View style={[styles.sectionContent, { backgroundColor: colors.card }]}>{children}</View>
-  </View>
-);
-
-const SettingsRow = ({
-  icon,
-  title,
-  value,
-  onPress,
-  isLast,
-  color,
-  colors,
-}: {
-  icon: React.ComponentProps<typeof Ionicons>['name'];
-  title: string;
-  value?: string;
-  onPress: () => void;
-  isLast?: boolean;
-  color?: string;
-  colors: Colors;
-}) => (
-  <TouchableOpacity
-    style={[styles.row, { borderBottomColor: colors.border }, isLast && styles.rowNoBorder]}
-    onPress={onPress}
-    activeOpacity={0.7}
-  >
-    <View style={styles.rowLeft}>
-      <Ionicons name={icon} size={22} color={color ?? colors.icon} style={styles.rowIcon} />
-      <Text style={[styles.rowTitle, { color: color ?? colors.text }]}>{title}</Text>
-    </View>
-    <View style={styles.rowRight}>
-      {value && <Text style={[styles.rowValue, { color: colors.textMuted }]}>{value}</Text>}
-      <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-    </View>
-  </TouchableOpacity>
-);
-
-type ThemeOption = (typeof THEMES)[number];
-type LangOption = (typeof LANGUAGES)[number];
 
 const SelectionModal = ({
   visible,
@@ -106,7 +51,7 @@ const SelectionModal = ({
 }: {
   visible: boolean;
   title: string;
-  options: ThemeOption[] | LangOption[];
+  options: { id: string; label: string; flag?: string; icon?: React.ComponentProps<typeof Ionicons>['name'] }[];
   selectedId: string;
   onClose: () => void;
   onSelect: (id: string) => void;
@@ -115,36 +60,43 @@ const SelectionModal = ({
   t: (key: string) => string;
 }) => (
   <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-    <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onClose}>
+    <TouchableOpacity
+      style={[styles.modalOverlay, { backgroundColor: colors.overlay }]}
+      activeOpacity={1}
+      onPress={onClose}
+    >
       <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+        <View style={[styles.sheetHandle, { backgroundColor: colors.separator }]} />
         <View style={styles.modalHeader}>
           <Text style={[styles.modalTitle, { color: colors.text }]}>{title}</Text>
           <TouchableOpacity onPress={onClose}>
-            <Ionicons name="close" size={24} color={colors.icon} />
+            <Ionicons name="close" size={22} color={colors.icon} />
           </TouchableOpacity>
         </View>
         {options.map((opt) => (
           <TouchableOpacity
             key={opt.id}
-            style={[styles.modalOption, { borderBottomColor: colors.border }]}
+            style={[styles.modalOption, { borderBottomColor: colors.separator }]}
             onPress={() => onSelect(opt.id)}
           >
             <View style={styles.modalOptionLeft}>
               {isLanguage ? (
-                <Text style={styles.flagIcon}>{(opt as LangOption).flag}</Text>
+                <Text style={styles.flagIcon}>{opt.flag}</Text>
               ) : (
                 <Ionicons
-                  name={(opt as ThemeOption).icon}
+                  name={opt.icon as React.ComponentProps<typeof Ionicons>['name']}
                   size={22}
                   color={colors.icon}
                   style={styles.modalOptionIcon}
                 />
               )}
               <Text style={[styles.modalOptionText, { color: colors.text }]}>
-                {isLanguage ? (opt as LangOption).label : t((opt as ThemeOption).labelKey)}
+                {isLanguage ? opt.label : t(opt.label)}
               </Text>
             </View>
-            {selectedId === opt.id && <Ionicons name="checkmark-circle" size={24} color={colors.primary} />}
+            {selectedId === opt.id && (
+              <Ionicons name="checkmark-circle" size={24} color={colors.primary} />
+            )}
           </TouchableOpacity>
         ))}
       </View>
@@ -160,14 +112,19 @@ export default function SettingsScreen() {
   const [themeModalVisible, setThemeModalVisible] = useState(false);
   const [langModalVisible, setLangModalVisible] = useState(false);
   const [cacheItemCount, setCacheItemCount] = useState(0);
+  const [selectedCityName, setSelectedCityName] = useState('');
 
-  const refreshCacheSize = useCallback(() => {
+  const refreshData = useCallback(() => {
     setCacheItemCount(getLocalCacheItemCount());
-  }, []);
+    getSelectedCityId().then((cityId) => {
+      const city = CITIES.find((c) => c.id === cityId);
+      setSelectedCityName(city ? t(`cities.${city.id}`) : '—');
+    });
+  }, [t]);
 
-  useFocusEffect(useCallback(() => { refreshCacheSize(); }, [refreshCacheSize]));
+  useFocusEffect(useCallback(() => { refreshData(); }, [refreshData]));
 
-  const currentThemeLabel = t(THEMES.find((th) => th.id === themeMode)?.labelKey ?? '');
+  const currentThemeLabel = t(THEMES.find((th) => th.id === themeMode)?.label ?? '');
   const currentLangLabel = LANGUAGES.find((l) => l.id === currentLanguage)?.label ?? '';
 
   const handleClearCache = () => {
@@ -180,61 +137,106 @@ export default function SettingsScreen() {
           clearMonumentCache();
           await clearDownloadedCityIds();
           notifyMonumentCacheCleared();
-          refreshCacheSize();
-          Alert.alert(t('settings.clearCacheTitle'), t('settings.cacheCleared'));
+          refreshData();
         },
       },
     ]);
   };
 
+  const Row = ({
+    label,
+    value,
+    onPress,
+    destructive,
+    isLast,
+  }: {
+    label: string;
+    value?: string;
+    onPress: () => void;
+    destructive?: boolean;
+    isLast?: boolean;
+  }) => (
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        styles.row,
+        { borderBottomColor: colors.separator },
+        isLast && styles.rowLast,
+      ]}
+      activeOpacity={0.7}
+    >
+      <Text style={[styles.rowLabel, { color: destructive ? colors.danger : colors.text }]}>
+        {label}
+      </Text>
+      <View style={styles.rowRight}>
+        {value ? (
+          <Text style={[styles.rowValue, { color: colors.textMuted }]}>{value}</Text>
+        ) : null}
+        {!destructive && (
+          <Text style={[styles.rowChevron, { color: colors.textMuted }]}>›</Text>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
-      <SettingsHeader onBack={() => router.back()} colors={colors} t={t} />
-      <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: 40 }}>
-        <SettingsSection title={t('settings.preferences')} colors={colors}>
-          <SettingsRow
-            icon="color-palette-outline"
-            title={t('settings.theme')}
-            value={currentThemeLabel}
-            onPress={() => setThemeModalVisible(true)}
-            colors={colors}
-          />
-          <SettingsRow
-            icon="language-outline"
-            title={t('settings.language')}
+      <SafeAreaView edges={['top']} style={{ backgroundColor: colors.background }}>
+        <View style={styles.navBar}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+            <Ionicons name="chevron-back" size={22} color={colors.text} />
+          </TouchableOpacity>
+          <Text style={[styles.navTitle, { color: colors.text }]}>{t('settings.title')}</Text>
+          <View style={styles.backBtn} />
+        </View>
+      </SafeAreaView>
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={[styles.sectionLabel, { color: colors.primaryDeep }]}>
+          {t('settings.preferences')}
+        </Text>
+        <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <Row
+            label={`🌐 ${t('settings.language')}`}
             value={currentLangLabel}
             onPress={() => setLangModalVisible(true)}
-            isLast
-            colors={colors}
           />
-        </SettingsSection>
-        <SettingsSection title={t('settings.storage')} colors={colors}>
-          <SettingsRow
-            icon="trash-bin-outline"
-            title={t('settings.clearCache')}
+          <Row
+            label={`📍 ${t('citySelector.title')}`}
+            value={selectedCityName}
+            onPress={() => router.push('/select-city')}
+          />
+          <Row
+            label={`🌗 ${t('settings.theme')}`}
+            value={currentThemeLabel}
+            onPress={() => setThemeModalVisible(true)}
+            isLast
+          />
+        </View>
+
+        <Text style={[styles.sectionLabel, { color: colors.primaryDeep }]}>
+          {t('settings.storage')}
+        </Text>
+        <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <Row
+            label={`🗑 ${t('settings.clearCache')}`}
             value={t('settings.cacheItems', { count: cacheItemCount })}
             onPress={handleClearCache}
-            color="#FF4444"
+            destructive
             isLast
-            colors={colors}
           />
-        </SettingsSection>
-        <SettingsSection title={t('settings.about')} colors={colors}>
-          <SettingsRow icon="document-text-outline" title={t('settings.privacy')} onPress={() => {}} colors={colors} />
-          <SettingsRow icon="mail-outline" title={t('settings.contact')} onPress={() => {}} colors={colors} />
-          <SettingsRow icon="star-outline" title={t('settings.rate')} onPress={() => {}} isLast colors={colors} />
-        </SettingsSection>
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>{t('settings.appVersion')} 1.0.0 (Build 42)</Text>
-          <Text style={styles.footerText}>{t('settings.developedWith')} ❤️ {t('settings.developedBy')}</Text>
-          <Text style={styles.footerText}>support@scanapp.com</Text>
         </View>
       </ScrollView>
+
       <SelectionModal
         visible={themeModalVisible}
         title={t('settings.chooseTheme')}
-        options={THEMES}
+        options={THEMES.map((th) => ({ id: th.id, label: th.label, icon: th.icon }))}
         selectedId={themeMode}
         onClose={() => setThemeModalVisible(false)}
         onSelect={(id) => { setThemeMode(id as ThemeType); setThemeModalVisible(false); }}
@@ -258,51 +260,73 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  scrollContainer: { flex: 1, paddingHorizontal: 20 },
-  section: { marginBottom: 30 },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginBottom: 10,
-    marginLeft: 5,
+  navBar: {
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 14,
   },
-  sectionContent: { borderRadius: 16, overflow: 'hidden' },
+  backBtn: { width: 38, height: 38, alignItems: 'center', justifyContent: 'center' },
+  navTitle: { fontSize: 17, fontWeight: '700' },
+  scroll: { flex: 1 },
+  scrollContent: { paddingHorizontal: 18, paddingBottom: 40 },
+  sectionLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    marginBottom: 8,
+    marginTop: 22,
+  },
+  card: {
+    borderRadius: 14,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  rowNoBorder: { borderBottomWidth: 0 },
-  rowLeft: { flexDirection: 'row', alignItems: 'center' },
-  rowIcon: { marginRight: 15 },
-  rowTitle: { fontSize: 16, fontWeight: '500' },
-  rowRight: { flexDirection: 'row', alignItems: 'center' },
-  rowValue: { fontSize: 16, marginRight: 10 },
-  footer: { alignItems: 'center', marginTop: 10 },
-  footerText: { color: '#555', fontSize: 14, marginBottom: 5 },
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' },
-  modalContent: { borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 20, paddingBottom: 40 },
+  rowLast: { borderBottomWidth: 0 },
+  rowLabel: { fontSize: 16 },
+  rowRight: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  rowValue: { fontSize: 15 },
+  rowChevron: { fontSize: 20, fontWeight: '300' },
+  modalOverlay: { flex: 1, justifyContent: 'flex-end' },
+  modalContent: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 20,
+    paddingBottom: 40,
+  },
+  sheetHandle: {
+    width: 38,
+    height: 5,
+    borderRadius: 5,
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
   },
-  modalTitle: { fontSize: 20, fontWeight: 'bold' },
+  modalTitle: { fontSize: 20, fontWeight: '800' },
   modalOption: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 16,
-    borderBottomWidth: 1,
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   modalOptionLeft: { flexDirection: 'row', alignItems: 'center' },
-  modalOptionIcon: { marginRight: 15 },
-  flagIcon: { fontSize: 22, marginRight: 15 },
-  modalOptionText: { fontSize: 18 },
+  modalOptionIcon: { marginRight: 14 },
+  flagIcon: { fontSize: 22, marginRight: 14 },
+  modalOptionText: { fontSize: 17 },
 });

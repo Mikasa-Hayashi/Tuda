@@ -65,6 +65,14 @@
     "showMore": "عرض المزيد",
     "showLess": "عرض أقل",
     "clearFilters": "مسح عوامل التصفية",
+    "sortTitle": "ترتيب",
+    "sortButton": "ترتيب",
+    "filterTitle": "تصفية",
+    "filterReset": "إعادة التعيين",
+    "filterCategory": "الفئة",
+    "filterApply": "تطبيق",
+    "allObjects": "جميع المعالم",
+    "locationLabel": "أنت الآن في",
     "tags": {
       "top": "مميز",
       "museums": "متاحف",
@@ -84,7 +92,37 @@
   },
   "routesScreen": {
     "searchPlaceholder": "ابحث عن المسارات...",
-    "customRoute": "مسار مخصص"
+    "customRoute": "مسار مخصص",
+    "filterAll": "الكل",
+    "filterKids": "للأطفال",
+    "filterMilitary": "عسكري",
+    "filterWalking": "سيرًا",
+    "sortTitle": "ترتيب",
+    "aiPromo": "★ جديد",
+    "aiPromoTitle": "مسارك مع الذكاء الاصطناعي",
+    "aiPromoDesc": "مخصص لوقتك واهتماماتك وعمرك"
+  },
+
+  "profile": {
+    "title": "حسابي",
+    "guestTitle": "أنت ضيف",
+    "guestDesc": "سجّل الدخول لحفظ المفضلة وتحديد الأماكن المُزارة وجمع الإنجازات.",
+    "loginButton": "تسجيل الدخول أو إنشاء حساب",
+    "settings": "الإعدادات",
+    "about": "حول التطبيق"
+  },
+
+  "about": {
+    "title": "حول التطبيق",
+    "version": "الإصدار",
+    "support": "الدعم",
+    "rate": "تقييم التطبيق",
+    "contact": "اتصل بنا",
+    "documents": "المستندات",
+    "privacy": "سياسة الخصوصية",
+    "terms": "شروط الاستخدام",
+    "developers": "المطورون",
+    "developerTeam": "صُنع بـ ❤️ من فريق تودا\nإيفان — التطوير\nكسانيا — المحتوى وتجربة المستخدم"
   },
 
   "map": {
@@ -95,7 +133,9 @@
   "tabs": {
     "overview": "نظرة عامة",
     "map": "الخريطة",
-    "routes": "المسارات"
+    "routes": "المسارات",
+    "home": "الرئيسية",
+    "profile": "حسابي"
   },
 
   "citySelector": {
