@@ -14,6 +14,7 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        sceneStyle: { backgroundColor: colors.background },
         tabBarActiveTintColor: colors.primaryDeep,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: [
