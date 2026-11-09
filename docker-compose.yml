@@ -1,0 +1,79 @@
+# Whole project: docker compose up --build
+#   db        postgres                      :5432
+#   backend   FastAPI (migrates + seeds)   :8000
+#   ml        SigLIP2 recognition          :8001
+#   frontend  Expo dev server (optional)   :8081   -> docker compose --profile app up --build
+# LAN_IP (see .env.example) must be the laptop's IP if a phone connects.
+
+services:
+  db:
+    image: postgres:17
+    container_name: tuda_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tuda
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tuda"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build: ./backend
+    container_name: tuda_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/tuda
+    command: >
+      sh -c "alembic upgrade head &&
+             python -m scripts.import_seed --upsert &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+
+  ml:
+    build: ./ml
+    container_name: tuda_ml
+    restart: unless-stopped
+    volumes:
+      # monument names come from the backend seed; refs/prompts are editable without a rebuild
+      - ./backend/data:/backend/data:ro
+      - ./ml/data:/app/data:ro
+      - ./ml/refs:/app/refs:ro
+      - hf_cache:/root/.cache/huggingface
+    ports:
+      - "8001:8001"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8001/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 120s
+
+  frontend:
+    profiles: ["app"]
+    build: ./frontend
+    container_name: tuda_frontend
+    depends_on:
+      - backend
+      - ml
+    environment:
+      EXPO_PUBLIC_API_BASE_URL: http://${LAN_IP:-localhost}:8000/api
+      EXPO_PUBLIC_ML_URL: http://${LAN_IP:-localhost}:8001
+      REACT_NATIVE_PACKAGER_HOSTNAME: ${LAN_IP:-localhost}
+      CI: "1"
+    ports:
+      - "8081:8081"
+
+volumes:
+  postgres_data:
+  hf_cache:
