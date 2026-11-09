@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+import { HeaderBackButton } from '../src/components/HeaderBackButton';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -21,7 +22,7 @@ function useNativeHeader(title: string) {
       title,
       headerTransparent: true,
       headerShadowVisible: false,
-      headerBackButtonDisplayMode: 'minimal' as const,
+      headerLeft: () => <HeaderBackButton />,
       headerTintColor: colors.text,
       headerTitleStyle: { color: colors.text },
     }),
