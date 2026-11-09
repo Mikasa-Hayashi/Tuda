@@ -1,0 +1,9 @@
+# torch is installed separately (CPU: pip install torch; GPU: see pytorch.org)
+transformers>=4.49
+pillow
+numpy
+fastapi
+uvicorn[standard]
+python-multipart
+sentencepiece
+protobuf

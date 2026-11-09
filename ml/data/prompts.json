@@ -1,0 +1,97 @@
+{
+  "_comment": "Visual English prompts per monument id (ids match backend/data). Be concrete about what is VISIBLE in the frame. Add reference photos to ml/refs/<id>/ to improve weak classes.",
+  "monuments": [
+    {"id": "volgograd_01", "prompts": [
+      "Mamayev Kurgan memorial complex in Volgograd",
+      "a wide view of a hill with a long monumental staircase and a giant white statue on top",
+      "concrete war memorial sculptures on a hill with steps"]},
+    {"id": "volgograd_02", "prompts": [
+      "the Motherland Calls statue in Volgograd",
+      "a giant white concrete statue of a woman raising a sword against the sky",
+      "a monumental female statue holding a sword high"]},
+    {"id": "volgograd_03", "prompts": [
+      "Hall of Military Glory in Volgograd",
+      "a dark round memorial hall with a giant hand holding a torch of flame and names on the walls",
+      "an honor guard soldier standing in a memorial pantheon with red banner mosaics"]},
+    {"id": "volgograd_04", "prompts": [
+      "eternal flame burning at a war memorial in Volgograd",
+      "a flame burning in the center of a stone memorial with a guard of honor",
+      "a war memorial eternal fire in a grey stone hall"]},
+    {"id": "volgograd_05", "prompts": [
+      "Museum-Panorama Battle of Stalingrad building in Volgograd",
+      "a modern museum building with a large cylindrical glass part and a flagpole on the Volga bank",
+      "a big museum building next to the ruins of a burnt brick mill"]},
+    {"id": "volgograd_06", "prompts": [
+      "Gerhardt's Mill in Volgograd",
+      "a ruined red brick mill building left damaged by war with bullet holes",
+      "a burnt-out brick industrial building with broken walls and holes"]},
+    {"id": "volgograd_07", "prompts": [
+      "Pavlov's House in Volgograd",
+      "a four-storey brick apartment building with a long memorial inscription wall at its end",
+      "an old Soviet residential building with a large memorial wall and plaque"]},
+    {"id": "volgograd_08", "enabled": false, "prompts": [
+      "the Memory museum in Volgograd",
+      "a museum building with a memorial exhibition about the Stalingrad battle",
+      "a small museum building with a memorial sign"]},
+    {"id": "volgograd_09", "enabled": false, "prompts": [
+      "Lysaya Gora memorial complex in Volgograd",
+      "a memorial on a bare hill with a monument and a flag",
+      "a war memorial on a hill in the steppe"]},
+    {"id": "volgograd_10", "enabled": false, "prompts": [
+      "Rossoshka Soviet military cemetery",
+      "a large military cemetery with rows of graves and a central obelisk",
+      "a Soviet war memorial cemetery with a monument and green lawn"]},
+    {"id": "volgograd_11", "enabled": false, "prompts": [
+      "German military cemetery at Rossoshka",
+      "a cemetery with rows of dark stone crosses and low stone blocks",
+      "a war cemetery with grey concrete crosses on a lawn"]},
+    {"id": "volgograd_12", "enabled": false, "prompts": [
+      "Soldiers' Field memorial near Volgograd",
+      "a memorial in an open field with a monument and small grave markers",
+      "a war memorial in an open steppe field"]},
+    {"id": "volgograd_13", "prompts": [
+      "Embankment of the 62nd Army in Volgograd",
+      "a wide river embankment with a monumental granite staircase and fountains",
+      "a city embankment with a rotunda and terraced stairs along a river"]},
+    {"id": "volgograd_14", "prompts": [
+      "Alley of Heroes in Volgograd",
+      "a pedestrian alley lined with trees and busts on pedestals",
+      "a boulevard with many bronze portrait busts of heroes"]},
+    {"id": "volgograd_15", "prompts": [
+      "Central Department Store in Volgograd, Paulus headquarters",
+      "a large Soviet neoclassical department store building with columns and a memorial sign",
+      "a big grey city building with tall windows and a commemorative plaque"]},
+    {"id": "volgograd_16", "prompts": [
+      "Lenin monument at the Volga-Don canal",
+      "a gigantic white concrete statue of Lenin standing at the entrance of a canal",
+      "a very tall statue of a standing man in a coat above water locks"]},
+    {"id": "volgograd_17", "prompts": [
+      "Lenin monument on Lenin Square in Volgograd",
+      "a bronze statue of Lenin on a granite pedestal in front of an administrative building",
+      "a statue of a man in a coat on a pedestal in a city square"]},
+    {"id": "volgograd_18", "prompts": [
+      "monument to Prince Grigory Zasekin in Volgograd",
+      "a bronze statue of a medieval Russian nobleman in a long robe and hat",
+      "a historical bronze statue of a boyar with a scroll on a pedestal"]},
+    {"id": "volgograd_19", "enabled": false, "prompts": [
+      "Komsomol monument in Volgograd",
+      "a Soviet sculpture group of young people on a pedestal",
+      "a monument to Komsomol members with figures of young men and women"]},
+    {"id": "volgograd_20", "enabled": false, "prompts": [
+      "monument to the defenders of Tsaritsyn in Volgograd",
+      "a monument to civil war soldiers with a bronze figure and a flag",
+      "a historical soldiers monument with sculpture on a stone base"]}
+  ],
+  "negatives": [
+    "a photo of a person's face",
+    "a selfie of a person",
+    "a photo of a table, laptop and computer keyboard",
+    "a photo of an indoor room, wall or ceiling",
+    "a blurry dark photo",
+    "a photo of a street with cars",
+    "a photo of trees, grass and sky",
+    "a photo of a random everyday object",
+    "a photo of an ordinary building",
+    "a photo of a plain monument or statue"
+  ]
+}
