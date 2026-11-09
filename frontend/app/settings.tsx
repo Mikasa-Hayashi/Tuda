@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Stack, useRouter } from 'expo-router';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
 
@@ -51,6 +51,25 @@ export default function SettingsScreen() {
     }, [refreshData]),
   );
 
+  // Keep the header options referentially stable: a new object on every render makes the
+  // native header reconfigure and can swallow taps on the back button.
+  const headerOptions = useMemo(
+    () => ({
+      headerShown: true,
+      title: t('settings.title'),
+      headerLargeTitle: true,
+      headerLargeTitleShadowVisible: false,
+      headerTransparent: true,
+      headerBlurEffect: 'systemMaterial' as const,
+      headerBackButtonDisplayMode: 'minimal' as const,
+      headerTintColor: colors.primary,
+      headerTitleStyle: { color: colors.text },
+      headerLargeTitleStyle: { color: colors.text },
+      headerLargeStyle: { backgroundColor: colors.background },
+    }),
+    [t, colors.primary, colors.text, colors.background],
+  );
+
   const handleClearCache = () => {
     Alert.alert(t('settings.clearCacheTitle'), t('settings.clearCacheMessage'), [
       { text: t('settings.cancel'), style: 'cancel' },
@@ -70,21 +89,7 @@ export default function SettingsScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
-      <Stack.Screen
-        options={{
-          headerShown: true,
-          title: t('settings.title'),
-          headerLargeTitle: true,
-          headerLargeTitleShadowVisible: false,
-          headerTransparent: true,
-          headerBlurEffect: 'systemMaterial',
-          headerBackButtonDisplayMode: 'minimal',
-          headerTintColor: colors.primary,
-          headerTitleStyle: { color: colors.text },
-          headerLargeTitleStyle: { color: colors.text },
-          headerLargeStyle: { backgroundColor: colors.background },
-        }}
-      />
+      <Stack.Screen options={headerOptions} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.content}
