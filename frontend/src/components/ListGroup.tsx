@@ -1,7 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import { SymbolView, type SFSymbol } from 'expo-symbols';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 
 import { useTheme } from '@/src/theme/ThemeContext';
 
@@ -70,12 +78,16 @@ type RowInjected = {
   onPressChange?: (pressed: boolean) => void;
 };
 
-/** Small caption above a group, like iOS grouped table headers. */
+/** Section title above a group (iOS 26: gray, semibold, not uppercase). */
 export function ListHeader({ children }: { children: string }) {
   const { colors } = useTheme();
-  return (
-    <Text style={[styles.header, { color: colors.textSecondary }]}>{children.toUpperCase()}</Text>
-  );
+  return <Text style={[styles.header, { color: colors.textSecondary }]}>{children}</Text>;
+}
+
+/** Explanatory caption below a group. */
+export function ListFooter({ children }: { children: string }) {
+  const { colors } = useTheme();
+  return <Text style={[styles.footer, { color: colors.textSecondary }]}>{children}</Text>;
 }
 
 /** Standalone separator between custom (non-ListRow) content inside a ListGroup. */
@@ -107,6 +119,11 @@ type RowProps = RowInjected & {
   value?: string;
   /** Red title without chevron, for destructive actions. */
   destructive?: boolean;
+  /** Show a trailing checkmark (single-choice lists). */
+  checked?: boolean;
+  /** Render a native switch instead of value/chevron. */
+  switchValue?: boolean;
+  onSwitchChange?: (value: boolean) => void;
   /** Render the title in the accent color (e.g. "Sign in"). */
   accent?: boolean;
 };
@@ -117,6 +134,9 @@ export function ListRow({
   onPress,
   value,
   destructive,
+  checked,
+  switchValue,
+  onSwitchChange,
   chevron = !!onPress && !destructive,
   accent,
   isLast,
@@ -152,6 +172,16 @@ export function ListRow({
           {value}
         </Text>
       ) : null}
+      {onSwitchChange && (
+        <Switch
+          value={!!switchValue}
+          onValueChange={onSwitchChange}
+          trackColor={{ true: '#34C759' }}
+        />
+      )}
+      {checked && (
+        <SymbolIcon sf="checkmark" fallback="checkmark" size={17} color={colors.primary} weight="semibold" />
+      )}
       {chevron && (
         <SymbolIcon
           sf="chevron.right"
@@ -195,7 +225,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  header: { fontSize: 13, marginHorizontal: 36, marginBottom: 7 },
+  header: { fontSize: 17, fontWeight: '600', marginHorizontal: 40, marginBottom: 8 },
+  footer: { fontSize: 13, lineHeight: 18, marginHorizontal: 40, marginTop: -20, marginBottom: 28 },
   title: { flex: 1, fontSize: 17 },
   value: { flexShrink: 1, fontSize: 17 },
   separator: {

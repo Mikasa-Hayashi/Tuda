@@ -1,39 +1,23 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { Stack, useRouter } from 'expo-router';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
 
-import { ListGroup, ListHeader, ListRow } from '@/src/components/ListGroup';
-import { pickOption } from '@/src/components/pickOption';
+import { ListGroup, ListRow } from '@/src/components/ListGroup';
+import { useNativeHeader } from '@/src/components/useNativeHeader';
 import { CITIES } from '@/src/data/cities';
 import { notifyMonumentCacheCleared } from '@/src/db/monumentCacheEvents';
 import { clearMonumentCache, getLocalCacheItemCount } from '@/src/db/monumentRepository';
+import { LANGUAGES } from '@/src/i18n/languages';
 import { clearDownloadedCityIds, getSelectedCityId } from '@/src/storage/citySelection';
 import { useTheme } from '@/src/theme/ThemeContext';
 
-type ThemeType = 'light' | 'dark' | 'system';
-type LanguageType = 'en' | 'ru' | 'ar' | 'zh';
-
-const THEMES: { id: ThemeType; label: string }[] = [
-  { id: 'system', label: 'settings.theme_system' },
-  { id: 'light', label: 'settings.theme_light' },
-  { id: 'dark', label: 'settings.theme_dark' },
-];
-
-// Language names are shown in their own language, as in iOS.
-const LANGUAGES: { id: LanguageType; label: string }[] = [
-  { id: 'en', label: 'English' },
-  { id: 'ru', label: 'Русский' },
-  { id: 'ar', label: 'العربية' },
-  { id: 'zh', label: '中文' },
-];
-
 export default function SettingsScreen() {
-  const { themeMode, setThemeMode, colors, isDark } = useTheme();
+  const { themeMode, colors, isDark } = useTheme();
   const router = useRouter();
   const { t, i18n } = useTranslation();
-  const currentLanguage = i18n.language as LanguageType;
+  const headerOptions = useNativeHeader(t('settings.title'));
   const [cacheItemCount, setCacheItemCount] = useState(0);
   const [selectedCityName, setSelectedCityName] = useState('');
 
@@ -49,25 +33,6 @@ export default function SettingsScreen() {
     useCallback(() => {
       refreshData();
     }, [refreshData]),
-  );
-
-  // Keep the header options referentially stable: a new object on every render makes the
-  // native header reconfigure and can swallow taps on the back button.
-  const headerOptions = useMemo(
-    () => ({
-      headerShown: true,
-      title: t('settings.title'),
-      headerLargeTitle: true,
-      headerLargeTitleShadowVisible: false,
-      headerTransparent: true,
-      headerBlurEffect: 'systemMaterial' as const,
-      headerBackButtonDisplayMode: 'minimal' as const,
-      headerTintColor: colors.primary,
-      headerTitleStyle: { color: colors.text },
-      headerLargeTitleStyle: { color: colors.text },
-      headerLargeStyle: { backgroundColor: colors.background },
-    }),
-    [t, colors.primary, colors.text, colors.background],
   );
 
   const handleClearCache = () => {
@@ -86,6 +51,11 @@ export default function SettingsScreen() {
     ]);
   };
 
+  const themeLabel =
+    themeMode === 'system'
+      ? t('settings.automatic')
+      : t(themeMode === 'light' ? 'settings.theme_light' : 'settings.theme_dark');
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
@@ -95,20 +65,18 @@ export default function SettingsScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <ListHeader>{t('settings.preferences')}</ListHeader>
         <ListGroup style={styles.group}>
           <ListRow
             title={t('settings.language')}
             icon={{ sf: 'globe', fallback: 'globe', color: '#007AFF' }}
-            value={LANGUAGES.find((l) => l.id === currentLanguage)?.label}
-            onPress={() =>
-              pickOption({
-                title: t('settings.chooseLanguage'),
-                options: LANGUAGES,
-                cancelLabel: t('settings.cancel'),
-                onSelect: (id) => i18n.changeLanguage(id),
-              })
-            }
+            value={LANGUAGES.find((l) => l.id === i18n.language)?.label}
+            onPress={() => router.push('/settings-language')}
+          />
+          <ListRow
+            title={t('settings.appearance')}
+            icon={{ sf: 'circle.lefthalf.filled', fallback: 'contrast', color: '#5856D6' }}
+            value={themeLabel}
+            onPress={() => router.push('/settings-appearance')}
           />
           <ListRow
             title={t('citySelector.title')}
@@ -116,22 +84,8 @@ export default function SettingsScreen() {
             value={selectedCityName}
             onPress={() => router.push('/select-city')}
           />
-          <ListRow
-            title={t('settings.theme')}
-            icon={{ sf: 'circle.lefthalf.filled', fallback: 'contrast', color: '#5856D6' }}
-            value={t(THEMES.find((th) => th.id === themeMode)?.label ?? '')}
-            onPress={() =>
-              pickOption({
-                title: t('settings.chooseTheme'),
-                options: THEMES.map((th) => ({ id: th.id, label: t(th.label) })),
-                cancelLabel: t('settings.cancel'),
-                onSelect: (id) => setThemeMode(id as ThemeType),
-              })
-            }
-          />
         </ListGroup>
 
-        <ListHeader>{t('settings.storage')}</ListHeader>
         <ListGroup style={styles.group}>
           <ListRow
             title={t('settings.clearCache')}
@@ -147,6 +101,6 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  content: { paddingTop: 8, paddingBottom: 40 },
+  content: { paddingTop: 12, paddingBottom: 40 },
   group: { marginBottom: 28 },
 });

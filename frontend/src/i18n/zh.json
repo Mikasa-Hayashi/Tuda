@@ -1,5 +1,8 @@
 {
   "settings": {
+    "appearance": "外观",
+    "automatic": "自动",
+    "automaticFooter": "应用外观会自动匹配设备的浅色或深色模式。",
     "title": "设置",
     "preferences": "偏好",
     "theme": "主题",

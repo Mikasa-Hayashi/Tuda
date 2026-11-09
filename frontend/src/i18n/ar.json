@@ -1,5 +1,8 @@
 {
   "settings": {
+    "appearance": "المظهر",
+    "automatic": "تلقائي",
+    "automaticFooter": "يتطابق مظهر التطبيق تلقائيًا مع الوضع الفاتح أو الداكن للجهاز.",
     "title": "الإعدادات",
     "preferences": "التفضيلات",
     "theme": "المظهر",
