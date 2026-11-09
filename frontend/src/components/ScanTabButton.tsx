@@ -24,7 +24,7 @@ export function ScanTabButton({ label }: Props) {
         }}
         style={({ pressed }) => [
           styles.button,
-          { backgroundColor: colors.primary, shadowColor: colors.primary },
+          { backgroundColor: colors.primary },
           pressed && styles.pressed,
         ]}
       >
@@ -43,10 +43,12 @@ const styles = StyleSheet.create({
     marginTop: -18,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
-    elevation: 6,
+    // iOS-style neutral shadow, no colored glow
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
   },
   pressed: { opacity: 0.85, transform: [{ scale: 0.96 }] },
 });
