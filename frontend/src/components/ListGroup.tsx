@@ -11,7 +11,7 @@ const ICON_GAP = 14;
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
-/** SF SymbolIcon on iOS, Ionicons fallback elsewhere. */
+/** SF Symbol on iOS, Ionicons fallback elsewhere. */
 export function SymbolIcon({
   sf,
   fallback,
@@ -70,6 +70,14 @@ type RowInjected = {
   onPressChange?: (pressed: boolean) => void;
 };
 
+/** Small caption above a group, like iOS grouped table headers. */
+export function ListHeader({ children }: { children: string }) {
+  const { colors } = useTheme();
+  return (
+    <Text style={[styles.header, { color: colors.textSecondary }]}>{children.toUpperCase()}</Text>
+  );
+}
+
 /** Standalone separator between custom (non-ListRow) content inside a ListGroup. */
 export function ListDivider({
   inset = H_PAD,
@@ -95,6 +103,10 @@ type RowProps = RowInjected & {
   icon?: { sf: SFSymbol; fallback: IconName; color: string };
   onPress?: () => void;
   chevron?: boolean;
+  /** Secondary text on the right, e.g. the current selection. */
+  value?: string;
+  /** Red title without chevron, for destructive actions. */
+  destructive?: boolean;
   /** Render the title in the accent color (e.g. "Sign in"). */
   accent?: boolean;
 };
@@ -103,7 +115,9 @@ export function ListRow({
   title,
   icon,
   onPress,
-  chevron = !!onPress,
+  value,
+  destructive,
+  chevron = !!onPress && !destructive,
   accent,
   isLast,
   hideSeparator,
@@ -125,11 +139,19 @@ export function ListRow({
         </View>
       )}
       <Text
-        style={[styles.title, { color: accent ? colors.primary : colors.text }]}
+        style={[
+          styles.title,
+          { color: destructive ? colors.danger : accent ? colors.primary : colors.text },
+        ]}
         numberOfLines={1}
       >
         {title}
       </Text>
+      {value ? (
+        <Text style={[styles.value, { color: colors.textSecondary }]} numberOfLines={1}>
+          {value}
+        </Text>
+      ) : null}
       {chevron && (
         <SymbolIcon
           sf="chevron.right"
@@ -173,7 +195,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  header: { fontSize: 13, marginHorizontal: 36, marginBottom: 7 },
   title: { flex: 1, fontSize: 17 },
+  value: { flexShrink: 1, fontSize: 17 },
   separator: {
     position: 'absolute',
     right: 20,
