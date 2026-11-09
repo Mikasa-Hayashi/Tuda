@@ -5,9 +5,9 @@ import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } fro
 
 import { useTheme } from '@/src/theme/ThemeContext';
 
-const BADGE = 29;
-const H_PAD = 16;
-const ICON_GAP = 12;
+const BADGE = 28;
+const H_PAD = 18;
+const ICON_GAP = 14;
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -112,17 +112,17 @@ export function ListRow({ title, icon, onPress, chevron = !!onPress, accent, isL
 
 const styles = StyleSheet.create({
   group: {
-    marginHorizontal: 16,
-    borderRadius: 12,
+    marginHorizontal: 20,
+    borderRadius: 22,
     overflow: 'hidden',
   },
   row: {
-    minHeight: 44,
+    minHeight: 52,
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: H_PAD,
-    paddingRight: 14,
-    paddingVertical: 7,
+    paddingRight: H_PAD,
+    paddingVertical: 8,
     gap: ICON_GAP,
   },
   pressed: { backgroundColor: 'rgba(128,128,128,0.18)' },
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   title: { flex: 1, fontSize: 17 },
   separator: {
     position: 'absolute',
-    right: 0,
+    right: 20,
     bottom: 0,
     height: StyleSheet.hairlineWidth,
   },

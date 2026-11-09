@@ -27,7 +27,7 @@ export default function ProfileTabScreen() {
             <SymbolIcon
               sf="person.crop.circle.fill"
               fallback="person-circle"
-              size={56}
+              size={60}
               color={colors.textMuted}
             />
             <View style={styles.guestText}>
@@ -70,15 +70,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 16,
   },
-  group: { marginBottom: 20 },
+  group: { marginBottom: 34 },
   guest: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
   },
-  divider: { height: StyleSheet.hairlineWidth, marginLeft: 16 },
+  divider: { height: StyleSheet.hairlineWidth, marginLeft: 92, marginRight: 20 },
   guestText: { flex: 1 },
   guestTitle: { fontSize: 20, fontWeight: '600' },
   guestDesc: { fontSize: 13, lineHeight: 18, marginTop: 2 },
