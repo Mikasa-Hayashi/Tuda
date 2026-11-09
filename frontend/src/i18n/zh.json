@@ -135,6 +135,7 @@
   },
 
   "tabs": {
+    "scan": "扫描",
     "overview": "概览",
     "map": "地图",
     "routes": "路线",

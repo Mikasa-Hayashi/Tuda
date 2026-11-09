@@ -152,6 +152,7 @@
   },
 
   "tabs": {
+    "scan": "Scan",
     "overview": "Overview",
     "map": "Map",
     "routes": "Routes",

@@ -62,8 +62,8 @@ export default function AudioGuideScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1C1A17' },
-  safeArea: { backgroundColor: '#1C1A17' },
+  container: { flex: 1, backgroundColor: '#1C1C1E' },
+  safeArea: { backgroundColor: '#1C1C1E' },
   navBar: {
     height: 50,
     flexDirection: 'row',
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     width: 180,
     height: 180,
     borderRadius: 24,
-    backgroundColor: '#C8782A',
+    backgroundColor: '#007AFF',
     marginBottom: 24,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 20 },
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   progressFill: {
     width: '42%',
     height: '100%',
-    backgroundColor: '#C8782A',
+    backgroundColor: '#007AFF',
     borderRadius: 4,
   },
   timeRow: {

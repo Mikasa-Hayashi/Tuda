@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   aiCard: {
     marginHorizontal: 18,
     borderRadius: 18,
-    backgroundColor: '#C8782A',
+    backgroundColor: '#007AFF',
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',

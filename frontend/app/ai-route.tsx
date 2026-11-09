@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
   },
   topicPillText: { fontSize: 14, fontWeight: '600' },
   resultHeader: {
-    backgroundColor: '#C8782A',
+    backgroundColor: '#007AFF',
     borderRadius: 18,
     padding: 18,
     marginBottom: 18,

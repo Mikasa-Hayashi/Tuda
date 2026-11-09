@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#C8782A',
+    backgroundColor: '#007AFF',
   },
   logo: { fontSize: 64, color: '#FFFFFF', lineHeight: 72 },
   title: {

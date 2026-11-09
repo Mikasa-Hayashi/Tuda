@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   guestCard: {
-    backgroundColor: '#C8782A',
+    backgroundColor: '#007AFF',
     borderRadius: 20,
     padding: 22,
     marginBottom: 18,
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loginButtonText: {
-    color: '#1C1A17',
+    color: '#007AFF',
     fontSize: 15,
     fontWeight: '700',
   },

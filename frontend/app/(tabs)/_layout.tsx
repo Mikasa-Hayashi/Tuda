@@ -3,6 +3,7 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
+import { ScanTabButton } from '@/src/components/ScanTabButton';
 import { useTheme } from '@/src/theme/ThemeContext';
 
 export default function TabsLayout() {
@@ -43,6 +44,14 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map-outline" size={size} color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="scan"
+        options={{
+          title: t('tabs.scan'),
+          tabBarLabel: () => null,
+          tabBarButton: () => <ScanTabButton label={t('tabs.scan')} />,
         }}
       />
       <Tabs.Screen
