@@ -1,15 +1,10 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { ListGroup, ListRow, SymbolIcon } from '@/src/components/ListGroup';
 import { useTheme } from '@/src/theme/ThemeContext';
 
 export default function ProfileTabScreen() {
@@ -22,46 +17,44 @@ export default function ProfileTabScreen() {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <ScrollView
-        contentContainerStyle={[styles.scroll, { paddingTop: insets.top + 12 }]}
+        contentContainerStyle={[styles.scroll, { paddingTop: insets.top + 8 }]}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={[styles.screenTitle, { color: colors.text }]}>{t('profile.title')}</Text>
+        <Text style={[styles.largeTitle, { color: colors.text }]}>{t('profile.title')}</Text>
 
-        <View style={styles.guestCard}>
-          <Text style={styles.guestTitle}>{t('profile.guestTitle')}</Text>
-          <Text style={styles.guestDesc}>{t('profile.guestDesc')}</Text>
-          <TouchableOpacity style={styles.loginButton} activeOpacity={0.85}>
-            <Text style={styles.loginButtonText}>{t('profile.loginButton')}</Text>
-          </TouchableOpacity>
-        </View>
+        <ListGroup style={styles.group}>
+          <View style={styles.guest}>
+            <SymbolIcon
+              sf="person.crop.circle.fill"
+              fallback="person-circle"
+              size={56}
+              color={colors.textMuted}
+            />
+            <View style={styles.guestText}>
+              <Text style={[styles.guestTitle, { color: colors.text }]}>
+                {t('profile.guestTitle')}
+              </Text>
+              <Text style={[styles.guestDesc, { color: colors.textSecondary }]}>
+                {t('profile.guestDesc')}
+              </Text>
+            </View>
+          </View>
+          <View style={[styles.divider, { backgroundColor: colors.separator }]} />
+          <ListRow title={t('profile.loginButton')} accent />
+        </ListGroup>
 
-        <View
-          style={[
-            styles.actionsCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
-          ]}
-        >
-          <TouchableOpacity
+        <ListGroup style={styles.group}>
+          <ListRow
+            title={t('profile.settings')}
+            icon={{ sf: 'gearshape.fill', fallback: 'settings', color: '#8E8E93' }}
             onPress={() => router.push('/settings')}
-            style={[styles.actionRow, { borderBottomColor: colors.separator }]}
-            activeOpacity={0.7}
-          >
-            <Text style={[styles.actionText, { color: colors.text }]}>
-              ⚙ {t('profile.settings')}
-            </Text>
-            <Text style={[styles.actionChevron, { color: colors.textMuted }]}>›</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          />
+          <ListRow
+            title={t('profile.about')}
+            icon={{ sf: 'info', fallback: 'information', color: '#007AFF' }}
             onPress={() => router.push('/about')}
-            style={styles.actionRow}
-            activeOpacity={0.7}
-          >
-            <Text style={[styles.actionText, { color: colors.text }]}>
-              ℹ️ {t('profile.about')}
-            </Text>
-            <Text style={[styles.actionChevron, { color: colors.textMuted }]}>›</Text>
-          </TouchableOpacity>
-        </View>
+          />
+        </ListGroup>
       </ScrollView>
     </View>
   );
@@ -69,60 +62,24 @@ export default function ProfileTabScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  scroll: { paddingHorizontal: 18, paddingBottom: 40 },
-  screenTitle: {
-    fontSize: 26,
-    fontWeight: '800',
-    letterSpacing: -0.5,
-    marginBottom: 18,
-  },
-  guestCard: {
-    backgroundColor: '#007AFF',
-    borderRadius: 20,
-    padding: 22,
-    marginBottom: 18,
-    shadowColor: '#8E4A12',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 20,
-    elevation: 5,
-  },
-  guestTitle: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '800',
-    marginBottom: 6,
-  },
-  guestDesc: {
-    color: 'rgba(255,255,255,0.88)',
-    fontSize: 14,
-    lineHeight: 21,
-    marginBottom: 18,
-  },
-  loginButton: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 13,
-    paddingVertical: 13,
-    alignItems: 'center',
-  },
-  loginButtonText: {
-    color: '#007AFF',
-    fontSize: 15,
+  scroll: { paddingBottom: 40 },
+  largeTitle: {
+    fontSize: 34,
     fontWeight: '700',
+    letterSpacing: 0.4,
+    paddingHorizontal: 20,
+    marginBottom: 16,
   },
-  actionsCard: {
-    borderRadius: 14,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  actionRow: {
+  group: { marginBottom: 20 },
+  guest: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 14,
+    gap: 14,
     paddingHorizontal: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingVertical: 14,
   },
-  actionText: { fontSize: 16 },
-  actionChevron: { fontSize: 20, fontWeight: '300' },
+  divider: { height: StyleSheet.hairlineWidth, marginLeft: 16 },
+  guestText: { flex: 1 },
+  guestTitle: { fontSize: 20, fontWeight: '600' },
+  guestDesc: { fontSize: 13, lineHeight: 18, marginTop: 2 },
 });
