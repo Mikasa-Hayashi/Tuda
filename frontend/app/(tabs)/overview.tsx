@@ -17,7 +17,6 @@ import {
 import { MONUMENT_TAG_IDS } from '@/src/data/monumentFilterMeta';
 import { onMonumentCacheCleared } from '@/src/db/monumentCacheEvents';
 import {
-  fetchMonumentDetail,
   fetchMonumentsPage,
   searchMonumentsRemote,
   syncCityData,
@@ -34,6 +33,7 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
   Pressable,
+  RefreshControl,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -261,6 +261,8 @@ export default function OverviewTabScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
+  const loadNextPageRef = useRef<(cityId: string, force?: boolean) => Promise<void>>(async () => {});
+  const isSyncRunningRef = useRef(false);
   useScrollToTop(scrollRef);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -277,6 +279,7 @@ export default function OverviewTabScreen() {
   const [nextOffset, setNextOffset] = useState(0);
   const [searchResults, setSearchResults] = useState<MonumentPreview[] | null>(null);
   const [isOffline, setIsOffline] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const lang = i18n.language;
 
@@ -319,14 +322,6 @@ export default function OverviewTabScreen() {
     });
   }, [lang, refreshLocalMonuments]);
 
-  const storeMonumentDetails = useCallback(async (monumentIds: string[]) => {
-    const details = await Promise.all(monumentIds.map((id) => fetchMonumentDetail(id)));
-    const translations = details.flatMap((d) =>
-      d.translations.map((tr) => ({ ...tr, monument_id: d.id })),
-    );
-    upsertMonumentTranslationsFromApi(translations);
-  }, []);
-
   const runSync = useCallback(async (cityId: string, sinceIso: string) => {
     const payload = await syncCityData(cityId, sinceIso);
     upsertMonumentsFromApi(cityId, payload.monuments);
@@ -346,7 +341,10 @@ export default function OverviewTabScreen() {
         const pageSize = 20;
         const page = await fetchMonumentsPage(cityId, pageSize, nextOffset);
         upsertMonumentsFromApi(cityId, page);
-        await storeMonumentDetails(page.map((m) => m.id));
+        const pageTranslations = page.flatMap((m) => m.translations ?? []);
+        if (pageTranslations.length > 0) {
+          upsertMonumentTranslationsFromApi(pageTranslations);
+        }
         const updatedOffset = nextOffset + page.length;
         setNextOffset(updatedOffset);
         setSyncMeta(cityId, 'next_offset', String(updatedOffset));
@@ -356,20 +354,46 @@ export default function OverviewTabScreen() {
         setIsLoadingMore(false);
       }
     },
-    [hasMore, isLoadingMore, lang, nextOffset, refreshLocalMonuments, storeMonumentDetails],
+    [hasMore, isLoadingMore, lang, nextOffset, refreshLocalMonuments],
   );
+  loadNextPageRef.current = loadNextPage;
+
+  const handleRefresh = useCallback(async () => {
+    if (!selectedCityId || isSyncRunningRef.current) return;
+    isSyncRunningRef.current = true;
+    setIsRefreshing(true);
+    setIsOffline(false);
+    try {
+      const syncSince = getSyncMeta(selectedCityId, 'last_sync') ?? '1970-01-01T00:00:00.000Z';
+      await runSync(selectedCityId, syncSince);
+      refreshLocalMonuments(selectedCityId, lang);
+    } catch {
+      setIsOffline(getMonumentCountByCity(selectedCityId) === 0);
+      refreshLocalMonuments(selectedCityId, lang);
+    } finally {
+      setIsRefreshing(false);
+      isSyncRunningRef.current = false;
+    }
+  }, [lang, refreshLocalMonuments, runSync, selectedCityId]);
 
   useFocusEffect(
     useCallback(() => {
       const loadCityAndSync = async () => {
+        if (isSyncRunningRef.current) return;
+        isSyncRunningRef.current = true;
+
         const cityId = await getSelectedCityId();
         setSelectedCityId(cityId);
         const city = CITIES.find((c) => c.id === cityId) ?? null;
         setSelectedCityName(city ? t(`cities.${city.id}`) : null);
         refreshLocalMonuments(cityId, lang);
-        if (!cityId) return;
+        if (!cityId) {
+          isSyncRunningRef.current = false;
+          return;
+        }
 
-        setIsBootstrapping(true);
+        const preCount = getMonumentCountByCity(cityId);
+        setIsBootstrapping(preCount === 0);
         setIsOffline(false);
         try {
           const syncSince = getSyncMeta(cityId, 'last_sync') ?? '1970-01-01T00:00:00.000Z';
@@ -381,7 +405,7 @@ export default function OverviewTabScreen() {
 
           if (localCount === 0) {
             setHasMore(true);
-            await loadNextPage(cityId, true);
+            await loadNextPageRef.current(cityId, true);
             await markCityDownloaded(cityId);
           } else {
             refreshLocalMonuments(cityId, lang);
@@ -391,10 +415,11 @@ export default function OverviewTabScreen() {
           refreshLocalMonuments(cityId, lang);
         } finally {
           setIsBootstrapping(false);
+          isSyncRunningRef.current = false;
         }
       };
       loadCityAndSync();
-    }, [lang, loadNextPage, refreshLocalMonuments, runSync, t]),
+    }, [lang, refreshLocalMonuments, runSync, t]),
   );
 
   useEffect(() => {
@@ -454,6 +479,13 @@ export default function OverviewTabScreen() {
         keyboardShouldPersistTaps="handled"
         onScroll={onScroll}
         scrollEventThrottle={200}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            tintColor={colors.primary}
+          />
+        }
       >
         <View style={styles.cityHeader}>
           <Text style={[styles.cityLabel, { color: colors.textMuted }]}>
@@ -675,7 +707,7 @@ const styles = StyleSheet.create({
     height: CARD_WIDTH * 1.3,
     borderRadius: 16,
     overflow: 'hidden',
-    backgroundColor: '#E7E0D4',
+    backgroundColor: '#E5E5EA',
   },
   cardImage: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
   cardGradient: {

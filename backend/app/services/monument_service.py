@@ -44,6 +44,7 @@ async def get_monument_by_id(
         select(Monument)
         .options(
             selectinload(Monument.translations),
+            selectinload(Monument.field_configs),
         )
         .where(
             Monument.id == monument_id,

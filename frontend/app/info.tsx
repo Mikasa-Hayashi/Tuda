@@ -1,9 +1,15 @@
-import { getMonumentById } from '@/src/db/monumentRepository';
+import {
+  getMonumentById,
+  upsertMonumentFieldConfigsFromApi,
+  upsertMonumentTranslationsFromApi,
+} from '@/src/db/monumentRepository';
+import { fetchMonumentDetail } from '@/src/services/monumentsApi';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   Pressable,
@@ -16,6 +22,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../src/theme/ThemeContext';
+import type { Monument } from '../src/db/monumentRepository';
 
 export default function MonumentDetailScreen() {
   const { colors } = useTheme();
@@ -23,8 +30,38 @@ export default function MonumentDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t, i18n } = useTranslation();
   const [descExpanded, setDescExpanded] = useState(false);
+  const [monument, setMonument] = useState<Monument | null>(() =>
+    getMonumentById(id ?? '', i18n.language),
+  );
+  const [isFetching, setIsFetching] = useState(false);
 
-  const monument = getMonumentById(id ?? '', i18n.language);
+  useEffect(() => {
+    if (monument?.name) return;
+    setIsFetching(true);
+    fetchMonumentDetail(id ?? '')
+      .then((detail) => {
+        upsertMonumentTranslationsFromApi(detail.translations);
+        if (detail.field_configs?.length) {
+          upsertMonumentFieldConfigsFromApi(detail.field_configs);
+        }
+        setMonument(getMonumentById(id ?? '', i18n.language));
+      })
+      .catch(() => {})
+      .finally(() => setIsFetching(false));
+  }, [id, i18n.language]);
+
+  if (!monument && isFetching) {
+    return (
+      <View style={[styles.container, styles.centered, { backgroundColor: colors.background }]}>
+        <SafeAreaView edges={['top']} style={styles.fetchingNav}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.floatBtn}>
+            <Ionicons name="chevron-back" size={20} color={colors.text} />
+          </TouchableOpacity>
+        </SafeAreaView>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
 
   if (!monument) {
     return (
@@ -183,6 +220,8 @@ const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  centered: { alignItems: 'center', justifyContent: 'center' },
+  fetchingNav: { position: 'absolute', top: 0, left: 14 },
   scrollContent: { paddingBottom: 40 },
   heroWrap: { position: 'relative', height: 300 },
   heroImage: { width, height: 300 },

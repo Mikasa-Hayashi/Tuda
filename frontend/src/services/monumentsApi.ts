@@ -7,6 +7,7 @@ export type ApiMonument = {
   lon: number;
   image_url: string;
   sort_order: number;
+  translations?: ApiMonumentTranslation[];
 };
 
 export type ApiMonumentTranslation = {
@@ -65,6 +66,7 @@ export type ApiMonumentDetail = {
   image_url: string;
   sort_order: number;
   translations: ApiMonumentTranslation[];
+  field_configs: ApiMonumentFieldConfig[];
 };
 
 type ApiSearchItem = {

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.schemas.monument import MonumentResponse, MonumentSearchResponse
+from app.schemas.monument import MonumentListItemResponse, MonumentResponse, MonumentSearchResponse
 from app.schemas.monument_detail import MonumentDetailResponse
 from app.services.monument_service import (
     get_monument_by_city,
@@ -75,7 +75,7 @@ async def monument_detail(
 
 @router.get(
     "",
-    response_model=list[MonumentResponse],
+    response_model=list[MonumentListItemResponse],
 )
 async def monuments_list(
     limit: int = Query(20, ge=1, le=100),

@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from app.schemas.monument_detail import MonumentTranslationResponse
+
 
 class MonumentResponse(BaseModel):
     id: str
@@ -12,6 +14,10 @@ class MonumentResponse(BaseModel):
     model_config = {
         "from_attributes": True,
     }
+
+
+class MonumentListItemResponse(MonumentResponse):
+    translations: list[MonumentTranslationResponse] = []
 
 
 class MonumentSearchResponse(BaseModel):

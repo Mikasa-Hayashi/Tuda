@@ -173,8 +173,8 @@ export function getMonumentById(id: string, lang: string): Monument | null {
     lon: base.lon,
     imageUrl: base.image_url,
     name: translations.get('name') ?? '',
-    location: translations.get('location') ?? '',
-    description: translations.get('description') ?? '',
+    location: translations.get('address') ?? '',
+    description: translations.get('short_description') ?? '',
     details,
     visitors,
   };

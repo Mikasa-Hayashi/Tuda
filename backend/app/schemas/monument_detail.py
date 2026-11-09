@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from app.schemas.monument_field_config import MonumentFieldConfigResponse
+
 
 class MonumentTranslationResponse(BaseModel):
     monument_id: str
@@ -21,6 +23,7 @@ class MonumentDetailResponse(BaseModel):
     sort_order: int
 
     translations: list[MonumentTranslationResponse]
+    field_configs: list[MonumentFieldConfigResponse] = []
 
     model_config = {
         "from_attributes": True,
