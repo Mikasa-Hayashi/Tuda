@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ListGroup, ListRow, SymbolIcon } from '@/src/components/ListGroup';
+import { ListDivider, ListGroup, ListRow, SymbolIcon } from '@/src/components/ListGroup';
 import { useTheme } from '@/src/theme/ThemeContext';
 
 export default function ProfileTabScreen() {
@@ -39,7 +39,7 @@ export default function ProfileTabScreen() {
               </Text>
             </View>
           </View>
-          <View style={[styles.divider, { backgroundColor: colors.separator }]} />
+          <ListDivider inset={92} />
           <ListRow title={t('profile.loginButton')} accent />
         </ListGroup>
 
@@ -78,7 +78,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 16,
   },
-  divider: { height: StyleSheet.hairlineWidth, marginLeft: 92, marginRight: 20 },
   guestText: { flex: 1 },
   guestTitle: { fontSize: 20, fontWeight: '600' },
   guestDesc: { fontSize: 13, lineHeight: 18, marginTop: 2 },

@@ -47,18 +47,49 @@ export function ListGroup({
 }) {
   const { colors } = useTheme();
   const rows = React.Children.toArray(children).filter(Boolean);
+  const [pressed, setPressed] = React.useState<number | null>(null);
   return (
     <View style={[styles.group, { backgroundColor: colors.card }, style]}>
       {rows.map((row, i) =>
-        React.isValidElement<{ isLast?: boolean }>(row)
-          ? React.cloneElement(row, { isLast: i === rows.length - 1 })
+        React.isValidElement<RowInjected>(row)
+          ? React.cloneElement(row, {
+              isLast: i === rows.length - 1,
+              // iOS hides the separators around a highlighted row
+              hideSeparator: pressed === i || pressed === i + 1,
+              onPressChange: (isPressed: boolean) => setPressed(isPressed ? i : null),
+            })
           : row,
       )}
     </View>
   );
 }
 
-type RowProps = {
+type RowInjected = {
+  isLast?: boolean;
+  hideSeparator?: boolean;
+  onPressChange?: (pressed: boolean) => void;
+};
+
+/** Standalone separator between custom (non-ListRow) content inside a ListGroup. */
+export function ListDivider({
+  inset = H_PAD,
+  hideSeparator,
+}: RowInjected & { inset?: number }) {
+  const { colors } = useTheme();
+  if (hideSeparator) return <View style={{ height: StyleSheet.hairlineWidth }} />;
+  return (
+    <View
+      style={{
+        height: StyleSheet.hairlineWidth,
+        marginLeft: inset,
+        marginRight: 20,
+        backgroundColor: colors.separator,
+      }}
+    />
+  );
+}
+
+type RowProps = RowInjected & {
   title: string;
   /** Colored rounded-square badge with a white glyph, like iOS Settings. */
   icon?: { sf: SFSymbol; fallback: IconName; color: string };
@@ -66,17 +97,27 @@ type RowProps = {
   chevron?: boolean;
   /** Render the title in the accent color (e.g. "Sign in"). */
   accent?: boolean;
-  isLast?: boolean;
 };
 
-export function ListRow({ title, icon, onPress, chevron = !!onPress, accent, isLast }: RowProps) {
-  const { colors } = useTheme();
+export function ListRow({
+  title,
+  icon,
+  onPress,
+  chevron = !!onPress,
+  accent,
+  isLast,
+  hideSeparator,
+  onPressChange,
+}: RowProps) {
+  const { colors, isDark } = useTheme();
   return (
     <Pressable
       accessibilityRole={onPress ? 'button' : undefined}
       disabled={!onPress}
       onPress={onPress}
-      style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+      onPressIn={() => onPressChange?.(true)}
+      onPressOut={() => onPressChange?.(false)}
+      style={({ pressed }) => [styles.row, pressed && { backgroundColor: isDark ? '#3A3A3C' : '#D1D1D6' }]}
     >
       {icon && (
         <View style={[styles.badge, { backgroundColor: icon.color }]}>
@@ -98,7 +139,7 @@ export function ListRow({ title, icon, onPress, chevron = !!onPress, accent, isL
           weight="semibold"
         />
       )}
-      {!isLast && (
+      {!isLast && !hideSeparator && (
         <View
           style={[
             styles.separator,
@@ -125,7 +166,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     gap: ICON_GAP,
   },
-  pressed: { backgroundColor: 'rgba(128,128,128,0.18)' },
   badge: {
     width: BADGE,
     height: BADGE,
