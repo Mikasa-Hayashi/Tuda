@@ -1,8 +1,6 @@
 {
   "settings": {
     "appearance": "Appearance",
-    "automatic": "Automatic",
-    "automaticFooter": "The app appearance automatically matches your device's light or dark mode.",
     "title": "Settings",
     "preferences": "Preferences",
     "theme": "Theme",
