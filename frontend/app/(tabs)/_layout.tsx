@@ -1,8 +1,8 @@
-import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
+import { SymbolIcon } from '@/src/components/ListGroup';
 import { ScanTabButton } from '@/src/components/ScanTabButton';
 import { useTheme } from '@/src/theme/ThemeContext';
 
@@ -31,8 +31,13 @@ export default function TabsLayout() {
         options={{
           title: t('tabs.home'),
           tabBarLabel: t('tabs.home'),
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <SymbolIcon
+              sf={focused ? 'house.fill' : 'house'}
+              fallback="home-outline"
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
@@ -41,8 +46,13 @@ export default function TabsLayout() {
         options={{
           title: t('tabs.map'),
           tabBarLabel: t('tabs.map'),
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="map-outline" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <SymbolIcon
+              sf={focused ? 'map.fill' : 'map'}
+              fallback="map-outline"
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
@@ -59,8 +69,13 @@ export default function TabsLayout() {
         options={{
           title: t('tabs.routes'),
           tabBarLabel: t('tabs.routes'),
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="trail-sign-outline" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <SymbolIcon
+              sf={focused ? 'signpost.right.fill' : 'signpost.right'}
+              fallback="trail-sign-outline"
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
@@ -69,8 +84,13 @@ export default function TabsLayout() {
         options={{
           title: t('tabs.profile'),
           tabBarLabel: t('tabs.profile'),
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <SymbolIcon
+              sf={focused ? 'person.crop.circle.fill' : 'person.crop.circle'}
+              fallback="person-outline"
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
