@@ -1,4 +1,3 @@
-
 {
   "settings": {
     "title": "设置",
@@ -26,6 +25,7 @@
     "developedWith": "使用以下技术开发",
     "developedBy": "Ivan 和 Kseniya"
   },
+
   "info": {
     "audioGuide": "收听语音导览",
     "historyInfo": "历史与信息",
@@ -34,6 +34,7 @@
     "play_quiz": "开始测验",
     "readMore": "阅读更多"
   },
+
   "quiz": {
     "title": "测验",
     "factQuestion": "关于{{name}}，以下哪一项是“{{label}}”的正确值？",
@@ -47,6 +48,7 @@
     "unavailableTitle": "测验暂不可用",
     "unavailableText": "当前还没有足够的信息为这个景点生成测验。"
   },
+
   "menu": {
     "searchPlaceholder": "按编号或名称搜索...",
     "monuments": "纪念碑",
@@ -54,6 +56,7 @@
     "notFoundMessage": "未找到编号为 \"{{number}}\" 的纪念碑。",
     "routes": "路线"
   },
+
   "overview": {
     "sortRecommended": "推荐排序",
     "sortName": "A–Z",
@@ -68,6 +71,7 @@
     "filterTitle": "筛选",
     "filterReset": "重置",
     "filterCategory": "分类",
+    "filterButton": "筛选",
     "filterApply": "应用",
     "allObjects": "全部景点",
     "locationLabel": "当前城市",
@@ -81,6 +85,7 @@
       "history": "历史"
     }
   },
+
   "route_info": {
     "openOnMap": "在地图中打开",
     "about": "关于路线",
@@ -88,6 +93,7 @@
     "stopsCount": "站点数：{{count}}",
     "startRoute": "开始路线"
   },
+
   "routesScreen": {
     "searchPlaceholder": "搜索路线...",
     "customRoute": "自定义路线",
@@ -122,10 +128,12 @@
     "developers": "开发者",
     "developerTeam": "由 Tuda 团队用 ❤️ 制作\nIvan — 开发\nKsenia — 内容与用户体验"
   },
+
   "map": {
     "title": "探索",
     "details": "详情"
   },
+
   "tabs": {
     "overview": "概览",
     "map": "地图",
@@ -133,6 +141,7 @@
     "home": "首页",
     "profile": "我的"
   },
+
   "citySelector": {
     "title": "选择城市",
     "whereAreWeGoing": "去哪里？",
@@ -151,6 +160,7 @@
     "currentCity": "当前城市",
     "notSelected": "未选择"
   },
+
   "cities": {
     "maykop": "迈科普",
     "astrakhan": "阿斯特拉罕",
@@ -160,6 +170,7 @@
     "rostov-on-don": "顿河畔罗斯托夫",
     "sevastopol": "塞瓦斯托波尔"
   },
+
   "routes_data": {
     "center": {
       "name": "伏尔加格勒地标",
@@ -174,6 +185,7 @@
       "description": "秃山、伏尔加河露天剧场与“军事列车”：战争记忆、滨河建筑与铁路传奇。"
     }
   },
+
   "monument_fields": {
     "year": "建造/开放年份",
     "height": "高度",
@@ -204,5 +216,65 @@
     "guided_tours": "导览服务",
     "additional_features": "附加元素",
     "opening_date": "开放日期"
+  },
+
+  "detail": {
+    "architect": "建筑师",
+    "area": "面积",
+    "battle_duration": "战役持续时间",
+    "buried_count": "埋葬人数",
+    "canvas_size": "画布尺寸",
+    "city_founded": "建城年份",
+    "commander": "指挥官",
+    "conflict": "冲突",
+    "defense_duration": "防御持续时间",
+    "diameter": "直径",
+    "dioramas": "立体模型",
+    "distance": "距离",
+    "exhibits": "展品",
+    "figures_count": "雕像数量",
+    "garrison": "守卫部队",
+    "guard_frequency": "换岗频率",
+    "heroes_count": "英雄人数",
+    "hill_elevation": "山丘高度",
+    "historical_event": "历史事件",
+    "length": "长度",
+    "location": "位置",
+    "managed_by": "管理机构",
+    "material": "材质",
+    "museum": "博物馆",
+    "music": "背景音乐",
+    "named_after": "命名来源",
+    "names_inscribed": "铭刻名字",
+    "notable_exhibit": "重要展品",
+    "obelisk_height": "方尖碑高度",
+    "ordnance_found": "发现弹药",
+    "original_purpose": "原始用途",
+    "pedestal_height": "底座高度",
+    "preservation_note": "保护说明",
+    "sculptor": "雕刻家",
+    "statue_height": "雕像高度",
+    "sword_length": "剑长",
+    "total_height": "总高度",
+    "world_record": "世界纪录",
+    "year_built": "建造年份"
+  },
+
+  "visitor": {
+    "address": "地址",
+    "admission": "门票",
+    "opening_hours": "开放时间"
+  },
+
+  "camera": {
+    "processing": "正在识别纪念碑…",
+    "notFound": "无法识别",
+    "notFoundHint": "请将相机对准完整的纪念碑，或选择一个选项：",
+    "retry": "重试",
+    "error": "错误",
+    "errorHint": "无法连接识别服务。",
+    "permission": "需要相机权限",
+    "grant": "允许",
+    "maybe": "是{{name}}吗？"
   }
 }

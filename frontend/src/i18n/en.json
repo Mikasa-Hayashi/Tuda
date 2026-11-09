@@ -73,6 +73,7 @@
     "filterTitle": "Filters",
     "filterReset": "Reset",
     "filterCategory": "Category",
+    "filterButton": "Filter",
     "filterApply": "Apply",
     "allObjects": "All objects",
     "locationLabel": "You're now in",
@@ -94,6 +95,7 @@
     "stopsCount": "Stops: {{count}}",
     "startRoute": "Start route"
   },
+
   "routesScreen": {
     "searchPlaceholder": "Search routes...",
     "customRoute": "Custom Route",
@@ -216,5 +218,65 @@
     "guided_tours": "Guided tours",
     "additional_features": "Additional features",
     "opening_date": "Opening date"
+  },
+
+  "detail": {
+    "architect": "Architect",
+    "area": "Area",
+    "battle_duration": "Battle duration",
+    "buried_count": "Buried",
+    "canvas_size": "Canvas size",
+    "city_founded": "City founded",
+    "commander": "Commander",
+    "conflict": "Conflict",
+    "defense_duration": "Defense duration",
+    "diameter": "Diameter",
+    "dioramas": "Dioramas",
+    "distance": "Distance",
+    "exhibits": "Exhibits",
+    "figures_count": "Number of figures",
+    "garrison": "Garrison",
+    "guard_frequency": "Guard change",
+    "heroes_count": "Heroes",
+    "hill_elevation": "Hill elevation",
+    "historical_event": "Historical event",
+    "length": "Length",
+    "location": "Location",
+    "managed_by": "Managed by",
+    "material": "Material",
+    "museum": "Museum",
+    "music": "Music",
+    "named_after": "Named after",
+    "names_inscribed": "Names inscribed",
+    "notable_exhibit": "Notable exhibit",
+    "obelisk_height": "Obelisk height",
+    "ordnance_found": "Ordnance found",
+    "original_purpose": "Original purpose",
+    "pedestal_height": "Pedestal height",
+    "preservation_note": "Preservation note",
+    "sculptor": "Sculptor",
+    "statue_height": "Statue height",
+    "sword_length": "Sword length",
+    "total_height": "Total height",
+    "world_record": "World record",
+    "year_built": "Year built"
+  },
+
+  "visitor": {
+    "address": "Address",
+    "admission": "Admission",
+    "opening_hours": "Opening hours"
+  },
+
+  "camera": {
+    "processing": "Recognizing the monument…",
+    "notFound": "Could not recognize",
+    "notFoundHint": "Point the camera at the whole monument or pick an option:",
+    "retry": "Try again",
+    "error": "Error",
+    "errorHint": "Can't reach the recognition service.",
+    "permission": "Camera access is required",
+    "grant": "Allow",
+    "maybe": "Is it {{name}}?"
   }
 }

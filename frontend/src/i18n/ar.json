@@ -25,7 +25,7 @@
     "developedWith": "تم التطوير باستخدام",
     "developedBy": "إيفان وكسانيا"
   },
-  
+
   "info": {
     "audioGuide": "استمع إلى الدليل الصوتي",
     "historyInfo": "التاريخ والمعلومات",
@@ -71,6 +71,7 @@
     "filterTitle": "تصفية",
     "filterReset": "إعادة التعيين",
     "filterCategory": "الفئة",
+    "filterButton": "تصفية",
     "filterApply": "تطبيق",
     "allObjects": "جميع المعالم",
     "locationLabel": "أنت الآن في",
@@ -92,6 +93,7 @@
     "stopsCount": "عدد المحطات: {{count}}",
     "startRoute": "ابدأ المسار"
   },
+
   "routesScreen": {
     "searchPlaceholder": "ابحث عن المسارات...",
     "customRoute": "مسار مخصص",
@@ -214,5 +216,65 @@
     "guided_tours": "الجولات الإرشادية",
     "additional_features": "عناصر إضافية",
     "opening_date": "تاريخ الافتتاح"
+  },
+
+  "detail": {
+    "architect": "المعماري",
+    "area": "المساحة",
+    "battle_duration": "مدة المعركة",
+    "buried_count": "المدفونون",
+    "canvas_size": "حجم اللوحة",
+    "city_founded": "تأسيس المدينة",
+    "commander": "القائد",
+    "conflict": "النزاع",
+    "defense_duration": "مدة الدفاع",
+    "diameter": "القطر",
+    "dioramas": "الديوراما",
+    "distance": "المسافة",
+    "exhibits": "المعروضات",
+    "figures_count": "عدد التماثيل",
+    "garrison": "الحامية",
+    "guard_frequency": "تغيير الحرس",
+    "heroes_count": "الأبطال",
+    "hill_elevation": "ارتفاع التل",
+    "historical_event": "الحدث التاريخي",
+    "length": "الطول",
+    "location": "الموقع",
+    "managed_by": "تحت إدارة",
+    "material": "المادة",
+    "museum": "المتحف",
+    "music": "الموسيقى",
+    "named_after": "سُمِّي على اسم",
+    "names_inscribed": "الأسماء المنقوشة",
+    "notable_exhibit": "المعروض البارز",
+    "obelisk_height": "ارتفاع المسلة",
+    "ordnance_found": "الذخائر المكتشفة",
+    "original_purpose": "الغرض الأصلي",
+    "pedestal_height": "ارتفاع القاعدة",
+    "preservation_note": "ملاحظة الصون",
+    "sculptor": "النحات",
+    "statue_height": "ارتفاع التمثال",
+    "sword_length": "طول السيف",
+    "total_height": "الارتفاع الإجمالي",
+    "world_record": "رقم قياسي عالمي",
+    "year_built": "سنة الإنشاء"
+  },
+
+  "visitor": {
+    "address": "العنوان",
+    "admission": "الدخول",
+    "opening_hours": "ساعات العمل"
+  },
+
+  "camera": {
+    "processing": "جارٍ التعرف على النصب…",
+    "notFound": "تعذّر التعرف",
+    "notFoundHint": "وجّه الكاميرا نحو النصب كاملاً أو اختر أحد الخيارات:",
+    "retry": "حاول مجددًا",
+    "error": "خطأ",
+    "errorHint": "تعذّر الاتصال بخدمة التعرف.",
+    "permission": "مطلوب الوصول إلى الكاميرا",
+    "grant": "سماح",
+    "maybe": "هل هو {{name}}؟"
   }
 }

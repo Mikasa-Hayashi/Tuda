@@ -25,7 +25,7 @@
     "developedWith": "Разработано с",
     "developedBy": "Иваном и Ксенией"
   },
-  
+
   "info": {
     "audioGuide": "Слушать аудиогид",
     "historyInfo": "История и информация",
@@ -73,6 +73,7 @@
     "filterTitle": "Фильтры",
     "filterReset": "Сбросить",
     "filterCategory": "Категория",
+    "filterButton": "Фильтр",
     "filterApply": "Применить",
     "allObjects": "Все объекты",
     "locationLabel": "Сейчас вы в",
@@ -94,6 +95,7 @@
     "stopsCount": "Точек: {{count}}",
     "startRoute": "Начать маршрут"
   },
+
   "routesScreen": {
     "searchPlaceholder": "Поиск маршрутов...",
     "customRoute": "Свой маршрут",
@@ -216,5 +218,65 @@
     "guided_tours": "Экскурсии",
     "additional_features": "Дополнительные элементы",
     "opening_date": "Дата открытия"
+  },
+
+  "detail": {
+    "architect": "Архитектор",
+    "area": "Площадь",
+    "battle_duration": "Продолжительность битвы",
+    "buried_count": "Захоронено",
+    "canvas_size": "Размер полотна",
+    "city_founded": "Год основания города",
+    "commander": "Командующий",
+    "conflict": "Конфликт",
+    "defense_duration": "Продолжительность обороны",
+    "diameter": "Диаметр",
+    "dioramas": "Диорамы",
+    "distance": "Расстояние",
+    "exhibits": "Экспонаты",
+    "figures_count": "Количество фигур",
+    "garrison": "Гарнизон",
+    "guard_frequency": "Смена почётного карула",
+    "heroes_count": "Герои",
+    "hill_elevation": "Высота кургана",
+    "historical_event": "Историческое событие",
+    "length": "Длина",
+    "location": "Местонахождение",
+    "managed_by": "В ведении",
+    "material": "Материал",
+    "museum": "Музей",
+    "music": "Музыкальное сопровождение",
+    "named_after": "Назван в честь",
+    "names_inscribed": "Вписанные имена",
+    "notable_exhibit": "Главный экспонат",
+    "obelisk_height": "Высота обелиска",
+    "ordnance_found": "Найдено боеприпасов",
+    "original_purpose": "Изначальное назначение",
+    "pedestal_height": "Высота постамента",
+    "preservation_note": "Статус сохранности",
+    "sculptor": "Скульптор",
+    "statue_height": "Высота статуи",
+    "sword_length": "Длина меча",
+    "total_height": "Общая высота",
+    "world_record": "Мировой рекорд",
+    "year_built": "Год создания"
+  },
+
+  "visitor": {
+    "address": "Адрес",
+    "admission": "Вход",
+    "opening_hours": "Режим работы"
+  },
+
+  "camera": {
+    "processing": "Распознаём памятник…",
+    "notFound": "Не удалось распознать",
+    "notFoundHint": "Наведите камеру на памятник целиком или выберите вариант:",
+    "retry": "Повторить",
+    "error": "Ошибка",
+    "errorHint": "Нет связи с сервисом распознавания.",
+    "permission": "Нужен доступ к камере",
+    "grant": "Разрешить",
+    "maybe": "Это {{name}}?"
   }
 }
