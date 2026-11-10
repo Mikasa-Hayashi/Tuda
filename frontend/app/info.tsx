@@ -5,6 +5,7 @@ import {
   upsertMonumentTranslationsFromApi,
 } from '@/src/db/monumentRepository';
 import type { Monument } from '@/src/db/monumentRepository';
+import { distanceKm, useUserLocation } from '@/src/map/useUserLocation';
 import { MAP_PROVIDERS, openPlaceIn, openRouteIn } from '@/src/map/externalMaps';
 import { fetchMonumentDetail } from '@/src/services/monumentsApi';
 import { getFavoriteIds, toggleFavorite } from '@/src/storage/favorites';
@@ -55,6 +56,16 @@ function formatDistance(km: number, t: (key: string) => string): string {
   return `${km.toFixed(1)} ${t('info.unitKm')}`;
 }
 
+/** "1.2 km · 15 min on foot" (walking at ~5 km/h). */
+function formatFromUser(km: number, t: (key: string) => string): string {
+  const minutes = Math.max(1, Math.round((km / 5) * 60));
+  const time =
+    minutes >= 60
+      ? `${Math.floor(minutes / 60)} ${t('info.unitHour')} ${minutes % 60} ${t('info.unitMin')}`
+      : `${minutes} ${t('info.unitMin')}`;
+  return `${formatDistance(km, t)} · ${time} ${t('info.onFoot')}`;
+}
+
 export default function MonumentDetailScreen() {
   const { colors, isDark } = useTheme();
   const router = useRouter();
@@ -66,6 +77,7 @@ export default function MonumentDetailScreen() {
   );
   const [fetchDone, setFetchDone] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const userLocation = useUserLocation();
 
   useEffect(() => {
     getFavoriteIds()
@@ -206,6 +218,19 @@ export default function MonumentDetailScreen() {
                       ]}
                     >
                       {monument.location}
+                    </Text>
+                  </HStack>
+                ) : null}
+                {userLocation ? (
+                  <HStack spacing={5}>
+                    <SymbolImage systemName="figure.walk" size={14} color={colors.textMuted} />
+                    <Text
+                      modifiers={[
+                        font({ textStyle: 'subheadline' }),
+                        foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                      ]}
+                    >
+                      {formatFromUser(distanceKm(userLocation, monument), t)}
                     </Text>
                   </HStack>
                 ) : null}

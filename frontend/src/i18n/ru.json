@@ -40,7 +40,10 @@
     "favorited": "Сохранено",
     "nearby": "Рядом",
     "unitMeters": "м",
-    "unitKm": "км"
+    "unitKm": "км",
+    "unitMin": "мин",
+    "onFoot": "пешком",
+    "unitHour": "ч"
   },
 
   "quiz": {

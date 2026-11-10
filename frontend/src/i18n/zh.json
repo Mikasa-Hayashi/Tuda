@@ -40,7 +40,10 @@
     "favorited": "已收藏",
     "nearby": "附近",
     "unitMeters": "米",
-    "unitKm": "公里"
+    "unitKm": "公里",
+    "unitMin": "分钟",
+    "onFoot": "步行",
+    "unitHour": "小时"
   },
 
   "quiz": {

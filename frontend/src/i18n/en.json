@@ -40,7 +40,10 @@
     "favorited": "Saved",
     "nearby": "Nearby",
     "unitMeters": "m",
-    "unitKm": "km"
+    "unitKm": "km",
+    "unitMin": "min",
+    "onFoot": "on foot",
+    "unitHour": "h"
   },
 
   "quiz": {

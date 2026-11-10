@@ -40,7 +40,10 @@
     "favorited": "تم الحفظ",
     "nearby": "بالقرب",
     "unitMeters": "م",
-    "unitKm": "كم"
+    "unitKm": "كم",
+    "unitMin": "د",
+    "onFoot": "سيرًا",
+    "unitHour": "س"
   },
 
   "quiz": {
