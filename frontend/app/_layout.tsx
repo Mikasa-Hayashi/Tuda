@@ -123,7 +123,13 @@ function RootStack() {
             headerTitleStyle: { color: '#FFFFFF' },
           }}
         />
-        <Stack.Screen name="quiz" options={{ title: t('quiz.title') }} />
+        <Stack.Screen
+          name="quiz"
+          options={({ route }) => ({
+            ...detailScreenOptions,
+            title: (route.params as { name?: string } | undefined)?.name || t('quiz.title'),
+          })}
+        />
         <Stack.Screen name="settings" options={settingsHeader} />
         <Stack.Screen name="favorites" options={favoritesHeader} />
         <Stack.Screen name="menu" options={{ title: t('tabs.home') }} />

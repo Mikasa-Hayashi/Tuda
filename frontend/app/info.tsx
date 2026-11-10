@@ -9,6 +9,7 @@ import { distanceKm, useUserLocation } from '@/src/map/useUserLocation';
 import { getOpeningStatus, parseSchedule, type OpeningStatus } from '@/src/utils/openingHours';
 import { MAP_PROVIDERS, openPlaceIn, openRouteIn } from '@/src/map/externalMaps';
 import { fetchMonumentDetail } from '@/src/services/monumentsApi';
+import { getQuizQuestions } from '@/src/data/quiz';
 import { useFavorites } from '@/src/storage/favorites';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
@@ -115,6 +116,12 @@ export default function MonumentDetailScreen() {
       .finally(() => setFetchDone(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, i18n.language]);
+
+  // The quiz entry is shown only for monuments that actually have a quiz.
+  const hasQuiz = useMemo(
+    () => !!id && getQuizQuestions({ monumentId: id, lang: i18n.language, t }).length > 0,
+    [id, i18n.language, t],
+  );
 
   // Closest other monuments (offline, from the local DB).
   const nearby = useMemo(
@@ -359,19 +366,21 @@ export default function MonumentDetailScreen() {
               </Section>
             )}
 
-            {/* Quiz */}
-            <Section>
-              <Button
-                label={t('info.play_quiz')}
-                systemImage="trophy"
-                onPress={() =>
-                  router.push({
-                    pathname: '/quiz',
-                    params: { id: monument.id, name: monument.name },
-                  })
-                }
-              />
-            </Section>
+            {/* Quiz: shown only when this monument has one */}
+            {hasQuiz && (
+              <Section>
+                <Button
+                  label={t('info.play_quiz')}
+                  systemImage="trophy"
+                  onPress={() =>
+                    router.push({
+                      pathname: '/quiz',
+                      params: { id: monument.id, name: monument.name },
+                    })
+                  }
+                />
+              </Section>
+            )}
 
             {/* Transparent spacer row: lets the last row scroll clear of the floating button. */}
             <Section>

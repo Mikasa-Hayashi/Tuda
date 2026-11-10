@@ -61,7 +61,9 @@
     "backToMonument": "返回景点",
     "retry": "再试一次",
     "unavailableTitle": "测验暂不可用",
-    "unavailableText": "当前还没有足够的信息为这个景点生成测验。"
+    "unavailableText": "当前还没有足够的信息为这个景点生成测验。",
+    "review": "您的答案",
+    "correctAnswer": "正确答案：{{answer}}"
   },
 
   "menu": {

@@ -1,6 +1,7 @@
 import type { TFunction } from 'i18next';
 
 import { monumentFilterMeta } from './monumentFilterMeta';
+import { CURATED_QUIZZES } from './quizCurated';
 import { getMonumentById } from '../db/monumentRepository';
 
 export type QuizQuestion = {
@@ -89,6 +90,13 @@ function getAllLocalizedFacts(lang: string): Record<string, QuizFactRow[]> {
 }
 
 export function getQuizQuestions({ monumentId, lang, t }: QuizParams): QuizQuestion[] {
+  // Hand-written quiz first (ru / en, other languages fall back to English).
+  const curated = CURATED_QUIZZES[monumentId];
+  if (curated) {
+    const list = lang === 'ru' ? curated.ru : curated.en;
+    return list.map((q) => ({ question: q.question, options: q.options, correctIndex: q.correct }));
+  }
+
   const monument = getMonumentById(monumentId, lang);
   if (!monument) return [];
 
@@ -104,7 +112,9 @@ export function getQuizQuestions({ monumentId, lang, t }: QuizParams): QuizQuest
   for (const fact of prioritizedFacts) {
     const sameFieldValues = Object.entries(factsByMonument)
       .filter(([id]) => id !== monumentId)
-      .flatMap(([, rows]) => rows.filter((row) => row.labelKey === fact.labelKey).map((row) => row.value));
+      .flatMap(([, rows]) =>
+        rows.filter((row) => row.labelKey === fact.labelKey).map((row) => row.value),
+      );
 
     const anyOtherValues = Object.entries(factsByMonument)
       .filter(([id]) => id !== monumentId)

@@ -61,7 +61,9 @@
     "backToMonument": "Back to monument",
     "retry": "Try again",
     "unavailableTitle": "Quiz unavailable",
-    "unavailableText": "There are not enough facts yet to build a quiz for this monument."
+    "unavailableText": "There are not enough facts yet to build a quiz for this monument.",
+    "review": "Your answers",
+    "correctAnswer": "Correct answer: {{answer}}"
   },
 
   "menu": {
