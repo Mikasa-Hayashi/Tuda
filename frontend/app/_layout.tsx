@@ -49,6 +49,7 @@ function RootStack() {
   const { t } = useTranslation();
   const { colors, isDark } = useTheme();
   const settingsHeader = useNativeHeader(t('settings.title'));
+  const favoritesHeader = useNativeHeader(t('favorites.title'));
 
   // React Navigation paints its own background behind screens (visible as white edges during
   // the swipe-back gesture and as a flash while a screen closes). Tie it to our theme.
@@ -100,14 +101,23 @@ function RootStack() {
         />
         <Stack.Screen
           name="(tabs)"
-          options={{ gestureEnabled: false, animationTypeForReplace: 'pop' }}
+          options={{
+            gestureEnabled: false,
+            animationTypeForReplace: 'pop',
+            // Shown in the back button's long-press history; without it iOS prints "(tabs)".
+            title: t('tabs.home'),
+          }}
         />
         <Stack.Screen name="info" options={detailScreenOptions} />
         <Stack.Screen name="route-info" options={detailScreenOptions} />
-        <Stack.Screen name="camera" />
-        <Stack.Screen name="quiz" />
+        <Stack.Screen name="camera" options={{ title: t('scan.title') }} />
+        <Stack.Screen name="quiz" options={{ title: t('quiz.title') }} />
         <Stack.Screen name="settings" options={settingsHeader} />
-        <Stack.Screen name="menu" />
+        <Stack.Screen name="favorites" options={favoritesHeader} />
+        <Stack.Screen name="menu" options={{ title: t('tabs.home') }} />
+        <Stack.Screen name="about" options={{ title: t('about.title') }} />
+        <Stack.Screen name="ai-route" options={{ title: t('routesScreen.aiPromoTitle') }} />
+        <Stack.Screen name="audio-guide" options={{ title: t('info.audioGuide') }} />
       </Stack>
     </NavThemeProvider>
   );

@@ -43,7 +43,11 @@
     "unitKm": "公里",
     "unitMin": "分钟",
     "onFoot": "步行",
-    "unitHour": "小时"
+    "unitHour": "小时",
+    "openAlways": "全天开放",
+    "openUntil": "营业至 {{time}}",
+    "closedNow": "已关闭",
+    "closedOpens": "已关闭 · {{when}} 开放"
   },
 
   "quiz": {
@@ -305,5 +309,15 @@
     "title": "扫描",
     "desc": "将相机对准纪念碑,了解更多信息。",
     "button": "打开相机"
+  },
+
+  "favorites": {
+    "title": "收藏",
+    "add": "添加到收藏",
+    "remove": "从收藏中移除",
+    "monuments": "景点",
+    "routes": "路线",
+    "empty": "暂无内容",
+    "hint": "在景点或路线页面点击心形图标即可保存到这里。"
   }
 }

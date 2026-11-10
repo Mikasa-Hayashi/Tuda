@@ -1,4 +1,5 @@
 import { buildYandexRouteUrl, getRouteById } from '@/src/db/routeRepository';
+import { useFavorites } from '@/src/storage/favorites';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
   Button,
@@ -42,6 +43,7 @@ export default function RouteInfoScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t, i18n } = useTranslation();
   const { width } = useWindowDimensions();
+  const favorites = useFavorites();
 
   const route = useMemo(() => getRouteById(id ?? '', i18n.language), [id, i18n.language]);
   const scheme = preferredColorScheme(isDark ? 'dark' : 'light');
@@ -57,6 +59,13 @@ export default function RouteInfoScreen() {
   return (
     <>
       <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          icon={favorites.isFavorite('route', route.id) ? 'heart.fill' : 'heart'}
+          accessibilityLabel={
+            favorites.isFavorite('route', route.id) ? t('favorites.remove') : t('favorites.add')
+          }
+          onPress={() => void favorites.toggle('route', route.id)}
+        />
         <Stack.Toolbar.Button
           icon="arrow.triangle.turn.up.right.diamond"
           accessibilityLabel={t('route_info.openOnMap')}

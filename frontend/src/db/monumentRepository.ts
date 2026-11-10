@@ -53,6 +53,8 @@ export type Monument = {
   name: string;
   location: string;
   description: string;
+  /** Raw JSON of the `opening_schedule` translation (see utils/openingHours). */
+  openingSchedule: string | null;
   details: FieldConfigRow[];
   visitors: FieldConfigRow[];
 };
@@ -175,6 +177,7 @@ export function getMonumentById(id: string, lang: string): Monument | null {
     name: translations.get('name') ?? '',
     location: translations.get('address') ?? '',
     description: translations.get('short_description') ?? '',
+    openingSchedule: translations.get('opening_schedule') ?? null,
     details,
     visitors,
   };

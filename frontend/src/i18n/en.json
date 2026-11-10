@@ -43,7 +43,11 @@
     "unitKm": "km",
     "unitMin": "min",
     "onFoot": "on foot",
-    "unitHour": "h"
+    "unitHour": "h",
+    "openAlways": "Open 24 hours",
+    "openUntil": "Open until {{time}}",
+    "closedNow": "Closed",
+    "closedOpens": "Closed · opens {{when}}"
   },
 
   "quiz": {
@@ -307,5 +311,15 @@
     "title": "Scanner",
     "desc": "Point the camera at a monument to learn more about it.",
     "button": "Open camera"
+  },
+
+  "favorites": {
+    "title": "Favorites",
+    "add": "Add to Favorites",
+    "remove": "Remove from Favorites",
+    "monuments": "Monuments",
+    "routes": "Routes",
+    "empty": "Nothing here yet",
+    "hint": "Tap the heart on a monument or route to save it here."
   }
 }

@@ -5,6 +5,7 @@ import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ListDivider, ListGroup, ListRow, SymbolIcon } from '@/src/components/ListGroup';
+import { useFavorites } from '@/src/storage/favorites';
 import { useTheme } from '@/src/theme/ThemeContext';
 
 export default function ProfileTabScreen() {
@@ -12,6 +13,7 @@ export default function ProfileTabScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { count: favoritesCount } = useFavorites();
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -41,6 +43,15 @@ export default function ProfileTabScreen() {
           </View>
           <ListDivider inset={92} />
           <ListRow title={t('profile.loginButton')} accent />
+        </ListGroup>
+
+        <ListGroup style={styles.group}>
+          <ListRow
+            title={t('favorites.title')}
+            icon={{ sf: 'heart.fill', fallback: 'heart', color: '#FF3B30' }}
+            value={favoritesCount > 0 ? String(favoritesCount) : undefined}
+            onPress={() => router.push('/favorites')}
+          />
         </ListGroup>
 
         <ListGroup style={styles.group}>

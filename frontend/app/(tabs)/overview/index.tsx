@@ -25,15 +25,15 @@ import {
   syncCityData,
 } from '@/src/services/monumentsApi';
 import { getSelectedCityId, markCityDownloaded } from '@/src/storage/citySelection';
+import { useFavorites } from '@/src/storage/favorites';
 import { useTheme } from '@/src/theme/ThemeContext';
 import { Image } from 'expo-image';
-import { Stack, useFocusEffect, useRouter, useScrollToTop } from 'expo-router';
+import { Link, Stack, useFocusEffect, useRouter, useScrollToTop } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   FlatList,
-  Pressable,
   RefreshControl,
   StyleSheet,
   Text,
@@ -87,6 +87,7 @@ export default function OverviewTabScreen() {
   const lastFocusSyncRef = useRef<{ cityId: string; at: number } | null>(null);
   useScrollToTop(listRef);
 
+  const favorites = useFavorites();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const [selectedCityName, setSelectedCityName] = useState<string | null>(null);
@@ -320,23 +321,39 @@ export default function OverviewTabScreen() {
 
   const renderItem = useCallback(
     ({ item }: { item: MonumentPreview }) => (
-      <Pressable
-        style={({ pressed }) => [{ width: cardWidth }, pressed && styles.pressed]}
-        onPress={() => router.push(`/info?id=${item.id}`)}
-      >
-        <Image
-          source={{ uri: item.imageUrl }}
-          style={[styles.cardImage, { width: cardWidth, backgroundColor: colors.cardElevated }]}
-          contentFit="cover"
-          cachePolicy="memory-disk"
-          recyclingKey={item.id}
-        />
-        <Text style={[styles.cardTitle, { color: colors.text }]} numberOfLines={2}>
-          {item.name}
-        </Text>
-      </Pressable>
+      <Link href={{ pathname: '/info', params: { id: item.id } }}>
+        <Link.Trigger>
+          <View style={{ width: cardWidth }}>
+            <Image
+              source={{ uri: item.imageUrl }}
+              style={[styles.cardImage, { width: cardWidth, backgroundColor: colors.cardElevated }]}
+              contentFit="cover"
+              cachePolicy="memory-disk"
+              recyclingKey={item.id}
+            />
+            {favorites.isFavorite('monument', item.id) && (
+              <View style={styles.favBadge}>
+                <SymbolIcon sf="heart.fill" fallback="heart" size={16} color="#FF3B30" />
+              </View>
+            )}
+            <Text style={[styles.cardTitle, { color: colors.text }]} numberOfLines={2}>
+              {item.name}
+            </Text>
+          </View>
+        </Link.Trigger>
+        <Link.Menu>
+          <Link.MenuAction
+            icon={favorites.isFavorite('monument', item.id) ? 'heart.slash' : 'heart'}
+            onPress={() => void favorites.toggle('monument', item.id)}
+          >
+            {favorites.isFavorite('monument', item.id)
+              ? t('favorites.remove')
+              : t('favorites.add')}
+          </Link.MenuAction>
+        </Link.Menu>
+      </Link>
     ),
-    [cardWidth, colors.cardElevated, colors.text, router],
+    [cardWidth, colors.cardElevated, colors.text, favorites, t],
   );
 
   const listHeader = isOffline ? (
@@ -443,6 +460,17 @@ export default function OverviewTabScreen() {
 const styles = StyleSheet.create({
   content: { paddingHorizontal: SIDE_INSET, paddingBottom: 24 },
   column: { gap: COLUMN_GAP, marginBottom: 16 },
+  favBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.85)',
+  },
   pressed: { opacity: 0.7 },
   cardImage: { aspectRatio: 4 / 5, borderRadius: 14 },
   cardTitle: { fontSize: 15, fontWeight: '600', marginTop: 8 },

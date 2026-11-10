@@ -6,9 +6,10 @@ import {
 } from '@/src/db/monumentRepository';
 import type { Monument } from '@/src/db/monumentRepository';
 import { distanceKm, useUserLocation } from '@/src/map/useUserLocation';
+import { getOpeningStatus, parseSchedule, type OpeningStatus } from '@/src/utils/openingHours';
 import { MAP_PROVIDERS, openPlaceIn, openRouteIn } from '@/src/map/externalMaps';
 import { fetchMonumentDetail } from '@/src/services/monumentsApi';
-import { getFavoriteIds, toggleFavorite } from '@/src/storage/favorites';
+import { useFavorites } from '@/src/storage/favorites';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
   Button,
@@ -66,6 +67,26 @@ function formatFromUser(km: number, t: (key: string) => string): string {
   return `${formatDistance(km, t)} · ${time} ${t('info.onFoot')}`;
 }
 
+function describeStatus(
+  status: OpeningStatus,
+  t: (key: string, opts?: Record<string, string>) => string,
+  lang: string,
+): { text: string; open: boolean } {
+  if (status.kind === 'always') return { text: t('info.openAlways'), open: true };
+  if (status.kind === 'open')
+    return { text: t('info.openUntil', { time: status.closesAt }), open: true };
+  if (!status.opensAt) return { text: t('info.closedNow'), open: false };
+  let when = status.opensAt;
+  if (status.opensDay !== null) {
+    // 2024-01-07 is a Sunday, so day index d maps to January 7 + d.
+    const dayName = new Date(2024, 0, 7 + status.opensDay).toLocaleDateString(lang, {
+      weekday: 'short',
+    });
+    when = `${dayName} ${status.opensAt}`;
+  }
+  return { text: t('info.closedOpens', { when }), open: false };
+}
+
 export default function MonumentDetailScreen() {
   const { colors, isDark } = useTheme();
   const router = useRouter();
@@ -76,14 +97,9 @@ export default function MonumentDetailScreen() {
     getMonumentById(id ?? '', i18n.language),
   );
   const [fetchDone, setFetchDone] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const favorites = useFavorites();
+  const isFavorite = favorites.isFavorite('monument', id ?? '');
   const userLocation = useUserLocation();
-
-  useEffect(() => {
-    getFavoriteIds()
-      .then((ids) => setIsFavorite(ids.includes(id ?? '')))
-      .catch(() => {});
-  }, [id]);
 
   useEffect(() => {
     if (monument?.name) return;
@@ -125,12 +141,15 @@ export default function MonumentDetailScreen() {
     );
   }
 
+  const schedule = parseSchedule(monument.openingSchedule);
+  const openingInfo = schedule
+    ? describeStatus(getOpeningStatus(schedule), t, i18n.language)
+    : null;
   const isLong = monument.description.length > LONG_DESCRIPTION;
   const target = { lat: monument.lat, lon: monument.lon, name: monument.name };
-  const onToggleFavorite = () =>
-    toggleFavorite(monument.id)
-      .then(setIsFavorite)
-      .catch(() => {});
+  const onToggleFavorite = () => {
+    void favorites.toggle('monument', monument.id);
+  };
 
   const shareMonument = () =>
     Share.share({
@@ -218,6 +237,26 @@ export default function MonumentDetailScreen() {
                       ]}
                     >
                       {monument.location}
+                    </Text>
+                  </HStack>
+                ) : null}
+                {openingInfo ? (
+                  <HStack spacing={5}>
+                    <SymbolImage
+                      systemName="clock"
+                      size={14}
+                      color={openingInfo.open ? '#34C759' : '#FF3B30'}
+                    />
+                    <Text
+                      modifiers={[
+                        font({ textStyle: 'subheadline' }),
+                        foregroundStyle({
+                          type: 'color',
+                          color: openingInfo.open ? '#34C759' : '#FF3B30',
+                        }),
+                      ]}
+                    >
+                      {openingInfo.text}
                     </Text>
                   </HStack>
                 ) : null}
