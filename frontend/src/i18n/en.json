@@ -305,7 +305,11 @@
     "errorHint": "Can't reach the recognition service.",
     "permission": "Camera access is required",
     "grant": "Allow",
-    "maybe": "Is it {{name}}?"
+    "maybe": "Is it {{name}}?",
+    "gallery": "Photo library",
+    "torch": "Torch",
+    "close": "Close",
+    "flip": "Flip camera"
   },
   "scan": {
     "title": "Scanner",
@@ -321,5 +325,33 @@
     "routes": "Routes",
     "empty": "Nothing here yet",
     "hint": "Tap the heart on a monument or route to save it here."
+  },
+
+  "aiRoute": {
+    "title": "Custom Route",
+    "ready": "Ready",
+    "stops": "Stops",
+    "timeTitle": "How much time do you have?",
+    "time_couple": "A couple of hours · 2–3 places",
+    "time_half": "Half a day · 4–6 places",
+    "time_full": "A full day · the most you can see",
+    "ageTitle": "Who is it for?",
+    "age_kids": "Kids",
+    "age_adults": "Adults",
+    "age_family": "Family",
+    "topicsTitle": "Topics",
+    "topic_history": "History",
+    "topic_architecture": "Architecture",
+    "topic_culture": "Culture",
+    "topic_parks": "Parks",
+    "topic_photo": "Photo",
+    "build": "Build route",
+    "rebuild": "Build again",
+    "edit": "Change options",
+    "duration": "~{{hours}} h · on foot",
+    "remove": "Remove",
+    "replace": "Replace",
+    "reorder": "Edit",
+    "done": "Done"
   }
 }

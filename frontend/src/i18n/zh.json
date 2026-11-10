@@ -303,7 +303,11 @@
     "errorHint": "无法连接识别服务。",
     "permission": "需要相机权限",
     "grant": "允许",
-    "maybe": "是{{name}}吗？"
+    "maybe": "是{{name}}吗？",
+    "gallery": "相册",
+    "torch": "手电筒",
+    "close": "关闭",
+    "flip": "切换摄像头"
   },
   "scan": {
     "title": "扫描",
@@ -319,5 +323,33 @@
     "routes": "路线",
     "empty": "暂无内容",
     "hint": "在景点或路线页面点击心形图标即可保存到这里。"
+  },
+
+  "aiRoute": {
+    "title": "定制路线",
+    "ready": "已生成",
+    "stops": "站点",
+    "timeTitle": "您有多少时间？",
+    "time_couple": "两三小时 · 2–3 个景点",
+    "time_half": "半天 · 4–6 个景点",
+    "time_full": "一整天 · 尽可能多看",
+    "ageTitle": "为谁规划？",
+    "age_kids": "儿童",
+    "age_adults": "成人",
+    "age_family": "家庭",
+    "topicsTitle": "主题",
+    "topic_history": "历史",
+    "topic_architecture": "建筑",
+    "topic_culture": "文化",
+    "topic_parks": "公园",
+    "topic_photo": "摄影",
+    "build": "生成路线",
+    "rebuild": "重新生成",
+    "edit": "修改选项",
+    "duration": "~{{hours}} 小时 · 步行",
+    "remove": "移除",
+    "replace": "替换",
+    "reorder": "编辑",
+    "done": "完成"
   }
 }

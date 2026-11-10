@@ -110,13 +110,25 @@ function RootStack() {
         />
         <Stack.Screen name="info" options={detailScreenOptions} />
         <Stack.Screen name="route-info" options={detailScreenOptions} />
-        <Stack.Screen name="camera" options={{ title: t('scan.title') }} />
+        <Stack.Screen
+          name="camera"
+          options={{
+            ...detailScreenOptions,
+            // Slides up from the bottom like a sheet; swipe down or the ✕ button closes it.
+            presentation: 'modal',
+            headerBackVisible: false,
+            title: t('scan.title'),
+            headerTransparent: true,
+            headerTintColor: '#FFFFFF',
+            headerTitleStyle: { color: '#FFFFFF' },
+          }}
+        />
         <Stack.Screen name="quiz" options={{ title: t('quiz.title') }} />
         <Stack.Screen name="settings" options={settingsHeader} />
         <Stack.Screen name="favorites" options={favoritesHeader} />
         <Stack.Screen name="menu" options={{ title: t('tabs.home') }} />
         <Stack.Screen name="about" options={{ ...detailScreenOptions, title: t('about.title') }} />
-        <Stack.Screen name="ai-route" options={{ title: t('routesScreen.aiPromoTitle') }} />
+        <Stack.Screen name="ai-route" options={{ ...detailScreenOptions, title: t('aiRoute.title') }} />
         <Stack.Screen name="audio-guide" options={{ title: t('info.audioGuide') }} />
       </Stack>
     </NavThemeProvider>
