@@ -139,8 +139,12 @@ export default function OverviewTabScreen() {
   /** DEV only: if the backend gave us nothing, fill the cache with fake monuments. */
   const ensureDevData = useCallback(
     (cityId: string) => {
-      if (__DEV__ && seedTestMonumentsIfEmpty(cityId)) {
-        refreshLocalMonuments(cityId, lang);
+      try {
+        if (__DEV__ && seedTestMonumentsIfEmpty(cityId)) {
+          refreshLocalMonuments(cityId, lang);
+        }
+      } catch (e) {
+        console.warn('[devSeed] failed', e);
       }
     },
     [lang, refreshLocalMonuments],
@@ -152,7 +156,9 @@ export default function OverviewTabScreen() {
       setSearchResults(null);
       setNextOffset(0);
       setHasMore(true);
-      getSelectedCityId().then((cityId) => refreshLocalMonuments(cityId, lang));
+      getSelectedCityId()
+        .then((cityId) => refreshLocalMonuments(cityId, lang))
+        .catch((e) => console.warn('[overview] refresh after cache clear failed', e));
     });
   }, [lang, refreshLocalMonuments]);
 
@@ -263,7 +269,11 @@ export default function OverviewTabScreen() {
           isSyncRunningRef.current = false;
         }
       };
-      loadCityAndSync();
+      loadCityAndSync().catch((e) => {
+        console.warn('[overview] loadCityAndSync failed', e);
+        isSyncRunningRef.current = false;
+        setIsBootstrapping(false);
+      });
     }, [ensureDevData, lang, refreshLocalMonuments, runSync, t]),
   );
 

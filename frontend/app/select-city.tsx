@@ -182,7 +182,7 @@ export default function SelectCityScreen() {
       setDownloadedCityIdsState(downloaded);
       setIsOnboarding(!onboardingDone);
     };
-    load();
+    load().catch((e) => console.warn('[select-city] load failed', e));
   }, []);
 
   useEffect(() => {

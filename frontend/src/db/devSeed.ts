@@ -6,11 +6,20 @@
  * Test ids are prefixed with `test_` so they are easy to spot / purge.
  */
 
-import type { ApiMonument, ApiMonumentTranslation } from '../services/monumentsApi';
+import realFieldConfigs from '../data/seed/monument_field_configs.json';
+import realMonuments from '../data/seed/monuments.json';
+import realTranslations from '../data/seed/monument_translations.json';
+import type {
+  ApiMonument,
+  ApiMonumentFieldConfig,
+  ApiMonumentTranslation,
+} from '../services/monumentsApi';
 import { db } from './database';
 import {
   ensureCityRow,
   getMonumentCountByCity,
+  getMonumentDbIdBySlug,
+  upsertMonumentFieldConfigsFromApi,
   upsertMonumentTranslationsFromApi,
   upsertMonumentsFromApi,
 } from './monumentRepository';
@@ -240,10 +249,49 @@ const TEST_MONUMENTS: TestMonument[] = [
   },
 ];
 
-/** Inserts fake monuments for `cityId` if it has none. Returns true when anything was written. */
+function cityHasOnlyTestMonuments(cityId: string): boolean {
+  const row = db.getFirstSync<{ n: number }>(
+    `SELECT COUNT(*) AS n FROM monuments m JOIN cities c ON c.id = m.city_id
+     WHERE c.slug = ? AND substr(m.slug, 1, 5) <> 'test_'`,
+    [cityId],
+  );
+  return (row?.n ?? 0) === 0;
+}
+
+/** Real content from backend/data (bundled copy) with placeholder photos. Volgograd only. */
+function seedRealMonuments(cityId: string): boolean {
+  const monuments = (realMonuments as ApiMonument[]).filter((m) => m.city_id === cityId);
+  if (monuments.length === 0) return false;
+  const ids = new Set(monuments.map((m) => m.id));
+  // Drop earlier fake data for this city (routes first: route_stops RESTRICT monuments).
+  const cityDbId = ensureCityRow(cityId);
+  db.withTransactionSync(() => {
+    db.runSync(`DELETE FROM routes WHERE city_id = ? AND substr(slug, 1, 5) = 'test_'`, [cityDbId]);
+    db.runSync(`DELETE FROM monuments WHERE city_id = ? AND substr(slug, 1, 5) = 'test_'`, [cityDbId]);
+  });
+  upsertMonumentsFromApi(
+    cityId,
+    monuments.map((m) => ({
+      ...m,
+      image_url: `https://picsum.photos/seed/${m.id}/600/750`,
+    })),
+  );
+  upsertMonumentTranslationsFromApi(
+    (realTranslations as ApiMonumentTranslation[]).filter((t) => ids.has(t.monument_id)),
+  );
+  upsertMonumentFieldConfigsFromApi(
+    (realFieldConfigs as ApiMonumentFieldConfig[]).filter((c) => ids.has(c.monument_id)),
+  );
+  return true;
+}
+
+/** Inserts dev monuments for `cityId` if it has none. Returns true when anything was written. */
 export function seedTestMonumentsIfEmpty(cityId: string): boolean {
   if (!__DEV__) return false;
-  if (getMonumentCountByCity(cityId) > 0) return false;
+  const hasOnlyFakes = getMonumentCountByCity(cityId) > 0 && cityHasOnlyTestMonuments(cityId);
+  if (getMonumentCountByCity(cityId) > 0 && !hasOnlyFakes) return false;
+  if (seedRealMonuments(cityId)) return true;
+  if (hasOnlyFakes) return false;
 
   const monuments: ApiMonument[] = [];
   const translations: ApiMonumentTranslation[] = [];
@@ -332,7 +380,7 @@ export function seedTestRoutesIfEmpty(cityId: string): boolean {
   if (!__DEV__) return false;
   if (getAllRoutes('ru', cityId).length > 0) return false;
   // Routes need the test monuments to exist.
-  if (getMonumentCountByCity(cityId) === 0) return false;
+  if (getMonumentDbIdBySlug(`test_${cityId}_${TEST_ROUTES[0].stops[0]}`) === null) return false;
 
   const slug = (key: string) => `test_${cityId}_${key}`;
   upsertRoutesFromSync(
