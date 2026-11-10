@@ -35,6 +35,7 @@ import {
   Pressable,
   RefreshControl,
   ScrollView,
+  type ScrollViewInstance,
   StatusBar,
   StyleSheet,
   Text,
@@ -260,7 +261,7 @@ export default function OverviewTabScreen() {
   const { colors, isDark } = useTheme();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<ScrollViewInstance>(null);
   const loadNextPageRef = useRef<(cityId: string, force?: boolean) => Promise<void>>(async () => {});
   const isSyncRunningRef = useRef(false);
   useScrollToTop(scrollRef);
@@ -709,9 +710,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: '#E5E5EA',
   },
-  cardImage: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
+  cardImage: { ...StyleSheet.absoluteFill, width: '100%', height: '100%' },
   cardGradient: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(0,0,0,0)',
     backgroundImage: undefined,
     justifyContent: 'space-between',

@@ -12,6 +12,7 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  type ScrollViewInstance,
   StatusBar,
   StyleSheet,
   Text,
@@ -133,7 +134,7 @@ export default function RoutesTabScreen() {
   const { colors, isDark } = useTheme();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<ScrollViewInstance>(null);
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState('all');
   const [sortMode, setSortMode] = useState<SortMode>('default');

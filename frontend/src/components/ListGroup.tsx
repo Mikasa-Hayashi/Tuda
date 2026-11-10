@@ -3,6 +3,7 @@ import { SymbolView, type SFSymbol } from 'expo-symbols';
 import React from 'react';
 import {
   Pressable,
+  type ColorValue,
   StyleSheet,
   Switch,
   Text,
@@ -30,7 +31,7 @@ export function SymbolIcon({
   sf: SFSymbol;
   fallback: IconName;
   size: number;
-  color: string;
+  color: ColorValue;
   weight?: 'regular' | 'medium' | 'semibold' | 'bold';
 }) {
   return (
@@ -40,7 +41,7 @@ export function SymbolIcon({
       tintColor={color}
       weight={weight}
       style={{ width: size, height: size }}
-      fallback={<Ionicons name={fallback} size={size} color={color} />}
+      fallback={<Ionicons name={fallback} size={size} color={color as string} />}
     />
   );
 }

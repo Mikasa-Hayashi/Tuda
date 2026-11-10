@@ -5,7 +5,7 @@ import { headerStyles } from '@/src/theme/headerStyles';
 import { useTheme } from '@/src/theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -76,7 +76,6 @@ export default function MapTabScreen() {
   const { colors, isDark } = useTheme();
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const webviewRef = useRef<WebView>(null);
   const { routeId } = useLocalSearchParams<{ routeId?: string }>();
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const [selectedMonument, setSelectedMonument] = useState<MonumentPreview | null>(null);
@@ -153,7 +152,6 @@ export default function MapTabScreen() {
         )}
         <WebView
           key={`map-${routeId ?? 'all'}-${lang}`}
-          ref={webviewRef}
           source={{ html }}
           style={styles.map}
           onMessage={handleWebViewMessage}

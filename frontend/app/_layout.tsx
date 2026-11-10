@@ -7,6 +7,8 @@ import '../src/i18n/i18n';
 import { ThemeProvider, useTheme } from '../src/theme/ThemeContext';
 import { setupDatabase } from '../src/db/dbInit';
 
+export const unstable_settings = { initialRouteName: 'index' };
+
 setupDatabase();
 
 /**
@@ -28,10 +30,6 @@ function useNativeHeader(title: string) {
     [title, colors.text],
   );
 }
-
-// TEMP diagnostics for the back button that stops responding on the 2nd visit to settings.
-const logNav = (name: string) => (e: { target?: string; data?: unknown }) =>
-  console.log(`[nav] ${name}`, e.target, JSON.stringify(e.data ?? null));
 
 function RootStack() {
   const { t } = useTranslation();
@@ -58,16 +56,7 @@ function RootStack() {
   return (
     <NavThemeProvider value={navTheme}>
       <Stack
-        initialRouteName="index"
         screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}
-        screenListeners={{
-          focus: logNav('focus'),
-          blur: logNav('blur'),
-          beforeRemove: logNav('beforeRemove'),
-          transitionStart: logNav('transitionStart'),
-          transitionEnd: logNav('transitionEnd'),
-          gestureCancel: logNav('gestureCancel'),
-        }}
       >
         <Stack.Screen name="index" />
         <Stack.Screen

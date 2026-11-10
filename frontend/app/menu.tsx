@@ -213,9 +213,9 @@ const styles = StyleSheet.create({
   rowWrapper: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },
   cardPlaceholder: { width: CARD_WIDTH },
   cardContainer: { width: CARD_WIDTH, height: CARD_WIDTH * 1.3, borderRadius: 16, overflow: 'hidden' },
-  cardImage: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
+  cardImage: { ...StyleSheet.absoluteFill, width: '100%', height: '100%' },
   cardOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(0,0,0,0.4)',
     justifyContent: 'space-between',
     padding: 12,
