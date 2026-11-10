@@ -4,9 +4,8 @@ import { headerStyles } from '@/src/theme/headerStyles';
 import { SearchBar } from '@/src/components/SearchBar';
 import { RouteRow } from '@/src/components/RouteRow';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
@@ -213,9 +212,9 @@ const styles = StyleSheet.create({
   rowWrapper: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },
   cardPlaceholder: { width: CARD_WIDTH },
   cardContainer: { width: CARD_WIDTH, height: CARD_WIDTH * 1.3, borderRadius: 16, overflow: 'hidden' },
-  cardImage: { ...StyleSheet.absoluteFillObject, width: '100%', height: '100%' },
+  cardImage: { ...StyleSheet.absoluteFill, width: '100%', height: '100%' },
   cardOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(0,0,0,0.4)',
     justifyContent: 'space-between',
     padding: 12,

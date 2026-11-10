@@ -78,6 +78,8 @@
     "filterApply": "Apply",
     "allObjects": "All objects",
     "locationLabel": "You're now in",
+    "offline": "Offline — showing saved data",
+    "changeCity": "Change city",
     "tags": {
       "top": "Top picks",
       "museums": "Museums",
@@ -105,6 +107,7 @@
     "filterMilitary": "Military",
     "filterWalking": "Walking",
     "sortTitle": "Sort",
+    "stopsCount": "{{count}} stops",
     "aiPromo": "★ New",
     "aiPromoTitle": "Custom AI Route",
     "aiPromoDesc": "Tailored to your time, interests and age"
@@ -188,6 +191,15 @@
     "krasnodar": "Krasnodar",
     "rostov-on-don": "Rostov-on-Don",
     "sevastopol": "Sevastopol"
+  },
+  "cityTaglines": {
+    "maykop": "Foothills of Adygea",
+    "astrakhan": "Volga's watermelon capital",
+    "volgograd": "Hero city on Volga",
+    "elista": "Buddhist steppe capital",
+    "krasnodar": "Kuban's southern capital",
+    "rostov-on-don": "Gateway to Caucasus",
+    "sevastopol": "City of Russian glory"
   },
 
   "monument_fields": {
@@ -280,5 +292,10 @@
     "permission": "Camera access is required",
     "grant": "Allow",
     "maybe": "Is it {{name}}?"
+  },
+  "scan": {
+    "title": "Scanner",
+    "desc": "Point the camera at a monument to learn more about it.",
+    "button": "Open camera"
   }
 }

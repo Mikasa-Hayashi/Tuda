@@ -107,13 +107,13 @@ frontend/
 │   ├── _layout.tsx         # Root layout (DB init, i18n setup)
 │   ├── index.tsx           # Entry / redirect
 │   ├── select-city.tsx     # City picker (merges backend counts + local SQLite totals)
-│   ├── (tabs)/             # Bottom tab navigator
-│   │   ├── overview.tsx    # Monument list + map tabs; triggers backend sync on focus
-│   │   ├── routes.tsx      # Route catalog from local DB
+│   ├── (tabs)/             # Native bottom tab bar (NativeTabs)
+│   │   ├── overview/       # Own Stack (native large title, search bar, ⋯ menu); index.tsx = 2-column monument grid, backend sync on focus
+│   │   ├── routes/         # Own Stack (native large title, search, ⋯ sort menu); index.tsx = route catalog from local DB
 │   │   └── index.tsx       # Map tab (Yandex Maps via WebView)
 │   ├── quiz.tsx            # Monument-specific quiz
 │   ├── route-info.tsx      # Route detail
-│   ├── info.tsx            # Monument detail
+│   ├── info.tsx            # Monument detail (native SwiftUI Form + floating audio-guide button)
 │   ├── camera.tsx
 │   ├── menu.tsx
 │   └── settings.tsx        # Clear local cache
@@ -124,6 +124,7 @@ frontend/
     │   ├── monumentRepository.ts
     │   ├── routeRepository.ts
     │   ├── seed.ts             # seedCitiesOnly() — monuments come from backend sync
+    │   ├── devSeed.ts          # __DEV__-only fake monuments (test_* ids) when backend is unreachable and the city is empty
     │   └── monumentCacheEvents.ts
     ├── services/
     │   └── monumentsApi.ts     # fetch wrappers: counts, sync, paginated list, detail, search
@@ -155,4 +156,4 @@ The app targets iOS and must use **only native elements and components**: the sy
 
 - If a native element misbehaves, find the cause (Metro logs, SDK / `react-native-screens` version) or ask the user. Do not swap in a custom component as a workaround without explicit approval.
 - If no native option exists in the current SDK (e.g. a popup menu in a row, native tab bar), stop and ask.
-- Known stop-gaps accepted earlier: `ListGroup`/`ListRow` (iOS-style grouped list built from RN views) and `ScanTabButton` (raised camera button). Replace with native equivalents (`@expo/ui` SwiftUI `Form`/`Menu`, `NativeTabs`) after the Expo SDK upgrade.
+- Known stop-gaps accepted earlier: `ListGroup`/`ListRow` (iOS-style grouped list built from RN views). Replace with native equivalents (`@expo/ui` SwiftUI `Form`/`Menu`). The tab bar is native (`NativeTabs` from `expo-router/native-tabs`); the center "scan" tab is a regular screen with a native SwiftUI glass button (`@expo/ui`) that opens `/camera`. `src/components/ScanTabButton.tsx` is unused and can be deleted.

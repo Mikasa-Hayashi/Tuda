@@ -4,9 +4,8 @@ import { getResolvedRouteMapPoints, getRouteById } from '@/src/db/routeRepositor
 import { headerStyles } from '@/src/theme/headerStyles';
 import { useTheme } from '@/src/theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

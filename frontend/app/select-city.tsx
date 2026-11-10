@@ -1,6 +1,6 @@
 import { CITIES, findClosestCity } from '@/src/data/cities';
+import { CITY_IMAGES } from '@/src/data/cityImages';
 import {
-  getMonumentCountsByCity,
   upsertMonumentFieldConfigsFromApi,
   upsertMonumentsFromApi,
   upsertMonumentTranslationsFromApi,
@@ -10,7 +10,7 @@ import {
   upsertRouteStopsFromSync,
   upsertRouteTranslationsFromSync,
 } from '@/src/db/routeRepository';
-import { fetchMonumentCountsByCity, downloadCityData } from '@/src/services/monumentsApi';
+import { downloadCityData } from '@/src/services/monumentsApi';
 import {
   getDownloadedCityIds,
   getOnboardingDone,
@@ -20,157 +20,156 @@ import {
   setSelectedCityId,
 } from '@/src/storage/citySelection';
 import { useTheme } from '@/src/theme/ThemeContext';
-import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
-  ActivityIndicator,
-  Animated,
-  Pressable,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
+  Button,
+  Form,
+  Host,
+  HStack,
+  Image,
+  ProgressView,
+  RNHostView,
+  Section,
+  Spacer,
   Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+  VStack,
+} from '@expo/ui/swift-ui';
+import {
+  buttonStyle,
+  contentShape,
+  controlSize,
+  disabled,
+  font,
+  foregroundStyle,
+  frame,
+  listRowBackground,
+  listRowSeparator,
+  padding,
+  preferredColorScheme,
+  shapes,
+  strokeBorder,
+} from '@expo/ui/swift-ui/modifiers';
+import { Image as CityImage } from 'expo-image';
+import { Stack, useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, Text as RNText, View } from 'react-native';
+import { initialWindowMetrics } from 'react-native-safe-area-context';
 
 type DownloadState = 'idle' | 'downloading' | 'done' | 'error';
-type Colors = ReturnType<typeof useTheme>['colors'];
 
-const HeroCityCard = ({
-  cityId,
-  cityName,
-  objectsCount,
-  selected,
-  downloaded,
-  downloadState,
-  onSelect,
-  onDownload,
-  colors,
-  t,
-}: {
-  cityId: string;
-  cityName: string;
-  objectsCount: number;
+type CityRowProps = {
+  name: string;
+  tagline: string;
+  imageUri: string | undefined;
   selected: boolean;
   downloaded: boolean;
   downloadState: DownloadState;
+  tintColor: string;
   onSelect: () => void;
   onDownload: () => void;
-  colors: Colors;
-  t: (k: string, opts?: Record<string, unknown>) => string;
-}) => {
-  const isDownloading = downloadState === 'downloading';
-  return (
-    <Pressable
-      onPress={onSelect}
-      style={[styles.heroCard, selected && styles.heroCardSelected]}
-      android_ripple={{ color: 'rgba(255,255,255,0.12)' }}
-    >
-      <View style={styles.heroBadge}>
-        <Text style={styles.heroBadgeText}>
-          {objectsCount > 0 ? t('citySelector.objectsCount', { count: objectsCount }) : '—'}
-        </Text>
-      </View>
-      <View style={styles.heroBottom}>
-        <Text style={styles.heroCityName}>{cityName}</Text>
-        {selected && (
-          <TouchableOpacity
-            onPress={onDownload}
-            disabled={isDownloading || downloaded}
-            style={styles.heroDownloadBtn}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            {isDownloading ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
-            ) : downloaded ? (
-              <Ionicons name="checkmark-circle" size={22} color="rgba(255,255,255,0.9)" />
-            ) : (
-              <Ionicons name="cloud-download-outline" size={22} color="#FFFFFF" />
-            )}
-          </TouchableOpacity>
-        )}
-      </View>
-    </Pressable>
-  );
 };
 
-const CityRow = ({
-  cityName,
-  objectsCount,
+const cityImageStyle = { width: 64, height: 64, borderRadius: 16, backgroundColor: '#8E8E9333' } as const;
+
+/** One native SwiftUI list row: tap to choose the city, trailing icon to download it. */
+function CityRow({
+  name,
+  tagline,
+  imageUri,
   selected,
   downloaded,
   downloadState,
+  tintColor,
   onSelect,
   onDownload,
-  colors,
-  t,
-}: {
-  cityName: string;
-  objectsCount: number;
-  selected: boolean;
-  downloaded: boolean;
-  downloadState: DownloadState;
-  onSelect: () => void;
-  onDownload: () => void;
-  colors: Colors;
-  t: (k: string, opts?: Record<string, unknown>) => string;
-}) => {
+}: CityRowProps) {
   const isDownloading = downloadState === 'downloading';
   return (
-    <Pressable
-      onPress={onSelect}
-      style={[
-        styles.cityRow,
-        {
-          backgroundColor: colors.card,
-          borderColor: selected ? colors.primary : colors.border,
-          borderWidth: selected ? 2 : 1,
-        },
+    <HStack
+      spacing={12}
+      // Every row has the same padding; only the selected one gets a tinted outline (no layout shift).
+      modifiers={[
+        padding({ horizontal: 10, vertical: 6 }),
+        ...(selected
+          ? [
+              strokeBorder({
+                content: tintColor,
+                style: { lineWidth: 2.5 },
+                shape: 'roundedRectangle',
+                cornerRadius: 20,
+              }),
+            ]
+          : []),
       ]}
     >
-      <View style={styles.cityRowLeft}>
-        <Text style={[styles.cityRowName, { color: colors.text }]}>{cityName}</Text>
-        <Text style={[styles.cityRowCount, { color: colors.textMuted }]}>
-          {objectsCount > 0 ? t('citySelector.objectsCount', { count: objectsCount }) : '—'}
-        </Text>
-      </View>
-      <TouchableOpacity
-        onPress={onDownload}
-        disabled={isDownloading || downloaded}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        style={styles.cityRowDownload}
-      >
-        {isDownloading ? (
-          <ActivityIndicator size="small" color={colors.primary} />
-        ) : downloaded ? (
-          <Ionicons name="checkmark-circle" size={22} color={colors.success} />
-        ) : (
-          <Text style={[styles.cityRowDownloadText, { color: colors.primaryDeep }]}>↓</Text>
-        )}
-      </TouchableOpacity>
-    </Pressable>
+      <Button modifiers={[buttonStyle('plain')]} onPress={onSelect}>
+        {/* contentShape makes the whole row (incl. the empty area) tappable, not just the text */}
+        <HStack
+          spacing={14}
+          modifiers={[contentShape(shapes.rectangle())]}
+        >
+          <RNHostView matchContents>
+            <CityImage
+              source={imageUri ? { uri: imageUri } : undefined}
+              style={cityImageStyle}
+              contentFit="cover"
+              cachePolicy="memory-disk"
+            />
+          </RNHostView>
+          <VStack alignment="leading" spacing={3}>
+            <Text
+              modifiers={[
+                font({ textStyle: 'headline' }),
+                ...(selected ? [foregroundStyle(tintColor)] : []),
+              ]}
+            >
+              {name}
+            </Text>
+            <Text
+              modifiers={[
+                font({ textStyle: 'subheadline' }),
+                foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+              ]}
+            >
+              {tagline}
+            </Text>
+          </VStack>
+          <Spacer />
+        </HStack>
+      </Button>
+      {/* Every state gets the same fixed slot, so swapping icons never shifts the row layout. */}
+      {isDownloading ? (
+        <ProgressView modifiers={[frame({ width: 28, height: 28 })]} />
+      ) : downloaded ? (
+        <Image
+          systemName="checkmark.icloud.fill"
+          color="#34C759"
+          size={20}
+          modifiers={[frame({ width: 28, height: 28 })]}
+        />
+      ) : (
+        <Image
+          systemName={downloadState === 'error' ? 'exclamationmark.icloud' : 'icloud.and.arrow.down'}
+          color={downloadState === 'error' ? '#FF3B30' : tintColor}
+          size={20}
+          modifiers={[frame({ width: 28, height: 28 })]}
+          onPress={onDownload}
+        />
+      )}
+    </HStack>
   );
-};
+}
 
 export default function SelectCityScreen() {
   const router = useRouter();
   const { t, i18n } = useTranslation();
   const { colors, isDark } = useTheme();
-  const insets = useSafeAreaInsets();
   const [search, setSearch] = useState('');
   const [selectedCityId, setSelectedCityIdState] = useState<string | null>(null);
   const [downloadedCityIds, setDownloadedCityIdsState] = useState<string[]>([]);
   const [downloadStates, setDownloadStates] = useState<Record<string, DownloadState>>({});
-  const [objectCountsByCity, setObjectCountsByCity] = useState<Record<string, number>>({});
   const [isOnboarding, setIsOnboarding] = useState(false);
   const [detectedCityId, setDetectedCityId] = useState<string | null>(null);
-  const [geoDismissed, setGeoDismissed] = useState(false);
-  const buttonScale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     const load = async () => {
@@ -182,19 +181,6 @@ export default function SelectCityScreen() {
       setSelectedCityIdState(selected);
       setDownloadedCityIdsState(downloaded);
       setIsOnboarding(!onboardingDone);
-
-      const localCounts = getMonumentCountsByCity();
-      try {
-        const apiCounts = await fetchMonumentCountsByCity();
-        const cityIds = new Set([...Object.keys(localCounts), ...Object.keys(apiCounts)]);
-        setObjectCountsByCity(
-          Object.fromEntries(
-            [...cityIds].map((id) => [id, Math.max(localCounts[id] ?? 0, apiCounts[id] ?? 0)]),
-          ),
-        );
-      } catch {
-        setObjectCountsByCity(localCounts);
-      }
     };
     load();
   }, []);
@@ -216,32 +202,16 @@ export default function SelectCityScreen() {
     detect();
   }, [isOnboarding]);
 
-  const filteredCities = useMemo(() => {
+  // Always alphabetical; the selected city is only highlighted, never moved.
+  const cities = useMemo(() => {
     const q = search.trim().toLowerCase();
-    const base = !q
-      ? CITIES
-      : CITIES.filter((c) => t(`cities.${c.id}`).toLowerCase().includes(q));
+    const base = q ? CITIES.filter((c) => t(`cities.${c.id}`).toLowerCase().includes(q)) : CITIES;
     return [...base].sort((a, b) =>
       t(`cities.${a.id}`).localeCompare(t(`cities.${b.id}`), i18n.language, {
         sensitivity: 'base',
       }),
     );
   }, [search, t, i18n.language]);
-
-  const heroCity = useMemo(() => {
-    if (search.trim() || filteredCities.length === 0) return null;
-    const withCounts = filteredCities.map((c) => ({
-      city: c,
-      count: objectCountsByCity[c.id] ?? 0,
-    }));
-    withCounts.sort((a, b) => b.count - a.count || a.city.id.localeCompare(b.city.id));
-    return withCounts[0].city;
-  }, [filteredCities, objectCountsByCity, search]);
-
-  const listCities = useMemo(
-    () => (heroCity ? filteredCities.filter((c) => c.id !== heroCity.id) : filteredCities),
-    [filteredCities, heroCity],
-  );
 
   const handleDownload = useCallback(async (cityId: string) => {
     setDownloadStates((prev) => ({ ...prev, [cityId]: 'downloading' }));
@@ -264,289 +234,121 @@ export default function SelectCityScreen() {
     }
   }, []);
 
+  // Tapping a row only marks it; the choice is saved when the user confirms with "Continue".
+  const handleSelect = useCallback((cityId: string) => {
+    setSelectedCityIdState(cityId);
+  }, []);
+
   const handleContinue = async () => {
     if (!selectedCityId) return;
-    Animated.sequence([
-      Animated.timing(buttonScale, { toValue: 0.96, duration: 80, useNativeDriver: true }),
-      Animated.timing(buttonScale, { toValue: 1, duration: 80, useNativeDriver: true }),
-    ]).start();
     await Promise.all([setSelectedCityId(selectedCityId), setOnboardingDone(true)]);
-    router.replace('/overview');
+    if (isOnboarding) router.replace('/overview');
+    else router.back(); // opened as a sheet over the home screen: just dismiss it
   };
 
-  const showGeoBanner = detectedCityId && !geoDismissed && !selectedCityId;
+  const scheme = preferredColorScheme(isDark ? 'dark' : 'light');
+  const showDetected = isOnboarding && detectedCityId && !selectedCityId && search.trim() === '';
+
+  const renderRow = (cityId: string) => (
+    <CityRow
+      key={cityId}
+      name={t(`cities.${cityId}`)}
+      tagline={t(`cityTaglines.${cityId}`)}
+      imageUri={CITY_IMAGES[cityId]}
+      selected={cityId === selectedCityId}
+      downloaded={downloadedCityIds.includes(cityId)}
+      downloadState={downloadStates[cityId] ?? 'idle'}
+      tintColor={colors.primary}
+      onSelect={() => handleSelect(cityId)}
+      onDownload={() => handleDownload(cityId)}
+    />
+  );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+    <>
+      <Stack.Title>{t('citySelector.whereAreWeGoing')}</Stack.Title>
+      <Stack.SearchBar
+        placement="stacked"
+        placeholder={t('citySelector.searchPlaceholder')}
+        autoCapitalize="none"
+        onChangeText={(e) => setSearch(e.nativeEvent.text)}
+        onCancelButtonPress={() => setSearch('')}
+      />
+      {!isOnboarding && (
+        <Stack.Toolbar placement="right">
+          <Stack.Toolbar.Button icon="xmark" onPress={() => router.back()} />
+        </Stack.Toolbar>
+      )}
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingTop: insets.top + 16, paddingBottom: 100 },
-        ]}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <Text style={[styles.title, { color: colors.text }]}>
-          {t('citySelector.whereAreWeGoing')}
-        </Text>
-        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-          {t('citySelector.whereDesc')}
-        </Text>
-
-        {showGeoBanner && (
-          <View
-            style={[
-              styles.geoBanner,
-              { backgroundColor: colors.primaryDim, borderColor: colors.primary },
-            ]}
-          >
-            <Ionicons name="location" size={16} color={colors.primary} />
-            <Text style={[styles.geoBannerText, { color: colors.text }]}>
-              {t('citySelector.detected')}{' '}
-              <Text style={{ fontWeight: '700', color: colors.primary }}>
-                {t(`cities.${detectedCityId}`)}
-              </Text>
-            </Text>
-            <View style={styles.geoBannerActions}>
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedCityIdState(detectedCityId);
-                  setGeoDismissed(true);
-                }}
-                style={[styles.geoBannerBtn, { backgroundColor: colors.primary }]}
+      <View style={styles.container}>
+        <Host style={styles.list} useViewportSizeMeasurement modifiers={[scheme]}>
+          <Form>
+            {showDetected && detectedCityId ? (
+              <Section title={t('citySelector.detected').replace(/:$/, '')}>
+                {renderRow(detectedCityId)}
+              </Section>
+            ) : (
+              <Section
+                footer={
+                  isOnboarding ? (
+                    <Text modifiers={[font({ textStyle: 'footnote' })]}>
+                      {t('citySelector.whereDesc')}
+                    </Text>
+                  ) : undefined
+                }
               >
-                <Text style={[styles.geoBannerBtnText, { color: '#FFFFFF' }]}>{t('citySelector.select')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setGeoDismissed(true)} style={styles.geoBannerDismiss}>
-                <Ionicons name="close" size={16} color={colors.textMuted} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-
-        <View
-          style={[
-            styles.searchBar,
-            { backgroundColor: colors.card, borderColor: colors.border },
-          ]}
-        >
-          <Ionicons name="search-outline" size={18} color={colors.textMuted} />
-          <TextInput
-            style={[styles.searchInput, { color: colors.text }]}
-            placeholder={t('citySelector.searchPlaceholder')}
-            placeholderTextColor={colors.textMuted}
-            value={search}
-            onChangeText={setSearch}
-            returnKeyType="search"
-            autoCorrect={false}
-          />
-          {search.length > 0 && (
-            <TouchableOpacity onPress={() => setSearch('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <Ionicons name="close-circle" size={18} color={colors.textMuted} />
-            </TouchableOpacity>
-          )}
-        </View>
-
-        {heroCity && (
-          <>
-            <Text style={[styles.sectionLabel, { color: colors.primaryDeep }]}>
-              {t('citySelector.popular')}
-            </Text>
-            <HeroCityCard
-              cityId={heroCity.id}
-              cityName={t(`cities.${heroCity.id}`)}
-              objectsCount={objectCountsByCity[heroCity.id] ?? 0}
-              selected={heroCity.id === selectedCityId}
-              downloaded={downloadedCityIds.includes(heroCity.id)}
-              downloadState={downloadStates[heroCity.id] ?? 'idle'}
-              onSelect={() => setSelectedCityIdState(heroCity.id)}
-              onDownload={() => handleDownload(heroCity.id)}
-              colors={colors}
-              t={t}
-            />
-          </>
-        )}
-
-        {listCities.length > 0 && (
-          <View style={styles.listSection}>
-            {listCities.map((city) => (
-              <CityRow
-                key={city.id}
-                cityName={t(`cities.${city.id}`)}
-                objectsCount={objectCountsByCity[city.id] ?? 0}
-                selected={city.id === selectedCityId}
-                downloaded={downloadedCityIds.includes(city.id)}
-                downloadState={downloadStates[city.id] ?? 'idle'}
-                onSelect={() => setSelectedCityIdState(city.id)}
-                onDownload={() => handleDownload(city.id)}
-                colors={colors}
-                t={t}
+                {cities.map((c) => renderRow(c.id))}
+              </Section>
+            )}
+            {showDetected && (
+              <Section>{cities.filter((c) => c.id !== detectedCityId).map((c) => renderRow(c.id))}</Section>
+            )}
+            {/* Transparent spacer row: lets the last city scroll clear of the floating button. */}
+            <Section>
+              <Spacer
+                modifiers={[
+                  frame({ height: 72 }),
+                  listRowBackground('#00000000'),
+                  listRowSeparator('hidden'),
+                ]}
               />
-            ))}
-          </View>
+            </Section>
+          </Form>
+        </Host>
+
+        {cities.length === 0 && (
+          <RNText style={[styles.empty, { color: colors.textMuted }]}>
+            {t('citySelector.noResults')}
+          </RNText>
         )}
 
-        {filteredCities.length === 0 && (
-          <View style={styles.emptyWrap}>
-            <Text style={[styles.emptyText, { color: colors.textMuted }]}>
-              {t('citySelector.noResults')}
-            </Text>
-          </View>
-        )}
-      </ScrollView>
-
-      <View
-        style={[
-          styles.bottomBar,
-          {
-            backgroundColor: colors.background,
-            borderTopColor: colors.separator,
-            paddingBottom: insets.bottom + 10,
-          },
-        ]}
-      >
-        {!selectedCityId && (
-          <Text style={[styles.selectHint, { color: colors.textMuted }]}>
-            {t('citySelector.selectHint')}
-          </Text>
-        )}
-        <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
-          <TouchableOpacity
-            style={[
-              styles.ctaButton,
-              {
-                backgroundColor: selectedCityId ? colors.primary : colors.cardElevated,
-                opacity: selectedCityId ? 1 : 0.6,
-              },
-            ]}
-            onPress={handleContinue}
-            disabled={!selectedCityId}
-            activeOpacity={0.85}
-          >
-            <Text
-              style={[
-                styles.ctaText,
-                { color: selectedCityId ? '#FFFFFF' : colors.textMuted },
+        {/* Floating glass button over the list — no backing bar. */}
+        <View
+          pointerEvents="box-none"
+          style={[styles.floating, { bottom: (initialWindowMetrics?.insets.bottom ?? 0) + 8 }]}
+        >
+          <Host style={styles.continueHost} modifiers={[scheme]}>
+            <Button
+              label={t('citySelector.continue')}
+              onPress={handleContinue}
+              modifiers={[
+                buttonStyle('glassProminent'),
+                controlSize('large'),
+                frame({ maxWidth: 10000 }),
+                disabled(!selectedCityId),
               ]}
-            >
-              {t('citySelector.continue')}
-            </Text>
-          </TouchableOpacity>
-        </Animated.View>
+            />
+          </Host>
+        </View>
       </View>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  scroll: { flex: 1 },
-  scrollContent: { paddingHorizontal: 18 },
-  title: {
-    fontSize: 26,
-    fontWeight: '800',
-    letterSpacing: -0.5,
-    marginBottom: 6,
-  },
-  subtitle: { fontSize: 15, lineHeight: 22, marginBottom: 20 },
-  geoBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 14,
-  },
-  geoBannerText: { flex: 1, fontSize: 14 },
-  geoBannerActions: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  geoBannerBtn: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 8 },
-  geoBannerBtnText: { fontSize: 13, fontWeight: '700' },
-  geoBannerDismiss: { padding: 4 },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    borderWidth: 1,
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    marginBottom: 22,
-  },
-  searchInput: { flex: 1, fontSize: 15, height: 22 },
-  sectionLabel: {
-    fontSize: 13,
-    fontWeight: '700',
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
-    marginBottom: 12,
-  },
-  heroCard: {
-    borderRadius: 18,
-    height: 128,
-    backgroundColor: '#007AFF',
-    padding: 14,
-    justifyContent: 'space-between',
-    marginBottom: 18,
-    shadowColor: '#8E4A12',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
-    elevation: 5,
-  },
-  heroCardSelected: {
-    shadowOpacity: 0.4,
-    shadowRadius: 24,
-  },
-  heroBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255,255,255,0.18)',
-    borderColor: 'rgba(255,255,255,0.5)',
-    borderWidth: 1,
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  heroBadgeText: { color: '#FFFFFF', fontSize: 11, fontWeight: '700' },
-  heroBottom: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-between',
-  },
-  heroCityName: { color: '#FFFFFF', fontSize: 22, fontWeight: '800' },
-  heroDownloadBtn: { padding: 4 },
-  listSection: { gap: 11 },
-  cityRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: 14,
-    paddingHorizontal: 15,
-    paddingVertical: 13,
-  },
-  cityRowLeft: { flex: 1 },
-  cityRowName: { fontSize: 16, fontWeight: '700', marginBottom: 2 },
-  cityRowCount: { fontSize: 12 },
-  cityRowDownload: { padding: 4 },
-  cityRowDownloadText: { fontSize: 20, fontWeight: '600' },
-  emptyWrap: { alignItems: 'center', paddingTop: 32 },
-  emptyText: { fontSize: 16 },
-  bottomBar: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    paddingHorizontal: 18,
-    paddingTop: 12,
-    gap: 8,
-  },
-  selectHint: { fontSize: 13, textAlign: 'center', fontWeight: '500' },
-  ctaButton: {
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 54,
-  },
-  ctaText: { fontSize: 17, fontWeight: '700' },
+  list: { flex: 1 },
+  empty: { position: 'absolute', alignSelf: 'center', top: 120, fontSize: 17 },
+  floating: { position: 'absolute', left: 20, right: 20 },
+  continueHost: { height: 52 },
 });

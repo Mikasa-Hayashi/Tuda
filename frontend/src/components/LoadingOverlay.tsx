@@ -1,34 +1,43 @@
 import React from 'react';
-import { ActivityIndicator, Modal, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, PlatformColor, StyleSheet, Text, View } from 'react-native';
 
 type LoadingOverlayProps = {
   visible: boolean;
   text?: string;
 };
 
-export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ visible, text = 'Загрузка...' }) => (
-  <Modal transparent visible={visible} animationType="fade">
-    <View style={styles.overlay}>
+/**
+ * Full-screen "busy" HUD. Rendered in place (not in a <Modal>) so it can never get stuck
+ * above native screen transitions; it swallows touches while visible.
+ */
+export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ visible, text }) => {
+  if (!visible) return null;
+  return (
+    <View style={styles.overlay} pointerEvents="auto" accessibilityViewIsModal>
       <View style={styles.box}>
-        <ActivityIndicator size="large" color="#fff" />
-        <Text style={styles.text}>{text}</Text>
+        <ActivityIndicator size="large" />
+        {text ? <Text style={styles.text}>{text}</Text> : null}
       </View>
     </View>
-  </Modal>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.75)',
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'rgba(0,0,0,0.25)',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 100,
   },
   box: {
-    padding: 24,
-    borderRadius: 16,
-    backgroundColor: 'rgba(0,0,0,0.85)',
+    minWidth: 120,
+    paddingVertical: 22,
+    paddingHorizontal: 26,
+    borderRadius: 20,
+    gap: 12,
     alignItems: 'center',
+    backgroundColor: PlatformColor('secondarySystemBackground'),
   },
-  text: { marginTop: 12, color: '#fff', fontSize: 16 },
+  text: { fontSize: 15, fontWeight: '500', color: PlatformColor('label') },
 });

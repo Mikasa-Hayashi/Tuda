@@ -3,41 +3,67 @@ import {
   upsertMonumentFieldConfigsFromApi,
   upsertMonumentTranslationsFromApi,
 } from '@/src/db/monumentRepository';
+import type { Monument } from '@/src/db/monumentRepository';
 import { fetchMonumentDetail } from '@/src/services/monumentsApi';
-import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useTheme } from '@/src/theme/ThemeContext';
+import {
+  Button,
+  Form,
+  Host,
+  HStack,
+  Image as SymbolImage,
+  LabeledContent,
+  RNHostView,
+  Section,
+  Spacer,
+  Text,
+  VStack,
+} from '@expo/ui/swift-ui';
+import {
+  buttonStyle,
+  controlSize,
+  font,
+  foregroundStyle,
+  frame,
+  lineLimit,
+  listRowBackground,
+  listRowInsets,
+  listRowSeparator,
+  preferredColorScheme,
+} from '@expo/ui/swift-ui/modifiers';
+import { Image } from 'expo-image';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
-  Dimensions,
-  Image,
-  Pressable,
-  ScrollView,
-  StatusBar,
+  Share,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
+  useWindowDimensions,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../src/theme/ThemeContext';
-import type { Monument } from '../src/db/monumentRepository';
+import { initialWindowMetrics } from 'react-native-safe-area-context';
+
+const CLEAR = '#00000000';
+/** Form rows are inset by the system's grouped-list margin on each side. */
+const FORM_MARGIN = 16;
+const COLLAPSED_LINES = 5;
+const LONG_DESCRIPTION = 200;
 
 export default function MonumentDetailScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t, i18n } = useTranslation();
+  const { width } = useWindowDimensions();
   const [descExpanded, setDescExpanded] = useState(false);
   const [monument, setMonument] = useState<Monument | null>(() =>
     getMonumentById(id ?? '', i18n.language),
   );
-  const [isFetching, setIsFetching] = useState(false);
+  const [fetchDone, setFetchDone] = useState(false);
 
   useEffect(() => {
     if (monument?.name) return;
-    setIsFetching(true);
     fetchMonumentDetail(id ?? '')
       .then((detail) => {
         upsertMonumentTranslationsFromApi(detail.translations);
@@ -47,271 +73,196 @@ export default function MonumentDetailScreen() {
         setMonument(getMonumentById(id ?? '', i18n.language));
       })
       .catch(() => {})
-      .finally(() => setIsFetching(false));
+      .finally(() => setFetchDone(true));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, i18n.language]);
 
-  if (!monument && isFetching) {
-    return (
-      <View style={[styles.container, styles.centered, { backgroundColor: colors.background }]}>
-        <SafeAreaView edges={['top']} style={styles.fetchingNav}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.floatBtn}>
-            <Ionicons name="chevron-back" size={20} color={colors.text} />
-          </TouchableOpacity>
-        </SafeAreaView>
-        <ActivityIndicator size="large" color={colors.primary} />
-      </View>
-    );
-  }
+  // Spinner while the monument isn't cached and the detail request is still in flight.
+  const isFetching = !monument && !fetchDone;
+  const scheme = preferredColorScheme(isDark ? 'dark' : 'light');
+  const heroWidth = width - FORM_MARGIN * 2;
+  const heroHeight = Math.round((heroWidth * 3) / 4);
 
   if (!monument) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <SafeAreaView edges={['top']}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.floatBtn}>
-            <Ionicons name="chevron-back" size={20} color="#FFFFFF" />
-          </TouchableOpacity>
-        </SafeAreaView>
+      <View style={[styles.container, styles.centered, { backgroundColor: colors.background }]}>
+        {isFetching && <ActivityIndicator size="large" />}
       </View>
     );
   }
 
-  const shortDesc = monument.description.slice(0, 200);
-  const hasMore = monument.description.length > 200;
+  const hasMore = monument.description.length > LONG_DESCRIPTION;
+
+  const shareMonument = () =>
+    Share.share({
+      message: monument.location ? `${monument.name} — ${monument.location}` : monument.name,
+    }).catch(() => {});
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="light-content" />
-      <ScrollView contentContainerStyle={styles.scrollContent} bounces={false}>
-        <View style={styles.heroWrap}>
-          <Image source={{ uri: monument.imageUrl }} style={styles.heroImage} resizeMode="cover" />
-          <View style={[StyleSheet.absoluteFill, styles.heroOverlay]} />
-          <SafeAreaView edges={['top']} style={styles.heroNav}>
-            <TouchableOpacity onPress={() => router.back()} style={styles.floatBtn}>
-              <Ionicons name="chevron-back" size={20} color="#FFFFFF" />
-            </TouchableOpacity>
-            <View style={styles.heroNavRight}>
-              <Pressable style={styles.floatBtn}>
-                <Ionicons name="heart-outline" size={20} color="#FFFFFF" />
-              </Pressable>
-              <Pressable style={styles.floatBtn}>
-                <Ionicons name="share-outline" size={20} color="#FFFFFF" />
-              </Pressable>
-            </View>
-          </SafeAreaView>
-          <View style={styles.heroTextWrap}>
-            <Text style={styles.heroTitle}>{monument.name}</Text>
-            {monument.location ? (
-              <View style={styles.heroLocation}>
-                <Ionicons name="location-sharp" size={13} color="rgba(255,255,255,0.8)" />
-                <Text style={styles.heroLocationText}>{monument.location}</Text>
-              </View>
-            ) : null}
-          </View>
-        </View>
+    <>
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button icon="square.and.arrow.up" onPress={shareMonument} />
+      </Stack.Toolbar>
 
-        <View style={[styles.content, { backgroundColor: colors.background }]}>
-          <TouchableOpacity
-            style={[styles.primaryBtn, { backgroundColor: colors.primary }]}
-            activeOpacity={0.85}
-            onPress={() => router.push(`/audio-guide?id=${monument.id}&name=${monument.name}`)}
-          >
-            <Text style={styles.primaryBtnText}>🎧 {t('info.audioGuide')}</Text>
-          </TouchableOpacity>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <Host style={styles.container} useViewportSizeMeasurement modifiers={[scheme]}>
+          <Form>
+            {/* Cover */}
+            <Section>
+              <HStack
+                modifiers={[
+                  listRowInsets({ top: 0, leading: 0, bottom: 0, trailing: 0 }),
+                  listRowBackground(CLEAR),
+                ]}
+              >
+                <RNHostView matchContents>
+                  <Image
+                    source={monument.imageUrl ? { uri: monument.imageUrl } : undefined}
+                    style={{
+                      width: heroWidth,
+                      height: heroHeight,
+                      borderRadius: 20,
+                      backgroundColor: colors.cardElevated,
+                    }}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                  />
+                </RNHostView>
+              </HStack>
+            </Section>
 
-          {monument.description ? (
-            <View style={styles.section}>
-              <Text style={[styles.sectionLabel, { color: colors.primaryDeep }]}>
-                {t('info.historyInfo')}
-              </Text>
-              <Text style={[styles.bodyText, { color: colors.textSecondary }]}>
-                {descExpanded ? monument.description : shortDesc}
-                {!descExpanded && hasMore ? '…' : null}
-              </Text>
-              {hasMore && !descExpanded && (
-                <TouchableOpacity onPress={() => setDescExpanded(true)}>
-                  <Text style={[styles.readMore, { color: '#0A84FF' }]}>
-                    {' '}{t('info.readMore')}
+            {/* Title, address, description */}
+            <Section>
+              <VStack
+                alignment="leading"
+                spacing={8}
+                modifiers={[
+                  frame({ maxWidth: 10000, alignment: 'leading' }),
+                  listRowBackground(CLEAR),
+                  listRowSeparator('hidden'),
+                ]}
+              >
+                <Text modifiers={[font({ textStyle: 'title', weight: 'bold' })]}>
+                  {monument.name}
+                </Text>
+                {monument.location ? (
+                  <HStack spacing={5}>
+                    <SymbolImage
+                      systemName="mappin.and.ellipse"
+                      size={14}
+                      color={colors.textMuted}
+                    />
+                    <Text
+                      modifiers={[
+                        font({ textStyle: 'subheadline' }),
+                        foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                      ]}
+                    >
+                      {monument.location}
+                    </Text>
+                  </HStack>
+                ) : null}
+                {monument.description ? (
+                  <Text
+                    modifiers={[
+                      font({ textStyle: 'body' }),
+                      foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                      descExpanded || !hasMore ? lineLimit() : lineLimit(COLLAPSED_LINES),
+                    ]}
+                  >
+                    {monument.description}
                   </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          ) : null}
+                ) : null}
+                {hasMore && !descExpanded && (
+                  <Button
+                    label={t('info.readMore')}
+                    onPress={() => setDescExpanded(true)}
+                    modifiers={[buttonStyle('borderless')]}
+                  />
+                )}
+              </VStack>
+            </Section>
 
-          {monument.details.length > 0 && (
-            <View style={styles.section}>
-              <Text style={[styles.sectionLabel, { color: colors.primaryDeep }]}>
-                {t('info.architectureDetails')}
-              </Text>
-              <View
-                style={[
-                  styles.table,
-                  { backgroundColor: colors.card, borderColor: colors.border },
-                ]}
-              >
+            {/* Architecture details */}
+            {monument.details.length > 0 && (
+              <Section title={t('info.architectureDetails')}>
                 {monument.details.map((item, i) => (
-                  <View
-                    key={i}
-                    style={[
-                      styles.tableRow,
-                      { borderBottomColor: colors.separator },
-                      i === monument.details.length - 1 && styles.tableRowLast,
-                    ]}
-                  >
-                    <Text style={[styles.tableLabel, { color: colors.textMuted }]}>
-                      {t(item.labelKey)}
-                    </Text>
-                    <Text style={[styles.tableValue, { color: colors.text }]}>
-                      {item.value ?? '—'}
-                    </Text>
-                  </View>
+                  <LabeledContent key={`d-${i}`} label={t(item.labelKey)}>
+                    <Text>{item.value ?? '—'}</Text>
+                  </LabeledContent>
                 ))}
-              </View>
-            </View>
-          )}
+              </Section>
+            )}
 
-          {monument.visitors.length > 0 && (
-            <View style={styles.section}>
-              <Text style={[styles.sectionLabel, { color: colors.primaryDeep }]}>
-                {t('info.tourismInfo')}
-              </Text>
-              <View
-                style={[
-                  styles.table,
-                  { backgroundColor: colors.card, borderColor: colors.border },
-                ]}
-              >
+            {/* Tourism info */}
+            {monument.visitors.length > 0 && (
+              <Section title={t('info.tourismInfo')}>
                 {monument.visitors.map((item, i) => (
-                  <View
-                    key={i}
-                    style={[
-                      styles.tableRow,
-                      { borderBottomColor: colors.separator },
-                      i === monument.visitors.length - 1 && styles.tableRowLast,
-                    ]}
-                  >
-                    <Text style={[styles.tableLabel, { color: colors.textMuted }]}>
-                      {t(item.labelKey)}
-                    </Text>
-                    <Text style={[styles.tableValue, { color: colors.text }]}>
-                      {item.value ?? '—'}
-                    </Text>
-                  </View>
+                  <LabeledContent key={`v-${i}`} label={t(item.labelKey)}>
+                    <Text>{item.value ?? '—'}</Text>
+                  </LabeledContent>
                 ))}
-              </View>
-            </View>
-          )}
+              </Section>
+            )}
 
-          <TouchableOpacity
-            style={[styles.ghostBtn, { borderColor: colors.border }]}
-            activeOpacity={0.75}
-            onPress={() => router.push(`/quiz?id=${monument.id}&name=${monument.name}`)}
-          >
-            <Text style={[styles.ghostBtnText, { color: colors.text }]}>
-              🏆 {t('info.play_quiz')}
-            </Text>
-          </TouchableOpacity>
+            {/* Quiz */}
+            <Section>
+              <Button
+                label={t('info.play_quiz')}
+                systemImage="trophy"
+                onPress={() =>
+                  router.push({
+                    pathname: '/quiz',
+                    params: { id: monument.id, name: monument.name },
+                  })
+                }
+              />
+            </Section>
+
+            {/* Transparent spacer row: lets the last row scroll clear of the floating button. */}
+            <Section>
+              <Spacer
+                modifiers={[
+                  frame({ height: 72 }),
+                  listRowBackground(CLEAR),
+                  listRowSeparator('hidden'),
+                ]}
+              />
+            </Section>
+          </Form>
+        </Host>
+
+        {/* Floating glass audio-guide button over the list. */}
+        <View
+          pointerEvents="box-none"
+          style={[styles.floating, { bottom: (initialWindowMetrics?.insets.bottom ?? 0) + 8 }]}
+        >
+          <Host style={styles.audioHost} modifiers={[scheme]}>
+            <Button
+              label={t('info.audioGuide')}
+              systemImage="headphones"
+              onPress={() =>
+                router.push({
+                  pathname: '/audio-guide',
+                  params: { id: monument.id, name: monument.name },
+                })
+              }
+              modifiers={[
+                buttonStyle('glassProminent'),
+                controlSize('large'),
+                frame({ maxWidth: 10000 }),
+              ]}
+            />
+          </Host>
         </View>
-      </ScrollView>
-    </View>
+      </View>
+    </>
   );
 }
-
-const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
   centered: { alignItems: 'center', justifyContent: 'center' },
-  fetchingNav: { position: 'absolute', top: 0, left: 14 },
-  scrollContent: { paddingBottom: 40 },
-  heroWrap: { position: 'relative', height: 300 },
-  heroImage: { width, height: 300 },
-  heroOverlay: { backgroundColor: 'rgba(0,0,0,0.18)' },
-  heroNav: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-    paddingTop: 6,
-  },
-  heroNavRight: { flexDirection: 'row', gap: 10 },
-  floatBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  heroTextWrap: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 18,
-    paddingBottom: 20,
-    paddingTop: 60,
-    backgroundColor: 'rgba(0,0,0,0.52)',
-  },
-  heroTitle: {
-    color: '#FFFFFF',
-    fontSize: 26,
-    fontWeight: '800',
-    lineHeight: 30,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  heroLocation: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 6 },
-  heroLocationText: {
-    color: 'rgba(255,255,255,0.85)',
-    fontSize: 13,
-    textShadowColor: 'rgba(0,0,0,0.4)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
-  },
-  content: { paddingHorizontal: 18, paddingTop: 18 },
-  primaryBtn: {
-    borderRadius: 16,
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  primaryBtnText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
-  section: { marginBottom: 22 },
-  sectionLabel: {
-    fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
-    marginBottom: 10,
-  },
-  bodyText: { fontSize: 15, lineHeight: 24 },
-  readMore: { fontSize: 15, fontWeight: '600' },
-  table: {
-    borderRadius: 14,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  tableRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  tableRowLast: { borderBottomWidth: 0 },
-  tableLabel: { fontSize: 14, flex: 1, paddingRight: 12 },
-  tableValue: { fontSize: 14, fontWeight: '600', textAlign: 'right', flex: 1 },
-  ghostBtn: {
-    borderWidth: 1,
-    borderRadius: 16,
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  ghostBtnText: { fontSize: 16, fontWeight: '700' },
+  floating: { position: 'absolute', left: 20, right: 20 },
+  audioHost: { height: 52 },
 });

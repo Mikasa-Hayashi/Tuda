@@ -1,233 +1,204 @@
-import { getRouteById } from '@/src/db/routeRepository';
-import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { buildYandexRouteUrl, getRouteById } from '@/src/db/routeRepository';
+import { useTheme } from '@/src/theme/ThemeContext';
 import {
-  Dimensions,
-  Image,
-  Pressable,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
+  Button,
+  Form,
+  Host,
+  HStack,
+  Image as SymbolImage,
+  RNHostView,
+  Section,
+  Spacer,
   Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../src/theme/ThemeContext';
+  VStack,
+} from '@expo/ui/swift-ui';
+import {
+  buttonStyle,
+  contentShape,
+  controlSize,
+  font,
+  foregroundStyle,
+  frame,
+  listRowBackground,
+  listRowInsets,
+  listRowSeparator,
+  preferredColorScheme,
+  shapes,
+} from '@expo/ui/swift-ui/modifiers';
+import { Image } from 'expo-image';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Linking, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { initialWindowMetrics } from 'react-native-safe-area-context';
+
+const CLEAR = '#00000000';
+/** Form rows are inset by the system's grouped-list margin on each side. */
+const FORM_MARGIN = 16;
 
 export default function RouteInfoScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t, i18n } = useTranslation();
+  const { width } = useWindowDimensions();
 
-  const route = getRouteById(id ?? '', i18n.language);
+  const route = useMemo(() => getRouteById(id ?? '', i18n.language), [id, i18n.language]);
+  const scheme = preferredColorScheme(isDark ? 'dark' : 'light');
+  const heroWidth = width - FORM_MARGIN * 2;
+  const heroHeight = Math.round((heroWidth * 9) / 16);
 
   if (!route) {
-    return (
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <SafeAreaView edges={['top']}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.floatBtn}>
-            <Ionicons name="chevron-back" size={20} color="#FFFFFF" />
-          </TouchableOpacity>
-        </SafeAreaView>
-      </View>
-    );
+    return <View style={[styles.container, { backgroundColor: colors.background }]} />;
   }
 
+  const startRoute = () => router.navigate({ pathname: '/', params: { routeId: route.id } });
+
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="light-content" />
-      <ScrollView contentContainerStyle={styles.scrollContent} bounces={false}>
-        <View style={styles.heroWrap}>
-          {route.coverImageUrl ? (
-            <Image source={{ uri: route.coverImageUrl }} style={styles.heroImage} resizeMode="cover" />
-          ) : (
-            <View style={[styles.heroImage, { backgroundColor: '#9a6a3a' }]} />
-          )}
-          <View style={[styles.heroOverlay, StyleSheet.absoluteFill]} />
-          <SafeAreaView edges={['top']} style={styles.heroNav}>
-            <TouchableOpacity onPress={() => router.back()} style={styles.floatBtn}>
-              <Ionicons name="chevron-back" size={20} color="#FFFFFF" />
-            </TouchableOpacity>
-            <Pressable style={styles.floatBtn}>
-              <Ionicons name="heart-outline" size={20} color="#FFFFFF" />
-            </Pressable>
-          </SafeAreaView>
-          <View style={styles.heroText}>
-            <Text style={styles.heroTitle}>{route.name}</Text>
-            <Text style={styles.heroMeta}>
-              {route.stopCount > 0 ? t('route_info.stopsCount', { count: route.stopCount }) : ''}
-            </Text>
-          </View>
-        </View>
+    <>
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          icon="arrow.triangle.turn.up.right.diamond"
+          accessibilityLabel={t('route_info.openOnMap')}
+          onPress={() => Linking.openURL(buildYandexRouteUrl(route.id))}
+        />
+      </Stack.Toolbar>
 
-        <View style={[styles.content, { backgroundColor: colors.background }]}>
-          <TouchableOpacity
-            style={[styles.primaryBtn, { backgroundColor: colors.primary }]}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.primaryBtnText}>▶ {t('route_info.startRoute')}</Text>
-          </TouchableOpacity>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <Host style={styles.container} useViewportSizeMeasurement modifiers={[scheme]}>
+          <Form>
+            {/* Cover */}
+            <Section>
+              <HStack
+                modifiers={[
+                  listRowInsets({ top: 0, leading: 0, bottom: 0, trailing: 0 }),
+                  listRowBackground(CLEAR),
+                ]}
+              >
+                <RNHostView matchContents>
+                  <Image
+                    source={route.coverImageUrl ? { uri: route.coverImageUrl } : undefined}
+                    style={{
+                      width: heroWidth,
+                      height: heroHeight,
+                      borderRadius: 20,
+                      backgroundColor: colors.cardElevated,
+                    }}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                  />
+                </RNHostView>
+              </HStack>
+            </Section>
 
-          {route.description ? (
-            <View style={styles.section}>
-              <Text style={[styles.sectionLabel, { color: colors.primaryDeep }]}>
-                {t('route_info.about')}
-              </Text>
-              <Text style={[styles.bodyText, { color: colors.textSecondary }]}>
-                {route.description}
-              </Text>
-            </View>
-          ) : null}
-
-          {route.stops.length > 0 && (
-            <View style={styles.section}>
-              <Text style={[styles.sectionLabel, { color: colors.primaryDeep }]}>
-                {t('route_info.stops')}
-              </Text>
-              <View style={styles.timeline}>
-                <View style={[styles.timelineBar, { backgroundColor: colors.separator }]} />
-                {route.stops.map((stop, index) => (
-                  <TouchableOpacity
-                    key={stop.id}
-                    onPress={() => router.push(`/info?id=${stop.id}`)}
-                    style={styles.timelineRow}
-                    activeOpacity={0.75}
+            {/* Title, meta, description */}
+            <Section>
+              <VStack
+                alignment="leading"
+                spacing={6}
+                modifiers={[
+                  frame({ maxWidth: 10000, alignment: 'leading' }),
+                  listRowBackground(CLEAR),
+                  listRowSeparator('hidden'),
+                ]}
+              >
+                <Text modifiers={[font({ textStyle: 'title', weight: 'bold' })]}>{route.name}</Text>
+                {route.stopCount > 0 && (
+                  <HStack spacing={5}>
+                    <SymbolImage
+                      systemName="mappin.and.ellipse"
+                      size={14}
+                      color={colors.textMuted}
+                    />
+                    <Text
+                      modifiers={[
+                        font({ textStyle: 'subheadline' }),
+                        foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                      ]}
+                    >
+                      {t('route_info.stopsCount', { count: route.stopCount })}
+                    </Text>
+                  </HStack>
+                )}
+                {route.description ? (
+                  <Text
+                    modifiers={[
+                      font({ textStyle: 'body' }),
+                      foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                    ]}
                   >
-                    <View
-                      style={[
-                        styles.timelineDot,
-                        {
-                          backgroundColor: index === 0 ? colors.primary : colors.text,
-                        },
-                      ]}
-                    >
-                      <Text style={styles.timelineDotText}>{index + 1}</Text>
-                    </View>
-                    <View
-                      style={[
-                        styles.timelineCard,
-                        { backgroundColor: colors.card, borderColor: colors.border },
-                      ]}
-                    >
-                      <Text style={[styles.timelineCardTitle, { color: colors.text }]}>
-                        {stop.name}
-                      </Text>
-                      <Text style={[styles.timelineCardHint, { color: colors.textMuted }]}>
-                        🎧
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                    {route.description}
+                  </Text>
+                ) : null}
+              </VStack>
+            </Section>
+
+            {/* Stops */}
+            {route.stops.length > 0 && (
+              <Section title={t('route_info.stops')}>
+                {route.stops.map((stop, index) => (
+                  <Button
+                    key={stop.id}
+                    modifiers={[buttonStyle('plain')]}
+                    onPress={() => router.push(`/info?id=${stop.id}`)}
+                  >
+                    <HStack spacing={12} modifiers={[contentShape(shapes.rectangle())]}>
+                      <SymbolImage
+                        systemName={`${Math.min(index + 1, 50)}.circle.fill` as never}
+                        size={26}
+                        color={colors.primary}
+                      />
+                      <Text modifiers={[font({ textStyle: 'body' })]}>{stop.name}</Text>
+                      <Spacer />
+                      <SymbolImage
+                        systemName="chevron.right"
+                        size={13}
+                        color={colors.textMuted}
+                      />
+                    </HStack>
+                  </Button>
                 ))}
-              </View>
-            </View>
-          )}
+              </Section>
+            )}
+
+            {/* Transparent spacer row: lets the last stop scroll clear of the floating button. */}
+            <Section>
+              <Spacer
+                modifiers={[
+                  frame({ height: 72 }),
+                  listRowBackground(CLEAR),
+                  listRowSeparator('hidden'),
+                ]}
+              />
+            </Section>
+          </Form>
+        </Host>
+
+        {/* Floating glass "Start route" button over the list. */}
+        <View
+          pointerEvents="box-none"
+          style={[styles.floating, { bottom: (initialWindowMetrics?.insets.bottom ?? 0) + 8 }]}
+        >
+          <Host style={styles.startHost} modifiers={[scheme]}>
+            <Button
+              label={t('route_info.startRoute')}
+              systemImage="play.fill"
+              onPress={startRoute}
+              modifiers={[
+                buttonStyle('glassProminent'),
+                controlSize('large'),
+                frame({ maxWidth: 10000 }),
+              ]}
+            />
+          </Host>
         </View>
-      </ScrollView>
-    </View>
+      </View>
+    </>
   );
 }
 
-const { width } = Dimensions.get('window');
-
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  scrollContent: { paddingBottom: 40 },
-  heroWrap: { position: 'relative', height: 200 },
-  heroImage: { width, height: 200 },
-  heroOverlay: { backgroundColor: 'rgba(0,0,0,0.35)' },
-  heroNav: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-    paddingTop: 6,
-  },
-  floatBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  heroText: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 18,
-  },
-  heroTitle: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: '800',
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
-  heroMeta: {
-    color: 'rgba(255,255,255,0.85)',
-    fontSize: 13,
-    marginTop: 4,
-  },
-  content: { paddingHorizontal: 18, paddingTop: 18 },
-  primaryBtn: {
-    borderRadius: 16,
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  primaryBtnText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
-  section: { marginBottom: 22 },
-  sectionLabel: {
-    fontSize: 12,
-    fontWeight: '700',
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
-    marginBottom: 12,
-  },
-  bodyText: { fontSize: 15, lineHeight: 24 },
-  timeline: { position: 'relative', paddingLeft: 8 },
-  timelineBar: {
-    position: 'absolute',
-    left: 19,
-    top: 12,
-    bottom: 24,
-    width: 2,
-  },
-  timelineRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 13,
-    marginBottom: 14,
-  },
-  timelineDot: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 2,
-  },
-  timelineDotText: { color: '#FFFFFF', fontSize: 12, fontWeight: '800' },
-  timelineCard: {
-    flex: 1,
-    borderRadius: 13,
-    borderWidth: 1,
-    paddingVertical: 11,
-    paddingHorizontal: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  timelineCardTitle: { fontSize: 15, fontWeight: '700', flex: 1 },
-  timelineCardHint: { fontSize: 13 },
+  floating: { position: 'absolute', left: 20, right: 20 },
+  startHost: { height: 52 },
 });

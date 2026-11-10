@@ -76,6 +76,8 @@
     "filterApply": "تطبيق",
     "allObjects": "جميع المعالم",
     "locationLabel": "أنت الآن في",
+    "offline": "غير متصل — عرض البيانات المحفوظة",
+    "changeCity": "تغيير المدينة",
     "tags": {
       "top": "مميز",
       "museums": "متاحف",
@@ -103,6 +105,7 @@
     "filterMilitary": "عسكري",
     "filterWalking": "سيرًا",
     "sortTitle": "ترتيب",
+    "stopsCount": "{{count}} محطات",
     "aiPromo": "★ جديد",
     "aiPromoTitle": "مسارك مع الذكاء الاصطناعي",
     "aiPromoDesc": "مخصص لوقتك واهتماماتك وعمرك"
@@ -171,6 +174,15 @@
     "krasnodar": "كراسنودار",
     "rostov-on-don": "روستوف على الدون",
     "sevastopol": "سيفاستوبول"
+  },
+  "cityTaglines": {
+    "maykop": "عاصمة أديغيا الجبلية",
+    "astrakhan": "عاصمة البطيخ على الفولغا",
+    "volgograd": "مدينة البطولة على الفولغا",
+    "elista": "عاصمة السهوب البوذية",
+    "krasnodar": "عاصمة الجنوب في كوبان",
+    "rostov-on-don": "بوابة القوقاز",
+    "sevastopol": "مدينة المجد الروسي"
   },
 
   "routes_data": {
@@ -278,5 +290,10 @@
     "permission": "مطلوب الوصول إلى الكاميرا",
     "grant": "سماح",
     "maybe": "هل هو {{name}}؟"
+  },
+  "scan": {
+    "title": "الماسح",
+    "desc": "وجّه الكاميرا نحو المعلم لمعرفة المزيد عنه.",
+    "button": "فتح الكاميرا"
   }
 }

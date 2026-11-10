@@ -1,5 +1,5 @@
-import { DarkTheme, DefaultTheme, ThemeProvider as NavThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider as NavThemeProvider } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -8,6 +8,10 @@ import { ThemeProvider, useTheme } from '../src/theme/ThemeContext';
 import { setupDatabase } from '../src/db/dbInit';
 
 setupDatabase();
+
+// Keep the native launch screen up until app/index.tsx has decided where to go.
+SplashScreen.preventAutoHideAsync().catch(() => {});
+SplashScreen.setOptions({ duration: 300, fade: true });
 
 /**
  * Pushed iOS screens: transparent header with the system glass back button and a small centered
@@ -28,6 +32,14 @@ function useNativeHeader(title: string) {
     [title, colors.text],
   );
 }
+
+/** Detail screens (monument, route): system header with just the glass back button. */
+const detailScreenOptions = {
+  headerShown: true,
+  title: '',
+  headerShadowVisible: false,
+  headerBackButtonDisplayMode: 'minimal' as const,
+};
 
 // TEMP diagnostics for the back button that stops responding on the 2nd visit to settings.
 const logNav = (name: string) => (e: { target?: string; data?: unknown }) =>
@@ -63,7 +75,6 @@ function RootStack() {
         screenListeners={{
           focus: logNav('focus'),
           blur: logNav('blur'),
-          beforeRemove: logNav('beforeRemove'),
           transitionStart: logNav('transitionStart'),
           transitionEnd: logNav('transitionEnd'),
           gestureCancel: logNav('gestureCancel'),
@@ -72,14 +83,27 @@ function RootStack() {
         <Stack.Screen name="index" />
         <Stack.Screen
           name="select-city"
-          options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
+          options={({ route }) => {
+            // First launch (onboarding) is a full-height sheet that can't be swiped away.
+            const onboarding =
+              (route.params as { onboarding?: string } | undefined)?.onboarding === '1';
+            return {
+              presentation: 'formSheet',
+              headerShown: true,
+              // Single full-height detent: partial detents float as an inset card on iOS 26
+              // (gap at the bottom) and SwiftUI rows didn't take taps there.
+              sheetAllowedDetents: [1],
+              sheetGrabberVisible: !onboarding,
+              gestureEnabled: !onboarding,
+            };
+          }}
         />
         <Stack.Screen
           name="(tabs)"
           options={{ gestureEnabled: false, animationTypeForReplace: 'pop' }}
         />
-        <Stack.Screen name="info" />
-        <Stack.Screen name="route-info" />
+        <Stack.Screen name="info" options={detailScreenOptions} />
+        <Stack.Screen name="route-info" options={detailScreenOptions} />
         <Stack.Screen name="camera" />
         <Stack.Screen name="quiz" />
         <Stack.Screen name="settings" options={settingsHeader} />

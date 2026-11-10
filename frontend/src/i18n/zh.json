@@ -76,6 +76,8 @@
     "filterApply": "应用",
     "allObjects": "全部景点",
     "locationLabel": "当前城市",
+    "offline": "离线 — 显示已保存的数据",
+    "changeCity": "更换城市",
     "tags": {
       "top": "精选",
       "museums": "博物馆",
@@ -103,6 +105,7 @@
     "filterMilitary": "军事",
     "filterWalking": "步行",
     "sortTitle": "排序",
+    "stopsCount": "{{count}} 个站点",
     "aiPromo": "★ 新功能",
     "aiPromoTitle": "AI 定制路线",
     "aiPromoDesc": "根据您的时间、兴趣和年龄量身定制"
@@ -171,6 +174,15 @@
     "krasnodar": "克拉斯诺达尔",
     "rostov-on-don": "顿河畔罗斯托夫",
     "sevastopol": "塞瓦斯托波尔"
+  },
+  "cityTaglines": {
+    "maykop": "阿迪格山麓之都",
+    "astrakhan": "伏尔加西瓜之都",
+    "volgograd": "伏尔加英雄城",
+    "elista": "佛教草原之都",
+    "krasnodar": "库班南方之都",
+    "rostov-on-don": "高加索之门",
+    "sevastopol": "俄罗斯荣耀之城"
   },
 
   "routes_data": {
@@ -278,5 +290,10 @@
     "permission": "需要相机权限",
     "grant": "允许",
     "maybe": "是{{name}}吗？"
+  },
+  "scan": {
+    "title": "扫描",
+    "desc": "将相机对准纪念碑,了解更多信息。",
+    "button": "打开相机"
   }
 }
