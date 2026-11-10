@@ -33,7 +33,14 @@
     "architectureDetails": "تفاصيل معمارية",
     "tourismInfo": "معلومات للسياح",
     "play_quiz": "ابدأ الاختبار",
-    "readMore": "اقرأ المزيد"
+    "readMore": "اقرأ المزيد",
+    "openInMaps": "فتح في الخرائط",
+    "walkRoute": "المسار",
+    "favorite": "حفظ",
+    "favorited": "تم الحفظ",
+    "nearby": "بالقرب",
+    "unitMeters": "م",
+    "unitKm": "كم"
   },
 
   "quiz": {

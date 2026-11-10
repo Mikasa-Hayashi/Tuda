@@ -33,7 +33,14 @@
     "architectureDetails": "建筑细节",
     "tourismInfo": "旅游信息",
     "play_quiz": "开始测验",
-    "readMore": "阅读更多"
+    "readMore": "阅读更多",
+    "openInMaps": "在地图中打开",
+    "walkRoute": "路线",
+    "favorite": "收藏",
+    "favorited": "已收藏",
+    "nearby": "附近",
+    "unitMeters": "米",
+    "unitKm": "公里"
   },
 
   "quiz": {

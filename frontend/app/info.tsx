@@ -1,21 +1,26 @@
 import {
   getMonumentById,
+  getNearbyMonuments,
   upsertMonumentFieldConfigsFromApi,
   upsertMonumentTranslationsFromApi,
 } from '@/src/db/monumentRepository';
 import type { Monument } from '@/src/db/monumentRepository';
+import { MAP_PROVIDERS, openPlaceIn, openRouteIn } from '@/src/map/externalMaps';
 import { fetchMonumentDetail } from '@/src/services/monumentsApi';
+import { getFavoriteIds, toggleFavorite } from '@/src/storage/favorites';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
   Button,
+  DisclosureGroup,
   Form,
   Host,
   HStack,
   Image as SymbolImage,
   LabeledContent,
+  Menu,
+  Spacer,
   RNHostView,
   Section,
-  Spacer,
   Text,
   VStack,
 } from '@expo/ui/swift-ui';
@@ -24,6 +29,7 @@ import {
   controlSize,
   font,
   foregroundStyle,
+  fixedSize,
   frame,
   lineLimit,
   listRowBackground,
@@ -33,22 +39,21 @@ import {
 } from '@expo/ui/swift-ui/modifiers';
 import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivityIndicator,
-  Share,
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from 'react-native';
+import { ActivityIndicator, Share, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { initialWindowMetrics } from 'react-native-safe-area-context';
 
 const CLEAR = '#00000000';
 /** Form rows are inset by the system's grouped-list margin on each side. */
 const FORM_MARGIN = 16;
-const COLLAPSED_LINES = 5;
 const LONG_DESCRIPTION = 200;
+const NEARBY_COUNT = 5;
+
+function formatDistance(km: number, t: (key: string) => string): string {
+  if (km < 1) return `${Math.max(10, Math.round((km * 1000) / 10) * 10)} ${t('info.unitMeters')}`;
+  return `${km.toFixed(1)} ${t('info.unitKm')}`;
+}
 
 export default function MonumentDetailScreen() {
   const { colors, isDark } = useTheme();
@@ -56,11 +61,17 @@ export default function MonumentDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t, i18n } = useTranslation();
   const { width } = useWindowDimensions();
-  const [descExpanded, setDescExpanded] = useState(false);
   const [monument, setMonument] = useState<Monument | null>(() =>
     getMonumentById(id ?? '', i18n.language),
   );
   const [fetchDone, setFetchDone] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    getFavoriteIds()
+      .then((ids) => setIsFavorite(ids.includes(id ?? '')))
+      .catch(() => {});
+  }, [id]);
 
   useEffect(() => {
     if (monument?.name) return;
@@ -77,6 +88,17 @@ export default function MonumentDetailScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, i18n.language]);
 
+  // Closest other monuments (offline, from the local DB).
+  const nearby = useMemo(
+    () =>
+      monument
+        ? getNearbyMonuments(monument.lat, monument.lon, 10, i18n.language)
+            .filter((m) => m.id !== monument.id)
+            .slice(0, NEARBY_COUNT)
+        : [],
+    [monument, i18n.language],
+  );
+
   // Spinner while the monument isn't cached and the detail request is still in flight.
   const isFetching = !monument && !fetchDone;
   const scheme = preferredColorScheme(isDark ? 'dark' : 'light');
@@ -91,7 +113,12 @@ export default function MonumentDetailScreen() {
     );
   }
 
-  const hasMore = monument.description.length > LONG_DESCRIPTION;
+  const isLong = monument.description.length > LONG_DESCRIPTION;
+  const target = { lat: monument.lat, lon: monument.lon, name: monument.name };
+  const onToggleFavorite = () =>
+    toggleFavorite(monument.id)
+      .then(setIsFavorite)
+      .catch(() => {});
 
   const shareMonument = () =>
     Share.share({
@@ -101,7 +128,18 @@ export default function MonumentDetailScreen() {
   return (
     <>
       <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          icon={isFavorite ? 'heart.fill' : 'heart'}
+          onPress={onToggleFavorite}
+        />
         <Stack.Toolbar.Button icon="square.and.arrow.up" onPress={shareMonument} />
+        <Stack.Toolbar.Menu icon="map">
+          {MAP_PROVIDERS.map((p) => (
+            <Stack.Toolbar.MenuAction key={p.id} onPress={() => openRouteIn(p, target)}>
+              {p.title}
+            </Stack.Toolbar.MenuAction>
+          ))}
+        </Stack.Toolbar.Menu>
       </Stack.Toolbar>
 
       <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -142,7 +180,13 @@ export default function MonumentDetailScreen() {
                   listRowSeparator('hidden'),
                 ]}
               >
-                <Text modifiers={[font({ textStyle: 'title', weight: 'bold' })]}>
+                <Text
+                  modifiers={[
+                    font({ textStyle: 'title', weight: 'bold' }),
+                    lineLimit(),
+                    fixedSize({ vertical: true }),
+                  ]}
+                >
                   {monument.name}
                 </Text>
                 {monument.location ? (
@@ -155,33 +199,74 @@ export default function MonumentDetailScreen() {
                     <Text
                       modifiers={[
                         font({ textStyle: 'subheadline' }),
-                        foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                        foregroundStyle({
+                          type: 'hierarchical',
+                          style: 'secondary',
+                        }),
                       ]}
                     >
                       {monument.location}
                     </Text>
                   </HStack>
                 ) : null}
-                {monument.description ? (
+                {monument.description && !isLong ? (
                   <Text
                     modifiers={[
                       font({ textStyle: 'body' }),
-                      foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
-                      descExpanded || !hasMore ? lineLimit() : lineLimit(COLLAPSED_LINES),
+                      foregroundStyle({
+                        type: 'hierarchical',
+                        style: 'secondary',
+                      }),
                     ]}
                   >
                     {monument.description}
                   </Text>
                 ) : null}
-                {hasMore && !descExpanded && (
-                  <Button
-                    label={t('info.readMore')}
-                    onPress={() => setDescExpanded(true)}
-                    modifiers={[buttonStyle('borderless')]}
-                  />
-                )}
               </VStack>
             </Section>
+
+            {/* Long description: native disclosure row instead of a custom "read more" */}
+            {monument.description && isLong ? (
+              <Section>
+                <DisclosureGroup label={t('info.historyInfo')}>
+                  <Text
+                    modifiers={[
+                      font({ textStyle: 'body' }),
+                      foregroundStyle({
+                        type: 'hierarchical',
+                        style: 'secondary',
+                      }),
+                    ]}
+                  >
+                    {monument.description}
+                  </Text>
+                </DisclosureGroup>
+              </Section>
+            ) : null}
+
+            {/* Nearby monuments */}
+            {nearby.length > 0 && (
+              <Section title={t('info.nearby')}>
+                {nearby.map((m) => (
+                  <Button
+                    key={m.id}
+                    onPress={() => router.push(`/info?id=${m.id}`)}
+                    modifiers={[buttonStyle('plain')]}
+                  >
+                    <HStack spacing={8}>
+                      <Text modifiers={[lineLimit(2)]}>{m.name}</Text>
+                      <Spacer />
+                      <Text
+                        modifiers={[foregroundStyle({ type: 'hierarchical', style: 'secondary' })]}
+                      >
+                        {formatDistance(m.distanceKm, t)}
+                      </Text>
+                      <SymbolImage systemName="chevron.right" size={12} color={colors.textMuted} />
+                    </HStack>
+                  </Button>
+                ))}
+              </Section>
+            )}
 
             {/* Architecture details */}
             {monument.details.length > 0 && (
@@ -202,6 +287,11 @@ export default function MonumentDetailScreen() {
                     <Text>{item.value ?? '—'}</Text>
                   </LabeledContent>
                 ))}
+                <Menu label={t('info.openInMaps')} systemImage="map">
+                  {MAP_PROVIDERS.map((p) => (
+                    <Button key={p.id} label={p.title} onPress={() => openPlaceIn(p, target)} />
+                  ))}
+                </Menu>
               </Section>
             )}
 

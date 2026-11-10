@@ -33,7 +33,14 @@
     "architectureDetails": "Архитектурные детали",
     "tourismInfo": "Информация для туристов",
     "play_quiz": "Пройти викторину",
-    "readMore": "читать дальше"
+    "readMore": "читать дальше",
+    "openInMaps": "Открыть в Картах",
+    "walkRoute": "Маршрут",
+    "favorite": "Сохранить",
+    "favorited": "Сохранено",
+    "nearby": "Рядом",
+    "unitMeters": "м",
+    "unitKm": "км"
   },
 
   "quiz": {

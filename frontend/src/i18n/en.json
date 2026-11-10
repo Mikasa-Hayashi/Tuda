@@ -33,7 +33,14 @@
     "architectureDetails": "Architecture Details",
     "tourismInfo": "Tourism Info",
     "play_quiz": "Take the Quiz",
-    "readMore": "read more"
+    "readMore": "read more",
+    "openInMaps": "Open in Maps",
+    "walkRoute": "Route",
+    "favorite": "Save",
+    "favorited": "Saved",
+    "nearby": "Nearby",
+    "unitMeters": "m",
+    "unitKm": "km"
   },
 
   "quiz": {
