@@ -1,3 +1,4 @@
+import { File } from 'expo-file-system';
 import { Platform } from 'react-native';
 
 const ML_URL = process.env.EXPO_PUBLIC_ML_URL ?? 'http://localhost:8001';
@@ -25,12 +26,13 @@ export async function recognizeImage(uri: string, lang: string): Promise<Recogni
     const blob = await (await fetch(uri)).blob();
     form.append('image', blob, 'photo.jpg');
   } else {
-    form.append('image', { uri, name: 'photo.jpg', type: 'image/jpeg' } as any);
+    // expo-file-system's File is a Blob, which the SDK's fetch accepts as a FormData part.
+    form.append('image', new File(uri) as unknown as Blob, 'photo.jpg');
   }
   form.append('lang', lang);
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 20000);
+  const timer = setTimeout(() => controller.abort(), 45000);
   try {
     const res = await fetch(`${ML_URL}/recognize`, {
       method: 'POST',

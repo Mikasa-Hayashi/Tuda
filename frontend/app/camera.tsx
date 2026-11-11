@@ -105,7 +105,8 @@ export default function CameraScreen() {
           showFailure('notFound');
         }
       }
-    } catch {
+    } catch (e) {
+      console.warn('[scan] recognition failed:', e);
       showFailure('error');
     } finally {
       setLoading(false);
