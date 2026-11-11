@@ -1,4 +1,5 @@
 import { getAllMonumentPreviews, type MonumentPreview } from '@/src/db/monumentRepository';
+import { useCustomRoute } from '@/src/storage/customRoute';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
   Button,
@@ -63,7 +64,19 @@ export default function AiRouteScreen() {
   const [time, setTime] = useState<TimeOption>('half');
   const [age, setAge] = useState<AgeOption>('adults');
   const [topics, setTopics] = useState<string[]>(['history']);
-  const [result, setResult] = useState<MonumentPreview[] | null>(null);
+  const custom = useCustomRoute();
+  // Starts from the user's own route (stops added on the map), if there is one.
+  const [result, setResultState] = useState<MonumentPreview[] | null>(() => {
+    if (custom.ids.length === 0) return null;
+    const byId = new Map(getAllMonumentPreviews(i18n.language, null).map((m) => [m.id, m]));
+    const stops = custom.ids.flatMap((id) => byId.get(id) ?? []);
+    return stops.length > 0 ? stops : null;
+  });
+  // Every change is saved as the user's route, so the map and this screen stay in sync.
+  const setResult = (next: MonumentPreview[] | null) => {
+    setResultState(next);
+    custom.set(next ? next.map((m) => m.id) : []);
+  };
   const [editing, setEditing] = useState(false);
 
   const toggleTopic = (id: string, on: boolean) =>
@@ -78,8 +91,9 @@ export default function AiRouteScreen() {
     setResult(shuffled.slice(0, STOP_COUNT[time]));
   };
 
-  const removeStop = (id: string) =>
-    setResult((prev) => (prev ? prev.filter((m) => m.id !== id) : prev));
+  const removeStop = (id: string) => {
+    if (result) setResult(result.filter((m) => m.id !== id));
+  };
 
   // Swaps one stop for a random monument that isn't in the route yet.
   const replaceStop = (id: string) => {
@@ -100,8 +114,9 @@ export default function AiRouteScreen() {
     setResult(rest);
   };
 
-  const deleteStops = (indices: number[]) =>
-    setResult((prev) => (prev ? prev.filter((_, i) => !indices.includes(i)) : prev));
+  const deleteStops = (indices: number[]) => {
+    if (result) setResult(result.filter((_, i) => !indices.includes(i)));
+  };
 
   const secondary = foregroundStyle({ type: 'hierarchical', style: 'secondary' });
 

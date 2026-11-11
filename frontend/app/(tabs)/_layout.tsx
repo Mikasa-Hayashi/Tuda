@@ -8,11 +8,11 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /** URL paths of the tab roots; any other path means a screen is pushed above the tabs. */
-const TAB_PATHS = new Set(['/', '/overview', '/scan', '/routes', '/profile']);
+const TAB_PATHS = new Set(['/', '/map', '/overview', '/scan', '/routes', '/profile']);
 
 /** Tab root path -> i18n key of its label. */
 const TAB_TITLE_KEYS: Record<string, string> = {
-  '/': 'tabs.map',
+  '/map': 'tabs.map',
   '/overview': 'tabs.home',
   '/scan': 'tabs.scan',
   '/routes': 'tabs.routes',
@@ -59,7 +59,7 @@ export default function TabsLayout() {
         <NativeTabs.Trigger.Icon sf={{ default: 'house', selected: 'house.fill' }} />
         <NativeTabs.Trigger.Label>{t('tabs.home')}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="index">
+      <NativeTabs.Trigger name="map">
         <NativeTabs.Trigger.Icon sf={{ default: 'map', selected: 'map.fill' }} />
         <NativeTabs.Trigger.Label>{t('tabs.map')}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>

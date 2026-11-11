@@ -38,6 +38,7 @@ import {
   shapes,
 } from '@expo/ui/swift-ui/modifiers';
 import * as Location from 'expo-location';
+import { openOverSheet, restoreSheetAfterReturn } from '@/src/utils/openOverSheet';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { activeRoute as activeRouteStore, useActiveRouteId } from '@/src/storage/activeRoute';
 import { MAP_APPS, openRouteInMaps } from '@/src/services/routeInMaps';
@@ -166,6 +167,9 @@ export default function MapTabScreen() {
   const custom = useCustomRoute();
   // Selection is shared with the place sheet (app/place.tsx).
   const { selectedId } = useMapSelection();
+  // Native marker handles, to clear MapKit's own selection (it keeps a pin enlarged otherwise).
+  const markerRefs = useRef<Record<string, InstanceType<typeof Marker> | null>>({});
+  const prevSelectedId = useRef<string | null>(null);
   const setSelectedId = mapSelection.select;
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const { mode, mapType } = useMapMode();
@@ -182,6 +186,9 @@ export default function MapTabScreen() {
       getSelectedCityId().then(setSelectedCityId);
     }, []),
   );
+
+  // Back from a screen opened over the place sheet: bring the sheet back.
+  useFocusEffect(restoreSheetAfterReturn);
 
   const activeRoute = useMemo(
     () => (routeId ? getRouteById(routeId, lang) : null),
@@ -241,6 +248,13 @@ export default function MapTabScreen() {
       300,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId]);
+
+  // When a pin loses its selection, deselect it natively too so it shrinks back.
+  useEffect(() => {
+    const prev = prevSelectedId.current;
+    if (prev && prev !== selectedId) markerRefs.current[prev]?.hideCallout();
+    prevSelectedId.current = selectedId;
   }, [selectedId]);
 
   const onMarkerPress = (id: string) => {
@@ -360,7 +374,9 @@ export default function MapTabScreen() {
           <Stack.Toolbar.Button
             icon="info.circle"
             accessibilityLabel={t('map.routeDetails')}
-            onPress={() => router.push({ pathname: '/route-info', params: { id: activeRoute.id } })}
+            onPress={() =>
+              openOverSheet(router, { pathname: '/route-info', params: { id: activeRoute.id } })
+            }
           />
         )}
         {activeRoute && (
@@ -395,7 +411,7 @@ export default function MapTabScreen() {
           <Stack.Toolbar.Button
             icon="point.topleft.down.to.point.bottomright.curvepath"
             accessibilityLabel={t('map.myRoute')}
-            onPress={() => router.push('/ai-route')}
+            onPress={() => openOverSheet(router, '/ai-route')}
           />
         )}
       </Stack.Toolbar>
@@ -421,11 +437,17 @@ export default function MapTabScreen() {
           {points.map((p, index) => (
             <Marker
               key={`${p.id}-${index}`}
+              ref={(m) => {
+                markerRefs.current[p.id] = m;
+              }}
               coordinate={{ latitude: p.lat, longitude: p.lon }}
               pinColor={
                 p.id === selectedId ? SELECTED_PIN : activeRoute ? colors.primary : DEFAULT_PIN
               }
               onPress={() => onMarkerPress(p.id)}
+              // A tap on the small dot under the pin selects the annotation natively without onPress;
+              // onSelect catches it. After a normal tap onPress has already taken the lock, so this is a no-op.
+              onSelect={() => onMarkerPress(p.id)}
             />
           ))}
           {activeRoute && points.length >= 2 && (
