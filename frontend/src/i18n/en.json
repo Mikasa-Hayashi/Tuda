@@ -113,7 +113,8 @@
     "about": "About the route",
     "stops": "Route stops",
     "stopsCount": "Stops: {{count}}",
-    "startRoute": "Start route"
+    "startRoute": "Start route",
+    "endRoute": "End route"
   },
 
   "routesScreen": {
@@ -136,7 +137,34 @@
     "guestDesc": "Sign in to save favourites, mark visited spots, and collect achievements.",
     "loginButton": "Sign in or create account",
     "settings": "Settings",
-    "about": "About"
+    "about": "About",
+    "auth": {
+      "signIn": "Sign in",
+      "signUp": "Sign up",
+      "login": "Username or email",
+      "username": "Username",
+      "email": "Email (optional)",
+      "password": "Password",
+      "submitLogin": "Sign in",
+      "submitRegister": "Create account",
+      "errWrong": "Wrong username or password",
+      "errTaken": "This username or email is already taken",
+      "errInvalid": "Check your details: username 3–32 characters (letters, digits, _ . -), password at least 6",
+      "errNetwork": "Cannot reach the server",
+      "errUnknown": "Something went wrong",
+      "logout": "Sign out",
+      "deleteAccount": "Delete account",
+      "deleteTitle": "Delete account?",
+      "deleteMessage": "The account will be permanently deleted.",
+      "delete": "Delete"
+    },
+    "badgesTitle": "Achievements",
+    "changePhoto": "Change photo",
+    "choosePhoto": "Choose photo",
+    "removePhoto": "Remove photo",
+    "account": "Account",
+    "earned": "Earned",
+    "locked": "Locked"
   },
 
   "about": {
@@ -169,7 +197,29 @@
 
   "map": {
     "title": "Explore",
-    "details": "Details"
+    "details": "Details",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "myLocation": "My location",
+    "mapType": "Map type",
+    "type_standard": "Standard",
+    "type_hybrid": "Hybrid",
+    "type_satellite": "Satellite",
+    "open": "Open",
+    "addToRoute": "Add to route",
+    "inRoute": "In my route",
+    "removeFromRoute": "Remove from route",
+    "myRoute": "My route",
+    "alsoHere": "Also here: {{count}}",
+    "searchPlaceholder": "Search monuments",
+    "routeDetails": "Route details",
+    "closeRoute": "Close route",
+    "noResults": "Nothing found",
+    "modesTitle": "Map Modes",
+    "mode_explore": "Explore",
+    "mode_traffic": "Traffic",
+    "compass": "Compass",
+    "finishRoute": "Finish"
   },
 
   "tabs": {
@@ -366,5 +416,30 @@
     "pause": "Pause",
     "play": "Play",
     "stop": "Stop listening"
+  },
+  "badges": {
+    "first_steps": "First steps",
+    "first_steps_desc": "Open your first monument",
+    "explorer": "Explorer",
+    "explorer_desc": "Open 5 monuments",
+    "expert": "City expert",
+    "expert_desc": "Open 10 monuments",
+    "scanner": "Sharp eye",
+    "scanner_desc": "Recognise a monument with the camera",
+    "walker": "Wayfarer",
+    "walker_desc": "Start a route",
+    "listener": "Listener",
+    "listener_desc": "Play an audio guide",
+    "quiz": "Quiz whiz",
+    "quiz_desc": "Finish a quiz",
+    "fan": "Collector",
+    "fan_desc": "Add 3 places to favourites"
+  },
+  "scanResult": {
+    "recognized": "Recognised",
+    "confidence": "Confidence",
+    "again": "Scan again",
+    "maybe": "Maybe it is:",
+    "notFound": "Could not recognise it"
   }
 }

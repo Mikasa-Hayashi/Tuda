@@ -124,6 +124,35 @@ function RootStack() {
           }}
         />
         <Stack.Screen
+          name="auth"
+          options={{
+            presentation: 'formSheet',
+            headerShown: true,
+            sheetAllowedDetents: [1],
+            sheetGrabberVisible: true,
+          }}
+        />
+        <Stack.Screen
+          name="scan-result"
+          options={{
+            // Result card over the camera: a native detent sheet.
+            presentation: 'formSheet',
+            headerShown: false,
+            sheetAllowedDetents: [0.72, 1],
+            sheetGrabberVisible: true,
+          }}
+        />
+        <Stack.Screen
+          name="image-viewer"
+          options={{
+            // Zoom transition from the tapped photo; transparent header keeps the system back button.
+            title: '',
+            headerBackVisible: false,
+            headerTransparent: true,
+            headerTintColor: '#FFFFFF',
+          }}
+        />
+        <Stack.Screen
           name="quiz"
           options={({ route }) => ({
             ...detailScreenOptions,
@@ -132,10 +161,28 @@ function RootStack() {
         />
         <Stack.Screen name="settings" options={settingsHeader} />
         {/* Opaque header (like about/info): a transparent one made the native Form shift once its top inset was measured. */}
-        <Stack.Screen name="favorites" options={{ ...detailScreenOptions, title: t('favorites.title') }} />
+        <Stack.Screen
+          name="favorites"
+          options={{ ...detailScreenOptions, title: t('favorites.title') }}
+        />
         <Stack.Screen name="menu" options={{ title: t('tabs.home') }} />
         <Stack.Screen name="about" options={{ ...detailScreenOptions, title: t('about.title') }} />
-        <Stack.Screen name="ai-route" options={{ ...detailScreenOptions, title: t('aiRoute.title') }} />
+        <Stack.Screen
+          name="ai-route"
+          options={{ ...detailScreenOptions, title: t('aiRoute.title') }}
+        />
+        <Stack.Screen
+          name="place"
+          options={{
+            // Apple-Maps-style place sheet: the map stays interactive behind the lower detents.
+            presentation: 'formSheet',
+            headerShown: false,
+            sheetAllowedDetents: [0.3, 0.62, 1],
+            sheetInitialDetentIndex: 0,
+            sheetLargestUndimmedDetentIndex: 1,
+            sheetGrabberVisible: true,
+          }}
+        />
         <Stack.Screen
           name="audio-guide"
           options={{

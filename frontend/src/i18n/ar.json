@@ -111,7 +111,8 @@
     "about": "عن المسار",
     "stops": "محطات المسار",
     "stopsCount": "عدد المحطات: {{count}}",
-    "startRoute": "ابدأ المسار"
+    "startRoute": "ابدأ المسار",
+    "endRoute": "إنهاء المسار"
   },
 
   "routesScreen": {
@@ -134,7 +135,34 @@
     "guestDesc": "سجّل الدخول لحفظ المفضلة وتحديد الأماكن المُزارة وجمع الإنجازات.",
     "loginButton": "تسجيل الدخول أو إنشاء حساب",
     "settings": "الإعدادات",
-    "about": "حول التطبيق"
+    "about": "حول التطبيق",
+    "auth": {
+      "signIn": "تسجيل الدخول",
+      "signUp": "إنشاء حساب",
+      "login": "اسم المستخدم أو البريد",
+      "username": "اسم المستخدم",
+      "email": "البريد الإلكتروني (اختياري)",
+      "password": "كلمة المرور",
+      "submitLogin": "دخول",
+      "submitRegister": "إنشاء حساب",
+      "errWrong": "اسم المستخدم أو كلمة المرور غير صحيحة",
+      "errTaken": "اسم المستخدم أو البريد مستخدم بالفعل",
+      "errInvalid": "تحقق من البيانات: اسم المستخدم 3–32 حرفًا وكلمة المرور 6 أحرف على الأقل",
+      "errNetwork": "لا يمكن الاتصال بالخادم",
+      "errUnknown": "حدث خطأ ما",
+      "logout": "تسجيل الخروج",
+      "deleteAccount": "حذف الحساب",
+      "deleteTitle": "حذف الحساب؟",
+      "deleteMessage": "سيتم حذف الحساب نهائيًا.",
+      "delete": "حذف"
+    },
+    "badgesTitle": "الإنجازات",
+    "changePhoto": "تغيير الصورة",
+    "choosePhoto": "اختيار صورة",
+    "removePhoto": "إزالة الصورة",
+    "account": "الحساب",
+    "earned": "تم الحصول",
+    "locked": "مغلق"
   },
 
   "about": {
@@ -152,7 +180,29 @@
 
   "map": {
     "title": "استكشاف",
-    "details": "التفاصيل"
+    "details": "التفاصيل",
+    "zoomIn": "تكبير",
+    "zoomOut": "تصغير",
+    "myLocation": "موقعي",
+    "mapType": "نوع الخريطة",
+    "type_standard": "عادي",
+    "type_hybrid": "مختلط",
+    "type_satellite": "قمر صناعي",
+    "open": "فتح",
+    "addToRoute": "إضافة إلى المسار",
+    "inRoute": "في مساري",
+    "removeFromRoute": "إزالة من المسار",
+    "myRoute": "مساري",
+    "alsoHere": "وأيضًا هنا: {{count}}",
+    "searchPlaceholder": "ابحث عن المعالم",
+    "routeDetails": "تفاصيل المسار",
+    "closeRoute": "إغلاق المسار",
+    "noResults": "لا توجد نتائج",
+    "modesTitle": "أوضاع الخريطة",
+    "mode_explore": "استكشاف",
+    "mode_traffic": "حركة المرور",
+    "compass": "البوصلة",
+    "finishRoute": "إنهاء"
   },
 
   "tabs": {
@@ -364,5 +414,30 @@
     "pause": "إيقاف مؤقت",
     "play": "تشغيل",
     "stop": "إيقاف الاستماع"
+  },
+  "badges": {
+    "first_steps": "الخطوات الأولى",
+    "first_steps_desc": "افتح أول معلم",
+    "explorer": "المستكشف",
+    "explorer_desc": "افتح 5 معالم",
+    "expert": "خبير المدينة",
+    "expert_desc": "افتح 10 معالم",
+    "scanner": "عين ثاقبة",
+    "scanner_desc": "تعرّف على معلم بالكاميرا",
+    "walker": "المسافر",
+    "walker_desc": "ابدأ مسارًا",
+    "listener": "المستمع",
+    "listener_desc": "شغّل الدليل الصوتي",
+    "quiz": "العالِم",
+    "quiz_desc": "أنهِ اختبارًا",
+    "fan": "الجامع",
+    "fan_desc": "أضف 3 أماكن إلى المفضلة"
+  },
+  "scanResult": {
+    "recognized": "تم التعرف",
+    "confidence": "نسبة الثقة",
+    "again": "امسح مرة أخرى",
+    "maybe": "ربما هو:",
+    "notFound": "تعذّر التعرف"
   }
 }
