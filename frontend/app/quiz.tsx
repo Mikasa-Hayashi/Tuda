@@ -1,3 +1,4 @@
+import { achievements } from '@/src/storage/achievements';
 import { getQuizQuestions } from '@/src/data/quiz';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
@@ -98,6 +99,7 @@ export default function QuizScreen() {
     setAnswers(nextAnswers);
     if (index === questions.length - 1) {
       setFinished(true);
+      achievements.recordQuiz(id ?? '');
     } else {
       setIndex(index + 1);
       setSelected(null);

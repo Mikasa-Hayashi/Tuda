@@ -8,6 +8,7 @@
  * `expo-audio` player created from the track's audio URL.
  */
 
+import { achievements } from '@/src/storage/achievements';
 import React, {
   createContext,
   useCallback,
@@ -65,6 +66,7 @@ export function AudioGuideProvider({ children }: { children: React.ReactNode }) 
   }, [isPlaying, speed]);
 
   const start = useCallback((next: AudioTrack) => {
+    achievements.recordAudio(next.monumentId);
     setTrack((prev) => {
       if (prev?.monumentId !== next.monumentId) setPosition(0);
       return next;
