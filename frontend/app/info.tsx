@@ -1,3 +1,5 @@
+import { achievements } from '@/src/storage/achievements';
+import PhotoLink from '@/src/components/PhotoLink';
 import {
   getMonumentById,
   getNearbyMonuments,
@@ -45,7 +47,6 @@ import {
   preferredColorScheme,
   shapes,
 } from '@expo/ui/swift-ui/modifiers';
-import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -125,6 +126,12 @@ export default function MonumentDetailScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, i18n.language]);
 
+  // Opening a monument counts as a visit (badges).
+  const monumentKnown = !!monument;
+  useEffect(() => {
+    if (id && monumentKnown) achievements.recordVisit(id);
+  }, [id, monumentKnown]);
+
   // The quiz entry is shown only for monuments that actually have a quiz.
   const hasQuiz = useMemo(
     () => !!id && getQuizQuestions({ monumentId: id, lang: i18n.language, t }).length > 0,
@@ -200,16 +207,14 @@ export default function MonumentDetailScreen() {
                 ]}
               >
                 <RNHostView matchContents>
-                  <Image
-                    source={monument.imageUrl ? { uri: monument.imageUrl } : undefined}
+                  <PhotoLink
+                    uri={monument.imageUrl}
                     style={{
                       width: heroWidth,
                       height: heroHeight,
                       borderRadius: 20,
                       backgroundColor: colors.cardElevated,
                     }}
-                    contentFit="cover"
-                    cachePolicy="memory-disk"
                   />
                 </RNHostView>
               </HStack>

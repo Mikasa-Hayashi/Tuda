@@ -1,4 +1,5 @@
 import { formatTime, useAudioGuide, type AudioTrack } from '@/src/audio/AudioGuideContext';
+import { useTransitionDone } from '@/src/hooks/useTransitionDone';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
   Button,
@@ -33,8 +34,6 @@ import { StyleSheet, View, useWindowDimensions } from 'react-native';
 
 const SPEEDS = [0.75, 1, 1.25, 1.5, 2];
 const ART_MAX = 200;
-/** Roughly the length of the sheet presentation animation. */
-const PRESENT_MS = 450;
 
 /**
  * Full player, presented as a native sheet. Dismissing the sheet does not stop playback: the
@@ -58,12 +57,12 @@ export default function AudioGuideScreen() {
     : null;
   const { start } = player; // stable reference
   const currentId = player.track?.monumentId;
+  const transitionDone = useTransitionDone();
   useEffect(() => {
-    if (!requested || currentId === requested.monumentId) return;
-    const timer = setTimeout(() => start(requested), PRESENT_MS);
-    return () => clearTimeout(timer);
+    if (!transitionDone || !requested || currentId === requested.monumentId) return;
+    start(requested);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requested?.monumentId, currentId]);
+  }, [transitionDone, requested?.monumentId, currentId]);
 
   const track = player.track ?? requested;
   if (!track) {
@@ -121,6 +120,21 @@ export default function AudioGuideScreen() {
                 {formatTime(player.position)}
               </Text>
               <Spacer />
+              {/* Playback speed: a small menu chip centred between the two times. */}
+              <Menu
+                label={`${player.speed}×`}
+                modifiers={[buttonStyle('bordered'), controlSize('small'), monospacedDigit()]}
+              >
+                {SPEEDS.map((sp) => (
+                  <Button
+                    key={sp}
+                    label={`${sp}×`}
+                    systemImage={sp === player.speed ? 'checkmark' : undefined}
+                    onPress={() => player.setSpeed(sp)}
+                  />
+                ))}
+              </Menu>
+              <Spacer />
               <Text modifiers={[font({ textStyle: 'caption' }), monospacedDigit(), secondary]}>
                 -{formatTime(player.duration - player.position)}
               </Text>
@@ -154,38 +168,21 @@ export default function AudioGuideScreen() {
 
           <Spacer />
 
-          {/* Secondary actions: two equal glass buttons. */}
-          <HStack spacing={12}>
-            <Menu
-              label={`${player.speed}×`}
-              systemImage="speedometer"
-              modifiers={[buttonStyle('glass'), controlSize('large'), frame({ maxWidth: 10000 })]}
-            >
-              {SPEEDS.map((s) => (
-                <Button
-                  key={s}
-                  label={`${s}×`}
-                  systemImage={s === player.speed ? 'checkmark' : undefined}
-                  onPress={() => player.setSpeed(s)}
-                />
-              ))}
-            </Menu>
-            <Button
-              label={t('audioGuide.stop')}
-              systemImage="xmark"
-              onPress={() => {
-                player.stop();
-                router.back();
-              }}
-              modifiers={[
-                buttonStyle('glass'),
-                controlSize('large'),
-                tint('#FF3B30'),
-                lineLimit(1),
-                frame({ maxWidth: 10000 }),
-              ]}
-            />
-          </HStack>
+          {/* Stop: a quiet red text button, clearly secondary to the transport controls. */}
+          <Button
+            label={t('audioGuide.stop')}
+            systemImage="xmark.circle"
+            onPress={() => {
+              player.stop();
+              router.back();
+            }}
+            modifiers={[
+              buttonStyle('plain'),
+              tint('#FF3B30'),
+              foregroundStyle('#FF3B30'),
+              lineLimit(1),
+            ]}
+          />
         </VStack>
       </Host>
     </View>

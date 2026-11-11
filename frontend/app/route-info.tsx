@@ -1,4 +1,8 @@
-import { buildYandexRouteUrl, getRouteById } from '@/src/db/routeRepository';
+import { achievements } from '@/src/storage/achievements';
+import PhotoLink from '@/src/components/PhotoLink';
+import { getRouteById } from '@/src/db/routeRepository';
+import { MAP_APPS, openRouteInMaps } from '@/src/services/routeInMaps';
+import { activeRoute, useActiveRouteId } from '@/src/storage/activeRoute';
 import { useFavorites } from '@/src/storage/favorites';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
@@ -26,11 +30,10 @@ import {
   preferredColorScheme,
   shapes,
 } from '@expo/ui/swift-ui/modifiers';
-import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import { initialWindowMetrics } from 'react-native-safe-area-context';
 
 const CLEAR = '#00000000';
@@ -40,6 +43,7 @@ const FORM_MARGIN = 16;
 export default function RouteInfoScreen() {
   const { colors, isDark } = useTheme();
   const router = useRouter();
+  const activeId = useActiveRouteId();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t, i18n } = useTranslation();
   const { width } = useWindowDimensions();
@@ -54,9 +58,18 @@ export default function RouteInfoScreen() {
     return <View style={[styles.container, { backgroundColor: colors.background }]} />;
   }
 
-  const startRoute = () => // '/' would match the entry redirect screen (app/index.tsx) and restart the app: target the
-  // map tab explicitly.
-  router.navigate({ pathname: '/(tabs)', params: { routeId: route.id } });
+  const isActive = activeId === route.id;
+  const startRoute = () => {
+    if (isActive) {
+      activeRoute.set(null);
+      return;
+    }
+    activeRoute.set(route.id);
+    achievements.recordRouteStarted(route.id);
+    // '/' would match the entry redirect screen (app/index.tsx) and restart the app: target the
+    // map tab explicitly.
+    router.navigate('/map');
+  };
 
   return (
     <>
@@ -68,11 +81,20 @@ export default function RouteInfoScreen() {
           }
           onPress={() => void favorites.toggle('route', route.id)}
         />
-        <Stack.Toolbar.Button
+        <Stack.Toolbar.Menu
           icon="arrow.triangle.turn.up.right.diamond"
-          accessibilityLabel={t('route_info.openOnMap')}
-          onPress={() => Linking.openURL(buildYandexRouteUrl(route.id))}
-        />
+          title={t('route_info.openOnMap')}
+        >
+          {MAP_APPS.map((m) => (
+            <Stack.Toolbar.MenuAction
+              key={m.app}
+              icon={m.icon as never}
+              onPress={() => void openRouteInMaps(m.app, route.id)}
+            >
+              {m.name}
+            </Stack.Toolbar.MenuAction>
+          ))}
+        </Stack.Toolbar.Menu>
       </Stack.Toolbar>
 
       <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -87,16 +109,14 @@ export default function RouteInfoScreen() {
                 ]}
               >
                 <RNHostView matchContents>
-                  <Image
-                    source={route.coverImageUrl ? { uri: route.coverImageUrl } : undefined}
+                  <PhotoLink
+                    uri={route.coverImageUrl}
                     style={{
                       width: heroWidth,
                       height: heroHeight,
                       borderRadius: 20,
                       backgroundColor: colors.cardElevated,
                     }}
-                    contentFit="cover"
-                    cachePolicy="memory-disk"
                   />
                 </RNHostView>
               </HStack>
@@ -161,11 +181,7 @@ export default function RouteInfoScreen() {
                       />
                       <Text modifiers={[font({ textStyle: 'body' })]}>{stop.name}</Text>
                       <Spacer />
-                      <SymbolImage
-                        systemName="chevron.right"
-                        size={13}
-                        color={colors.textMuted}
-                      />
+                      <SymbolImage systemName="chevron.right" size={13} color={colors.textMuted} />
                     </HStack>
                   </Button>
                 ))}
@@ -192,8 +208,8 @@ export default function RouteInfoScreen() {
         >
           <Host style={styles.startHost} modifiers={[scheme]}>
             <Button
-              label={t('route_info.startRoute')}
-              systemImage="play.fill"
+              label={isActive ? t('route_info.endRoute') : t('route_info.startRoute')}
+              systemImage={isActive ? 'stop.fill' : 'play.fill'}
               onPress={startRoute}
               modifiers={[
                 buttonStyle('glassProminent'),

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useColorScheme } from 'react-native';
+import { Appearance, useColorScheme } from 'react-native';
 
 export const lightColors = {
   background: '#F2F2F7',
@@ -78,6 +78,13 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     (themeMode === 'system' && systemColorScheme === 'dark');
 
   const colors = isDark ? darkColors : lightColors;
+
+  // Native UI (navigation bars, tab bar, sheets, menus, alerts, SwiftUI controls) follows the
+  // system appearance, not our JS colours. Tell iOS which scheme the user picked in the app;
+  // 'unspecified' hands control back to the system setting.
+  useEffect(() => {
+    Appearance.setColorScheme(themeMode === 'system' ? 'unspecified' : themeMode);
+  }, [themeMode]);
 
   return (
     <ThemeContext.Provider value={{ themeMode, colors, setThemeMode, isDark }}>
