@@ -1,12 +1,13 @@
 import { SymbolIcon } from '@/src/components/ListGroup';
 import { onMonumentCacheCleared } from '@/src/db/monumentCacheEvents';
-import { seedTestMonumentsIfEmpty, seedTestRoutesIfEmpty } from '@/src/db/devSeed';
+import { seedRealRoutesIfEmpty, seedTestMonumentsIfEmpty, seedTestRoutesIfEmpty } from '@/src/db/devSeed';
 import { getAllRoutes, RoutePreview } from '@/src/db/routeRepository';
 import { getSelectedCityId } from '@/src/storage/citySelection';
 import { useFavorites } from '@/src/storage/favorites';
 import { useTheme } from '@/src/theme/ThemeContext';
 import { Image } from 'expo-image';
-import { Link, Stack, useFocusEffect, useScrollToTop } from 'expo-router';
+import { Link, Stack, useFocusEffect, useRouter } from 'expo-router';
+import { useAudioGuide } from '@/src/audio/AudioGuideContext';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
@@ -27,7 +28,8 @@ export default function RoutesTabScreen() {
   const [sortMode, setSortMode] = useState<SortMode>('default');
   const [query, setQuery] = useState('');
   const [cacheVersion, setCacheVersion] = useState(0);
-  useScrollToTop(listRef);
+  const router = useRouter();
+  const { track } = useAudioGuide();
 
   // Re-read when the cache is cleared in Settings.
   useEffect(() => onMonumentCacheCleared(() => setCacheVersion((v) => v + 1)), []);
@@ -37,7 +39,7 @@ export default function RoutesTabScreen() {
     if (__DEV__ && selectedCityId) {
       // Fake data only when the backend gave us nothing (see src/db/devSeed.ts).
       seedTestMonumentsIfEmpty(selectedCityId);
-      seedTestRoutesIfEmpty(selectedCityId);
+      if (!seedRealRoutesIfEmpty(selectedCityId)) seedTestRoutesIfEmpty(selectedCityId);
     }
     return getAllRoutes(i18n.language, selectedCityId);
   }, [cacheVersion, i18n.language, selectedCityId]);
@@ -73,13 +75,16 @@ export default function RoutesTabScreen() {
               cachePolicy="memory-disk"
               recyclingKey={item.id}
             />
+            {/* Same badge as on monument cards: white circle over the photo, top right. */}
+            {favorites.isFavorite('route', item.id) && (
+              <View style={styles.favBadge}>
+                <SymbolIcon sf="heart.fill" fallback="heart" size={16} color="#FF3B30" />
+              </View>
+            )}
             <View style={styles.titleRow}>
               <Text style={[styles.title, styles.titleText, { color: colors.text }]} numberOfLines={2}>
                 {item.name}
               </Text>
-              {favorites.isFavorite('route', item.id) && (
-                <SymbolIcon sf="heart.fill" fallback="heart" size={16} color="#FF3B30" />
-              )}
             </View>
             {item.description ? (
               <Text style={[styles.desc, { color: colors.textSecondary }]} numberOfLines={2}>
@@ -125,6 +130,14 @@ export default function RoutesTabScreen() {
         onCancelButtonPress={() => setQuery('')}
       />
       <Stack.Toolbar placement="right">
+        {/* The bottom accessory is taken by the audio mini player: AI route moves to the header. */}
+        {track && (
+          <Stack.Toolbar.Button
+            icon="sparkles"
+            accessibilityLabel={t('routesScreen.aiPromoTitle')}
+            onPress={() => router.push('/ai-route')}
+          />
+        )}
         <Stack.Toolbar.Menu icon="ellipsis.circle">
           <Stack.Toolbar.Menu inline title={t('routesScreen.sortTitle')}>
             {SORT_OPTIONS.map((opt) => (
@@ -172,6 +185,17 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: 16, paddingBottom: 24, gap: 24 },
   card: { gap: 4 },
   pressed: { opacity: 0.7 },
+  favBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.85)',
+  },
   cover: { width: '100%', aspectRatio: 16 / 9, borderRadius: 16, marginBottom: 6 },
   title: { fontSize: 20, fontWeight: '700' },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },

@@ -1,0 +1,87 @@
+[
+  {
+    "route_id": "volgograd_route_01",
+    "monument_id": "volgograd_01",
+    "order_index": 1
+  },
+  {
+    "route_id": "volgograd_route_01",
+    "monument_id": "volgograd_02",
+    "order_index": 2
+  },
+  {
+    "route_id": "volgograd_route_01",
+    "monument_id": "volgograd_03",
+    "order_index": 3
+  },
+  {
+    "route_id": "volgograd_route_01",
+    "monument_id": "volgograd_04",
+    "order_index": 4
+  },
+  {
+    "route_id": "volgograd_route_02",
+    "monument_id": "volgograd_13",
+    "order_index": 1
+  },
+  {
+    "route_id": "volgograd_route_02",
+    "monument_id": "volgograd_05",
+    "order_index": 2
+  },
+  {
+    "route_id": "volgograd_route_02",
+    "monument_id": "volgograd_06",
+    "order_index": 3
+  },
+  {
+    "route_id": "volgograd_route_02",
+    "monument_id": "volgograd_07",
+    "order_index": 4
+  },
+  {
+    "route_id": "volgograd_route_03",
+    "monument_id": "volgograd_17",
+    "order_index": 1
+  },
+  {
+    "route_id": "volgograd_route_03",
+    "monument_id": "volgograd_14",
+    "order_index": 2
+  },
+  {
+    "route_id": "volgograd_route_03",
+    "monument_id": "volgograd_15",
+    "order_index": 3
+  },
+  {
+    "route_id": "volgograd_route_03",
+    "monument_id": "volgograd_19",
+    "order_index": 4
+  },
+  {
+    "route_id": "volgograd_route_03",
+    "monument_id": "volgograd_18",
+    "order_index": 5
+  },
+  {
+    "route_id": "volgograd_route_04",
+    "monument_id": "volgograd_12",
+    "order_index": 1
+  },
+  {
+    "route_id": "volgograd_route_04",
+    "monument_id": "volgograd_09",
+    "order_index": 2
+  },
+  {
+    "route_id": "volgograd_route_04",
+    "monument_id": "volgograd_10",
+    "order_index": 3
+  },
+  {
+    "route_id": "volgograd_route_04",
+    "monument_id": "volgograd_11",
+    "order_index": 4
+  }
+]

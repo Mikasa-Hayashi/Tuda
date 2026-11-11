@@ -1,4 +1,6 @@
+import { useAudioGuide } from '@/src/audio/AudioGuideContext';
 import { AiRouteAccessory } from '@/src/components/AiRouteAccessory';
+import { AudioPlayerAccessory } from '@/src/components/AudioPlayerAccessory';
 import { useTheme } from '@/src/theme/ThemeContext';
 import { useNavigation, usePathname } from 'expo-router';
 import { NativeTabs } from 'expo-router/native-tabs';
@@ -21,6 +23,7 @@ export default function TabsLayout() {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const pathname = usePathname();
+  const { track } = useAudioGuide();
   // The AI-route capsule above the tab bar belongs to the Routes tab only.
   // Pushing a screen above the tabs (e.g. /route-info) changes the pathname but doesn't change the
   // selected tab, so in that case keep the previous value. Unmounting the accessory there made it
@@ -41,10 +44,16 @@ export default function TabsLayout() {
 
   return (
     <NativeTabs tintColor={colors.primary}>
-      {showAiAccessory && (
+      {track ? (
         <NativeTabs.BottomAccessory>
-          <AiRouteAccessory label={t('routesScreen.aiPromoTitle')} />
+          <AudioPlayerAccessory label={t('audioGuide.now')} />
         </NativeTabs.BottomAccessory>
+      ) : (
+        showAiAccessory && (
+          <NativeTabs.BottomAccessory>
+            <AiRouteAccessory label={t('routesScreen.aiPromoTitle')} />
+          </NativeTabs.BottomAccessory>
+        )
       )}
       <NativeTabs.Trigger name="overview">
         <NativeTabs.Trigger.Icon sf={{ default: 'house', selected: 'house.fill' }} />

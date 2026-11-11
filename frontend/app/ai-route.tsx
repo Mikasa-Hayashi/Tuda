@@ -16,6 +16,8 @@ import {
 } from '@expo/ui/swift-ui';
 import {
   buttonStyle,
+  frame,
+  contentShape,
   controlSize,
   environment,
   font,
@@ -25,6 +27,7 @@ import {
   lineLimit,
   pickerStyle,
   preferredColorScheme,
+  shapes,
   tag,
 } from '@expo/ui/swift-ui/modifiers';
 import { Stack, useRouter } from 'expo-router';
@@ -141,7 +144,10 @@ export default function AiRouteScreen() {
                         onPress={() => router.push({ pathname: '/info', params: { id: m.id } })}
                         modifiers={[buttonStyle('plain')]}
                       >
-                        <HStack spacing={10}>
+                        <HStack
+                          spacing={10}
+                          modifiers={[frame({ maxWidth: 10000 }), contentShape(shapes.rectangle())]}
+                        >
                           <Text modifiers={[font({ weight: 'semibold' }), secondary]}>{i + 1}</Text>
                           <Text modifiers={[lineLimit(2)]}>{m.name}</Text>
                           <Spacer />

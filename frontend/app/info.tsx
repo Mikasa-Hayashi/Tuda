@@ -9,6 +9,8 @@ import { distanceKm, useUserLocation } from '@/src/map/useUserLocation';
 import { getOpeningStatus, parseSchedule, type OpeningStatus } from '@/src/utils/openingHours';
 import { MAP_PROVIDERS, openPlaceIn, openRouteIn } from '@/src/map/externalMaps';
 import { fetchMonumentDetail } from '@/src/services/monumentsApi';
+import { BADGE, BadgeLabel } from '@/src/components/BadgeLabel';
+import { useAudioGuide } from '@/src/audio/AudioGuideContext';
 import { getQuizQuestions } from '@/src/data/quiz';
 import { useFavorites } from '@/src/storage/favorites';
 import { useTheme } from '@/src/theme/ThemeContext';
@@ -29,6 +31,7 @@ import {
 } from '@expo/ui/swift-ui';
 import {
   buttonStyle,
+  contentShape,
   controlSize,
   font,
   foregroundStyle,
@@ -37,8 +40,10 @@ import {
   lineLimit,
   listRowBackground,
   listRowInsets,
+  padding,
   listRowSeparator,
   preferredColorScheme,
+  shapes,
 } from '@expo/ui/swift-ui/modifiers';
 import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
@@ -50,6 +55,8 @@ import { initialWindowMetrics } from 'react-native-safe-area-context';
 const CLEAR = '#00000000';
 /** Form rows are inset by the system's grouped-list margin on each side. */
 const FORM_MARGIN = 16;
+/** Leading indent the system adds to DisclosureGroup content (measured on a 414pt-wide iPhone). */
+const DISCLOSURE_INDENT = 20;
 const LONG_DESCRIPTION = 200;
 const NEARBY_COUNT = 5;
 
@@ -99,6 +106,7 @@ export default function MonumentDetailScreen() {
   );
   const [fetchDone, setFetchDone] = useState(false);
   const favorites = useFavorites();
+  const audio = useAudioGuide();
   const isFavorite = favorites.isFavorite('monument', id ?? '');
   const userLocation = useUserLocation();
 
@@ -181,7 +189,7 @@ export default function MonumentDetailScreen() {
       </Stack.Toolbar>
 
       <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <Host style={styles.container} useViewportSizeMeasurement modifiers={[scheme]}>
+        <Host style={styles.container} modifiers={[scheme]}>
           <Form>
             {/* Cover */}
             <Section>
@@ -296,17 +304,18 @@ export default function MonumentDetailScreen() {
               </VStack>
             </Section>
 
-            {/* Long description: native disclosure row instead of a custom "read more" */}
+            {/* Long description: native disclosure row. Its content is indented by the system, so the
+                text is pulled back by that indent to line up with the row title. */}
             {monument.description && isLong ? (
               <Section>
                 <DisclosureGroup label={t('info.historyInfo')}>
                   <Text
                     modifiers={[
                       font({ textStyle: 'body' }),
-                      foregroundStyle({
-                        type: 'hierarchical',
-                        style: 'secondary',
-                      }),
+                      foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                      padding({ leading: -DISCLOSURE_INDENT }),
+                      frame({ maxWidth: 10000, alignment: 'leading' }),
+                      fixedSize({ horizontal: false, vertical: true }),
                     ]}
                   >
                     {monument.description}
@@ -324,7 +333,11 @@ export default function MonumentDetailScreen() {
                     onPress={() => router.push(`/info?id=${m.id}`)}
                     modifiers={[buttonStyle('plain')]}
                   >
-                    <HStack spacing={8}>
+                    {/* contentShape: the whole row is tappable, including the empty space. */}
+                    <HStack
+                      spacing={8}
+                      modifiers={[frame({ maxWidth: 10000 }), contentShape(shapes.rectangle())]}
+                    >
                       <Text modifiers={[lineLimit(2)]}>{m.name}</Text>
                       <Spacer />
                       <Text
@@ -370,15 +383,19 @@ export default function MonumentDetailScreen() {
             {hasQuiz && (
               <Section>
                 <Button
-                  label={t('info.play_quiz')}
-                  systemImage="trophy"
                   onPress={() =>
                     router.push({
                       pathname: '/quiz',
                       params: { id: monument.id, name: monument.name },
                     })
                   }
-                />
+                >
+                  <BadgeLabel
+                    title={t('info.play_quiz')}
+                    systemImage="trophy.fill"
+                    color={BADGE.orange}
+                  />
+                </Button>
               </Section>
             )}
 
@@ -401,21 +418,37 @@ export default function MonumentDetailScreen() {
           style={[styles.floating, { bottom: (initialWindowMetrics?.insets.bottom ?? 0) + 8 }]}
         >
           <Host style={styles.audioHost} modifiers={[scheme]}>
-            <Button
-              label={t('info.audioGuide')}
-              systemImage="headphones"
-              onPress={() =>
-                router.push({
-                  pathname: '/audio-guide',
-                  params: { id: monument.id, name: monument.name },
-                })
-              }
-              modifiers={[
-                buttonStyle('glassProminent'),
-                controlSize('large'),
-                frame({ maxWidth: 10000 }),
-              ]}
-            />
+            {audio.track ? (
+              // A track is loaded: the capsule is the mini player (tap = open the sheet).
+              <Button
+                label={audio.track.name}
+                systemImage="headphones"
+                onPress={() => router.push('/audio-guide')}
+                modifiers={[buttonStyle('glass'), controlSize('large'), frame({ maxWidth: 10000 })]}
+              />
+            ) : (
+              <Button
+                label={t('info.audioGuide')}
+                systemImage="headphones"
+                onPress={() => {
+                  // The sheet starts playback once it has slid in, so the capsule does not
+                  // change abruptly under the presentation animation.
+                  router.push({
+                    pathname: '/audio-guide',
+                    params: {
+                      id: monument.id,
+                      name: monument.name,
+                      image: monument.imageUrl ?? '',
+                    },
+                  });
+                }}
+                modifiers={[
+                  buttonStyle('glassProminent'),
+                  controlSize('large'),
+                  frame({ maxWidth: 10000 }),
+                ]}
+              />
+            )}
           </Host>
         </View>
       </View>

@@ -1,3 +1,4 @@
+import { BADGE, BadgeLabel } from '@/src/components/BadgeLabel';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
   Button,
@@ -35,13 +36,14 @@ export default function AboutScreen() {
   const version = Constants.expoConfig?.version ?? '1.0.0';
 
   // TODO: wire up the store review / contact / document links once the URLs exist.
-  const row = (label: string, systemImage: 'star' | 'envelope' | 'lock' | 'doc.text') => (
-    <Button
-      label={label}
-      systemImage={systemImage}
-      onPress={() => {}}
-      modifiers={[buttonStyle('plain')]}
-    />
+  const row = (
+    label: string,
+    systemImage: 'star.fill' | 'envelope.fill' | 'lock.fill' | 'doc.text.fill',
+    color: string,
+  ) => (
+    <Button onPress={() => {}} modifiers={[buttonStyle('plain')]}>
+      <BadgeLabel title={label} systemImage={systemImage} color={color} />
+    </Button>
   );
 
   return (
@@ -78,13 +80,13 @@ export default function AboutScreen() {
           </Section>
 
           <Section title={t('about.support')}>
-            {row(t('about.rate'), 'star')}
-            {row(t('about.contact'), 'envelope')}
+            {row(t('about.rate'), 'star.fill', BADGE.orange)}
+            {row(t('about.contact'), 'envelope.fill', BADGE.blue)}
           </Section>
 
           <Section title={t('about.documents')}>
-            {row(t('about.privacy'), 'lock')}
-            {row(t('about.terms'), 'doc.text')}
+            {row(t('about.privacy'), 'lock.fill', BADGE.green)}
+            {row(t('about.terms'), 'doc.text.fill', BADGE.gray)}
           </Section>
 
           <Section title={t('about.developers')}>

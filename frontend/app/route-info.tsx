@@ -54,7 +54,9 @@ export default function RouteInfoScreen() {
     return <View style={[styles.container, { backgroundColor: colors.background }]} />;
   }
 
-  const startRoute = () => router.navigate({ pathname: '/', params: { routeId: route.id } });
+  const startRoute = () => // '/' would match the entry redirect screen (app/index.tsx) and restart the app: target the
+  // map tab explicitly.
+  router.navigate({ pathname: '/(tabs)', params: { routeId: route.id } });
 
   return (
     <>

@@ -34,6 +34,7 @@
     "tourismInfo": "Tourism Info",
     "play_quiz": "Take the Quiz",
     "readMore": "read more",
+    "readLess": "show less",
     "openInMaps": "Open in Maps",
     "walkRoute": "Route",
     "favorite": "Save",
@@ -355,5 +356,15 @@
     "replace": "Replace",
     "reorder": "Edit",
     "done": "Done"
+  },
+
+  "audioGuide": {
+    "voice": "Voice: AI narrator · EN",
+    "back": "Back 15 seconds",
+    "forward": "Forward 15 seconds",
+    "now": "Now playing",
+    "pause": "Pause",
+    "play": "Play",
+    "stop": "Stop listening"
   }
 }

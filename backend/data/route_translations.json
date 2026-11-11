@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "route_id": "volgograd_route_01",
+    "lang": "ru",
+    "name": "Мамаев курган",
+    "description": "Главный мемориальный ансамбль: от скульптуры «Родина-мать зовёт!» до Зала Воинской Славы и Вечного огня."
+  },
+  {
+    "route_id": "volgograd_route_01",
+    "lang": "en",
+    "name": "Mamayev Kurgan",
+    "description": "The main memorial ensemble: from The Motherland Calls statue to the Hall of Military Glory and the Eternal Flame."
+  },
+  {
+    "route_id": "volgograd_route_02",
+    "lang": "ru",
+    "name": "Сталинградская битва: набережная и руины",
+    "description": "От набережной 62-й армии к музею-панораме, мельнице Гергардта и Дому Павлова."
+  },
+  {
+    "route_id": "volgograd_route_02",
+    "lang": "en",
+    "name": "Battle of Stalingrad: embankment and ruins",
+    "description": "From the Embankment of the 62nd Army to the Panorama Museum, Gerhardt's Mill and Pavlov's House."
+  },
+  {
+    "route_id": "volgograd_route_03",
+    "lang": "ru",
+    "name": "Исторический центр",
+    "description": "Неспешная прогулка по центру: площадь Ленина, Аллея Героев, штаб Паулюса и памятники городу."
+  },
+  {
+    "route_id": "volgograd_route_03",
+    "lang": "en",
+    "name": "Historic city centre",
+    "description": "A relaxed walk through the centre: Lenin Square, the Alley of Heroes, Paulus Headquarters and city monuments."
+  },
+  {
+    "route_id": "volgograd_route_04",
+    "lang": "ru",
+    "name": "Мемориалы за городом",
+    "description": "Поля сражений за пределами города: «Солдатское поле», «Лысая гора» и кладбища в Россошках. Нужна машина."
+  },
+  {
+    "route_id": "volgograd_route_04",
+    "lang": "en",
+    "name": "Memorials outside the city",
+    "description": "Battlefields beyond the city: Soldiers' Field, Lysaya Gora and the Rossoshka cemeteries. A car is needed."
+  }
+]

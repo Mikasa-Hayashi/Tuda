@@ -8,6 +8,7 @@ import {
   HStack,
   Image as SymbolImage,
   Spacer,
+  VStack,
 } from '@expo/ui/swift-ui';
 import {
   buttonBorderShape,
@@ -15,6 +16,7 @@ import {
   controlSize,
   frame,
   labelStyle,
+  padding,
   preferredColorScheme,
 } from '@expo/ui/swift-ui/modifiers';
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -23,7 +25,6 @@ import { Stack, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, StatusBar, StyleSheet, View } from 'react-native';
-import { initialWindowMetrics } from 'react-native-safe-area-context';
 
 const SIDE_BUTTON = 56;
 const SHUTTER_SIZE = 78;
@@ -149,13 +150,12 @@ export default function CameraScreen() {
           <ScannerFrame />
         </View>
 
-        {/* Native glass controls: gallery, shutter, and a balancing spacer. */}
-        <View
-          pointerEvents="box-none"
-          style={[styles.controls, { bottom: (initialWindowMetrics?.insets.bottom ?? 0) + 24 }]}
-        >
-          <Host style={styles.controlsHost} modifiers={[dark]}>
-            <HStack>
+        {/* Native glass controls. The SwiftUI host fills the screen and lays the row out inside the
+            system safe area, so no manual inset maths: gallery, shutter, flip. */}
+        <Host style={StyleSheet.absoluteFill} modifiers={[dark]}>
+          <VStack>
+            <Spacer />
+            <HStack modifiers={[padding({ horizontal: 28, bottom: 16 })]}>
               <Button
                 label={t('camera.gallery')}
                 systemImage="photo.on.rectangle"
@@ -196,8 +196,8 @@ export default function CameraScreen() {
                 ]}
               />
             </HStack>
-          </Host>
-        </View>
+          </VStack>
+        </Host>
 
         <LoadingOverlay visible={loading} text={t('camera.processing')} />
       </View>
@@ -207,15 +207,5 @@ export default function CameraScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'black' },
-  frameWrap: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  controls: { position: 'absolute', left: 28, right: 28 },
-  controlsHost: { height: 84 },
+  frameWrap: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
 });

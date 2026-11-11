@@ -28,7 +28,7 @@ import { getSelectedCityId, markCityDownloaded } from '@/src/storage/citySelecti
 import { useFavorites } from '@/src/storage/favorites';
 import { useTheme } from '@/src/theme/ThemeContext';
 import { Image } from 'expo-image';
-import { Link, Stack, useFocusEffect, useRouter, useScrollToTop } from 'expo-router';
+import { Link, Stack, useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -85,7 +85,8 @@ export default function OverviewTabScreen() {
   );
   const isSyncRunningRef = useRef(false);
   const lastFocusSyncRef = useRef<{ cityId: string; at: number } | null>(null);
-  useScrollToTop(listRef);
+  // Re-tapping the tab scrolls to the top natively (react-native-screens accounts for the large
+  // title inset). A JS useScrollToTop would reset to offset 0 and stop short of the very top.
 
   const favorites = useFavorites();
   const [searchQuery, setSearchQuery] = useState('');

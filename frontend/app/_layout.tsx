@@ -3,6 +3,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { AudioGuideProvider } from '../src/audio/AudioGuideContext';
 import '../src/i18n/i18n';
 import { ThemeProvider, useTheme } from '../src/theme/ThemeContext';
 import { setupDatabase } from '../src/db/dbInit';
@@ -49,7 +50,6 @@ function RootStack() {
   const { t } = useTranslation();
   const { colors, isDark } = useTheme();
   const settingsHeader = useNativeHeader(t('settings.title'));
-  const favoritesHeader = useNativeHeader(t('favorites.title'));
 
   // React Navigation paints its own background behind screens (visible as white edges during
   // the swipe-back gesture and as a flash while a screen closes). Tie it to our theme.
@@ -131,11 +131,22 @@ function RootStack() {
           })}
         />
         <Stack.Screen name="settings" options={settingsHeader} />
-        <Stack.Screen name="favorites" options={favoritesHeader} />
+        {/* Opaque header (like about/info): a transparent one made the native Form shift once its top inset was measured. */}
+        <Stack.Screen name="favorites" options={{ ...detailScreenOptions, title: t('favorites.title') }} />
         <Stack.Screen name="menu" options={{ title: t('tabs.home') }} />
         <Stack.Screen name="about" options={{ ...detailScreenOptions, title: t('about.title') }} />
         <Stack.Screen name="ai-route" options={{ ...detailScreenOptions, title: t('aiRoute.title') }} />
-        <Stack.Screen name="audio-guide" options={{ title: t('info.audioGuide') }} />
+        <Stack.Screen
+          name="audio-guide"
+          options={{
+            title: t('info.audioGuide'),
+            // Native player sheet; dismissing it leaves the mini player running.
+            presentation: 'formSheet',
+            headerShown: false,
+            sheetAllowedDetents: [0.78, 1],
+            sheetGrabberVisible: true,
+          }}
+        />
       </Stack>
     </NavThemeProvider>
   );
@@ -144,9 +155,11 @@ function RootStack() {
 export default function RootLayout() {
   return (
     <ThemeProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <RootStack />
-      </GestureHandlerRootView>
+      <AudioGuideProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <RootStack />
+        </GestureHandlerRootView>
+      </AudioGuideProvider>
     </ThemeProvider>
   );
 }

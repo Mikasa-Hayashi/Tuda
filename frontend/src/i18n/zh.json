@@ -34,6 +34,7 @@
     "tourismInfo": "旅游信息",
     "play_quiz": "开始测验",
     "readMore": "阅读更多",
+    "readLess": "收起",
     "openInMaps": "在地图中打开",
     "walkRoute": "路线",
     "favorite": "收藏",
@@ -353,5 +354,15 @@
     "replace": "替换",
     "reorder": "编辑",
     "done": "完成"
+  },
+
+  "audioGuide": {
+    "voice": "配音：AI 讲解员",
+    "back": "后退 15 秒",
+    "forward": "快进 15 秒",
+    "now": "正在播放",
+    "pause": "暂停",
+    "play": "播放",
+    "stop": "结束收听"
   }
 }

@@ -9,6 +9,9 @@
 import realFieldConfigs from '../data/seed/monument_field_configs.json';
 import realMonuments from '../data/seed/monuments.json';
 import realTranslations from '../data/seed/monument_translations.json';
+import realRouteStops from '../data/seed/route_stops.json';
+import realRouteTranslations from '../data/seed/route_translations.json';
+import realRoutes from '../data/seed/routes.json';
 import type {
   ApiMonument,
   ApiMonumentFieldConfig,
@@ -374,6 +377,32 @@ const TEST_ROUTES: {
     },
   },
 ];
+
+/**
+ * DEV only: routes over the real monuments (bundled copy of backend/data) when the city has none.
+ * ar/zh fall back to the English text. Real routes from the backend overwrite these by id.
+ */
+export function seedRealRoutesIfEmpty(cityId: string): boolean {
+  if (!__DEV__) return false;
+  if (getAllRoutes('ru', cityId).length > 0) return false;
+  const prefix = `${cityId}_route_`;
+  const routes = realRoutes.filter((r) => r.id.startsWith(prefix));
+  if (routes.length === 0) return false;
+  const ids = new Set(routes.map((r) => r.id));
+  // The monuments must already be in the local DB.
+  if (getMonumentDbIdBySlug(routes[0].cover_monument_id) === null) return false;
+
+  upsertRoutesFromSync(cityId, routes);
+  upsertRouteStopsFromSync(realRouteStops.filter((s) => ids.has(s.route_id)));
+  upsertRouteTranslationsFromSync(
+    realRouteTranslations
+      .filter((tr) => ids.has(tr.route_id))
+      .flatMap((tr) =>
+        tr.lang === 'en' ? (['en', 'ar', 'zh'] as const).map((lang) => ({ ...tr, lang })) : [tr],
+      ),
+  );
+  return true;
+}
 
 /** DEV only: adds 3 fake routes over the test monuments if the city has no routes yet. */
 export function seedTestRoutesIfEmpty(cityId: string): boolean {

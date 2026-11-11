@@ -1,146 +1,197 @@
-import { Ionicons } from '@expo/vector-icons';
+import { formatTime, useAudioGuide, type AudioTrack } from '@/src/audio/AudioGuideContext';
+import { useTheme } from '@/src/theme/ThemeContext';
+import {
+  Button,
+  Host,
+  HStack,
+  Image as SymbolImage,
+  Menu,
+  RNHostView,
+  Slider,
+  Spacer,
+  Text,
+  VStack,
+} from '@expo/ui/swift-ui';
+import {
+  buttonStyle,
+  controlSize,
+  font,
+  foregroundStyle,
+  frame,
+  labelStyle,
+  lineLimit,
+  monospacedDigit,
+  multilineTextAlignment,
+  preferredColorScheme,
+  tint,
+} from '@expo/ui/swift-ui/modifiers';
+import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React from 'react';
-import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 
+const SPEEDS = [0.75, 1, 1.25, 1.5, 2];
+const ART_MAX = 200;
+/** Roughly the length of the sheet presentation animation. */
+const PRESENT_MS = 450;
+
+/**
+ * Full player, presented as a native sheet. Dismissing the sheet does not stop playback: the
+ * mini player (tab-bar accessory / floating capsule) keeps controlling it.
+ */
 export default function AudioGuideScreen() {
+  const { colors, isDark } = useTheme();
+  const { t } = useTranslation();
   const router = useRouter();
-  const { name } = useLocalSearchParams<{ name?: string }>();
-  const title = name ?? 'Аудиогид';
+  const { width } = useWindowDimensions();
+  const player = useAudioGuide();
+  const params = useLocalSearchParams<{ id?: string; name?: string; image?: string }>();
+  const scheme = preferredColorScheme(isDark ? 'dark' : 'light');
+  const artSize = Math.min(ART_MAX, width - 160);
+  const secondary = foregroundStyle({ type: 'hierarchical', style: 'secondary' });
+
+  // Opened from the monument card: show the track right away, but only start playback (which
+  // swaps the card's button for the mini player) after the sheet has finished sliding in.
+  const requested: AudioTrack | null = params.id
+    ? { monumentId: params.id, name: params.name ?? '', imageUrl: params.image || undefined }
+    : null;
+  const { start } = player; // stable reference
+  const currentId = player.track?.monumentId;
+  useEffect(() => {
+    if (!requested || currentId === requested.monumentId) return;
+    const timer = setTimeout(() => start(requested), PRESENT_MS);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requested?.monumentId, currentId]);
+
+  const track = player.track ?? requested;
+  if (!track) {
+    return <View style={[styles.container, { backgroundColor: colors.background }]} />;
+  }
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
-        <View style={styles.navBar}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.navBtn}>
-            <Ionicons name="chevron-back" size={22} color="#FFFFFF" />
-          </TouchableOpacity>
-          <Text style={styles.navTitle}>Аудиогид</Text>
-          <View style={styles.navBtn} />
-        </View>
-      </SafeAreaView>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Host style={styles.container} modifiers={[scheme]}>
+        <VStack spacing={0} modifiers={[frame({ maxWidth: 10000, maxHeight: 10000 })]}>
+          <Spacer />
+          <RNHostView matchContents>
+            <Image
+              source={track.imageUrl ? { uri: track.imageUrl } : undefined}
+              style={{
+                width: artSize,
+                height: artSize,
+                borderRadius: 20,
+                backgroundColor: colors.cardElevated,
+              }}
+              contentFit="cover"
+              cachePolicy="memory-disk"
+            />
+          </RNHostView>
 
-      <View style={styles.content}>
-        <View style={styles.albumArt} />
+          <Spacer />
 
-        <Text style={styles.trackTitle} numberOfLines={2}>
-          {title}
-        </Text>
-        <Text style={styles.trackSub}>Голос: ИИ-диктор · RU</Text>
+          <VStack spacing={4}>
+            <Text
+              modifiers={[
+                font({ textStyle: 'title3', weight: 'bold' }),
+                lineLimit(2),
+                multilineTextAlignment('center'),
+              ]}
+            >
+              {track.name}
+            </Text>
+            <Text modifiers={[font({ textStyle: 'subheadline' }), secondary]}>
+              {t('audioGuide.voice')}
+            </Text>
+          </VStack>
 
-        <View style={styles.offlineRow}>
-          <Text style={styles.offlineText}>⤓ Скачать для офлайна</Text>
-          <Text style={styles.offlineSize}>3.2 МБ</Text>
-        </View>
+          <Spacer />
 
-        <View style={styles.progressBar}>
-          <View style={styles.progressFill} />
-        </View>
-        <View style={styles.timeRow}>
-          <Text style={styles.timeText}>0:00</Text>
-          <Text style={styles.timeText}>4:30</Text>
-        </View>
+          <VStack spacing={2} modifiers={[frame({ maxWidth: 10000 })]}>
+            <Slider
+              value={player.position}
+              min={0}
+              max={player.duration}
+              onValueChange={player.seek}
+              onEditingChanged={player.setScrubbing}
+            />
+            <HStack>
+              <Text modifiers={[font({ textStyle: 'caption' }), monospacedDigit(), secondary]}>
+                {formatTime(player.position)}
+              </Text>
+              <Spacer />
+              <Text modifiers={[font({ textStyle: 'caption' }), monospacedDigit(), secondary]}>
+                -{formatTime(player.duration - player.position)}
+              </Text>
+            </HStack>
+          </VStack>
 
-        <View style={styles.controls}>
-          <TouchableOpacity style={styles.skipBtn}>
-            <Text style={styles.skipText}>↺15</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.playBtn}>
-            <Ionicons name="play" size={28} color="#1C1A17" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.skipBtn}>
-            <Text style={styles.skipText}>15↻</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+          <Spacer />
 
-      <SafeAreaView edges={['bottom']} />
+          {/* Transport: skip buttons are icon-only so nothing gets truncated. */}
+          <HStack spacing={40}>
+            <Button
+              label={t('audioGuide.back')}
+              systemImage="gobackward.15"
+              onPress={() => player.skip(-15)}
+              modifiers={[buttonStyle('plain'), labelStyle('iconOnly'), font({ size: 34 })]}
+            />
+            <Button onPress={player.toggle} modifiers={[buttonStyle('plain')]}>
+              <SymbolImage
+                systemName={player.isPlaying ? 'pause.circle.fill' : 'play.circle.fill'}
+                size={80}
+                color={colors.primary}
+              />
+            </Button>
+            <Button
+              label={t('audioGuide.forward')}
+              systemImage="goforward.15"
+              onPress={() => player.skip(15)}
+              modifiers={[buttonStyle('plain'), labelStyle('iconOnly'), font({ size: 34 })]}
+            />
+          </HStack>
+
+          <Spacer />
+
+          {/* Secondary actions: two equal glass buttons. */}
+          <HStack spacing={12}>
+            <Menu
+              label={`${player.speed}×`}
+              systemImage="speedometer"
+              modifiers={[buttonStyle('glass'), controlSize('large'), frame({ maxWidth: 10000 })]}
+            >
+              {SPEEDS.map((s) => (
+                <Button
+                  key={s}
+                  label={`${s}×`}
+                  systemImage={s === player.speed ? 'checkmark' : undefined}
+                  onPress={() => player.setSpeed(s)}
+                />
+              ))}
+            </Menu>
+            <Button
+              label={t('audioGuide.stop')}
+              systemImage="xmark"
+              onPress={() => {
+                player.stop();
+                router.back();
+              }}
+              modifiers={[
+                buttonStyle('glass'),
+                controlSize('large'),
+                tint('#FF3B30'),
+                lineLimit(1),
+                frame({ maxWidth: 10000 }),
+              ]}
+            />
+          </HStack>
+        </VStack>
+      </Host>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1C1C1E' },
-  safeArea: { backgroundColor: '#1C1C1E' },
-  navBar: {
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-  },
-  navBtn: { width: 38, height: 38, alignItems: 'center', justifyContent: 'center' },
-  navTitle: { color: 'rgba(255,255,255,0.7)', fontSize: 13 },
-  content: { flex: 1, paddingHorizontal: 22, alignItems: 'center', paddingTop: 18 },
-  albumArt: {
-    width: 180,
-    height: 180,
-    borderRadius: 24,
-    backgroundColor: '#007AFF',
-    marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.5,
-    shadowRadius: 30,
-    elevation: 12,
-  },
-  trackTitle: {
-    color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: '800',
-    textAlign: 'center',
-    marginBottom: 6,
-  },
-  trackSub: { color: 'rgba(255,255,255,0.55)', fontSize: 13, marginBottom: 20 },
-  offlineRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderRadius: 13,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    width: '100%',
-    marginBottom: 24,
-  },
-  offlineText: { color: 'rgba(255,255,255,0.75)', fontSize: 13 },
-  offlineSize: { color: '#9FE3C0', fontSize: 13, fontWeight: '600' },
-  progressBar: {
-    width: '100%',
-    height: 4,
-    backgroundColor: 'rgba(255,255,255,0.18)',
-    borderRadius: 4,
-    marginBottom: 8,
-  },
-  progressFill: {
-    width: '42%',
-    height: '100%',
-    backgroundColor: '#007AFF',
-    borderRadius: 4,
-  },
-  timeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginBottom: 30,
-  },
-  timeText: { color: 'rgba(255,255,255,0.55)', fontSize: 11 },
-  controls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 30,
-  },
-  skipBtn: { padding: 8 },
-  skipText: { color: 'rgba(255,255,255,0.7)', fontSize: 22 },
-  playBtn: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  container: { flex: 1, paddingHorizontal: 24, paddingTop: 20, paddingBottom: 28 },
 });

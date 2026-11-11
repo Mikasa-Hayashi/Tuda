@@ -132,8 +132,6 @@ frontend/
     │   ├── SearchBar.tsx       # Shared search input (used in overview, routes, menu, select-city)
     │   ├── RouteRow.tsx        # Shared route list row (used in routes tab and menu)
     │   ├── ActionButton.tsx    # Shared primary action button (used in info and route-info)
-    │   ├── BottomControlPanel.tsx  # Camera shutter + gallery controls
-    │   ├── TopControlPanel.tsx     # Camera torch + map buttons
     │   ├── ScannerFrame.tsx        # Camera scanner corner frame
     │   └── LoadingOverlay.tsx      # Modal loading spinner
     ├── i18n/                   # react-i18next setup, locale files (ru/en/ar/zh)
