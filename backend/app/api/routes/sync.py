@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -19,6 +19,9 @@ async def sync(
     city_id: str | None = Query(default=None),
     db: AsyncSession = Depends(get_db),
 ):
+    # Client sends a zoned ISO time ("...Z"); the columns are naive UTC.
+    if since.tzinfo is not None:
+        since = since.astimezone(UTC).replace(tzinfo=None)
     return await sync_data(
         db,
         since,

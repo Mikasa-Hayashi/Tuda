@@ -4,6 +4,7 @@
  * Все запросы к SQLite, API такой же как был — компоненты почти не меняются.
  */
 
+import { glueHyphens } from '@/src/utils/glueHyphens';
 import { monumentFilterMeta } from '../data/monumentFilterMeta';
 import type {
   ApiMonument,
@@ -11,6 +12,7 @@ import type {
   ApiMonumentTranslation,
 } from '../services/monumentsApi';
 import { db } from './database';
+import { mediaUrl } from '../services/mediaUrl';
 
 /** Writes tags_json + popularity from monumentFilterMeta (idempotent; run each launch). */
 export function syncMonumentFilterMetadata(): void {
@@ -97,8 +99,8 @@ function mapPreviewRow(r: {
     id: r.slug,
     lat: r.lat,
     lon: r.lon,
-    imageUrl: r.image_url,
-    name: r.field_value ?? '',
+    imageUrl: mediaUrl(r.image_url),
+    name: glueHyphens(r.field_value ?? ''),
     tags: parseTagsJson(r.tags_json),
     popularity: r.popularity ?? 0,
     sortOrder: r.sort_order ?? 0,
@@ -146,7 +148,7 @@ export function getMonumentById(id: string, lang: string): Monument | null {
      WHERE monument_id = ? AND lang = ?`,
     [base.id, lang]
   );
-  const translations = new Map(translationRows.map(r => [r.field_key, r.field_value]));
+  const translations = new Map(translationRows.map(r => [r.field_key, glueHyphens(r.field_value)]));
 
   // Конфигурация полей
   const fieldConfigs = db.getAllSync<{
@@ -173,7 +175,7 @@ export function getMonumentById(id: string, lang: string): Monument | null {
     id: base.slug,
     lat: base.lat,
     lon: base.lon,
-    imageUrl: base.image_url,
+    imageUrl: mediaUrl(base.image_url),
     name: translations.get('name') ?? '',
     location: translations.get('address') ?? '',
     description: translations.get('short_description') ?? '',
@@ -326,6 +328,29 @@ export function clearMonumentCache(): void {
     db.runSync(`DELETE FROM monument_translations`);
     db.runSync(`DELETE FROM monuments`);
     db.runSync(`DELETE FROM app_meta WHERE key LIKE 'sync:%'`);
+  });
+}
+
+/** Applies the server's soft deletions: removes the monuments and routes it no longer has. */
+export function applyDeletedFromSync(deleted: { monuments: string[]; routes: string[] }): void {
+  if (!deleted.monuments.length && !deleted.routes.length) return;
+  db.withTransactionSync(() => {
+    for (const slug of deleted.routes) {
+      const row = db.getFirstSync<{ id: number }>(`SELECT id FROM routes WHERE slug = ?`, [slug]);
+      if (!row) continue;
+      db.runSync(`DELETE FROM route_stops WHERE route_id = ?`, [row.id]);
+      db.runSync(`DELETE FROM route_translations WHERE route_id = ?`, [row.id]);
+      db.runSync(`DELETE FROM routes WHERE id = ?`, [row.id]);
+    }
+    for (const slug of deleted.monuments) {
+      const row = db.getFirstSync<{ id: number }>(`SELECT id FROM monuments WHERE slug = ?`, [slug]);
+      if (!row) continue;
+      // route_stops.monument_id is ON DELETE RESTRICT: remove the stops first.
+      db.runSync(`DELETE FROM route_stops WHERE monument_id = ?`, [row.id]);
+      db.runSync(`DELETE FROM monument_field_config WHERE monument_id = ?`, [row.id]);
+      db.runSync(`DELETE FROM monument_translations WHERE monument_id = ?`, [row.id]);
+      db.runSync(`DELETE FROM monuments WHERE id = ?`, [row.id]);
+    }
   });
 }
 

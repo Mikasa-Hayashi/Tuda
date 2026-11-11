@@ -1,6 +1,7 @@
 import { CITIES, findClosestCity } from '@/src/data/cities';
 import { CITY_IMAGES } from '@/src/data/cityImages';
 import {
+  applyDeletedFromSync,
   upsertMonumentFieldConfigsFromApi,
   upsertMonumentsFromApi,
   upsertMonumentTranslationsFromApi,
@@ -10,6 +11,7 @@ import {
   upsertRouteStopsFromSync,
   upsertRouteTranslationsFromSync,
 } from '@/src/db/routeRepository';
+import { prefetchCityImages } from '@/src/services/imagePrefetch';
 import { downloadCityData } from '@/src/services/monumentsApi';
 import {
   getDownloadedCityIds,
@@ -69,7 +71,12 @@ type CityRowProps = {
   onDownload: () => void;
 };
 
-const cityImageStyle = { width: 64, height: 64, borderRadius: 16, backgroundColor: '#8E8E9333' } as const;
+const cityImageStyle = {
+  width: 64,
+  height: 64,
+  borderRadius: 16,
+  backgroundColor: '#8E8E9333',
+} as const;
 
 /** One native SwiftUI list row: tap to choose the city, trailing icon to download it. */
 function CityRow({
@@ -104,10 +111,7 @@ function CityRow({
     >
       <Button modifiers={[buttonStyle('plain')]} onPress={onSelect}>
         {/* contentShape makes the whole row (incl. the empty area) tappable, not just the text */}
-        <HStack
-          spacing={14}
-          modifiers={[contentShape(shapes.rectangle())]}
-        >
+        <HStack spacing={14} modifiers={[contentShape(shapes.rectangle())]}>
           <RNHostView matchContents>
             <CityImage
               source={imageUri ? { uri: imageUri } : undefined}
@@ -149,7 +153,9 @@ function CityRow({
         />
       ) : (
         <Image
-          systemName={downloadState === 'error' ? 'exclamationmark.icloud' : 'icloud.and.arrow.down'}
+          systemName={
+            downloadState === 'error' ? 'exclamationmark.icloud' : 'icloud.and.arrow.down'
+          }
           color={downloadState === 'error' ? '#FF3B30' : tintColor}
           size={20}
           modifiers={[frame({ width: 28, height: 28 })]}
@@ -217,12 +223,14 @@ export default function SelectCityScreen() {
     setDownloadStates((prev) => ({ ...prev, [cityId]: 'downloading' }));
     try {
       const payload = await downloadCityData(cityId);
+      applyDeletedFromSync(payload.deleted_ids);
       upsertMonumentsFromApi(cityId, payload.monuments);
       upsertMonumentTranslationsFromApi(payload.monument_translations);
       upsertMonumentFieldConfigsFromApi(payload.monument_field_configs);
       upsertRoutesFromSync(cityId, payload.routes);
       upsertRouteStopsFromSync(payload.route_stops);
       upsertRouteTranslationsFromSync(payload.route_translations);
+      await prefetchCityImages(cityId);
       await markCityDownloaded(cityId);
       setDownloadedCityIdsState((prev) => (prev.includes(cityId) ? prev : [...prev, cityId]));
       setDownloadStates((prev) => ({ ...prev, [cityId]: 'done' }));
@@ -301,7 +309,9 @@ export default function SelectCityScreen() {
               </Section>
             )}
             {showDetected && (
-              <Section>{cities.filter((c) => c.id !== detectedCityId).map((c) => renderRow(c.id))}</Section>
+              <Section>
+                {cities.filter((c) => c.id !== detectedCityId).map((c) => renderRow(c.id))}
+              </Section>
             )}
             {/* Transparent spacer row: lets the last city scroll clear of the floating button. */}
             <Section>

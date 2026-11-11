@@ -56,13 +56,8 @@
   },
   {
     "route_id": "volgograd_route_03",
-    "monument_id": "volgograd_19",
-    "order_index": 4
-  },
-  {
-    "route_id": "volgograd_route_03",
     "monument_id": "volgograd_18",
-    "order_index": 5
+    "order_index": 4
   },
   {
     "route_id": "volgograd_route_04",

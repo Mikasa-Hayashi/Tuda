@@ -65,12 +65,6 @@
   {"monument_id": "volgograd_07", "section": "visitors", "order_index": 2, "label_key": "visitor.opening_hours",  "field_key": "opening_hours", "static_value": null},
   {"monument_id": "volgograd_07", "section": "visitors", "order_index": 3, "label_key": "visitor.admission",      "field_key": "admission", "static_value": null},
 
-  {"monument_id": "volgograd_08", "section": "details", "order_index": 1, "label_key": "detail.year_built",       "field_key": "", "static_value": "2003"},
-  {"monument_id": "volgograd_08", "section": "details", "order_index": 2, "label_key": "detail.location",         "field_key": "", "static_value": "Basement of former Univermag (TsUM)"},
-  {"monument_id": "volgograd_08", "section": "details", "order_index": 3, "label_key": "detail.historical_event", "field_key": "historical_event", "static_value": null},
-  {"monument_id": "volgograd_08", "section": "visitors", "order_index": 1, "label_key": "visitor.address",        "field_key": "address", "static_value": null},
-  {"monument_id": "volgograd_08", "section": "visitors", "order_index": 2, "label_key": "visitor.opening_hours",  "field_key": "opening_hours", "static_value": null},
-  {"monument_id": "volgograd_08", "section": "visitors", "order_index": 3, "label_key": "visitor.admission",      "field_key": "admission", "static_value": null},
 
   {"monument_id": "volgograd_09", "section": "details", "order_index": 1, "label_key": "detail.year_built",       "field_key": "", "static_value": "1968 (obelisk); 1973 (marble monument)"},
   {"monument_id": "volgograd_09", "section": "details", "order_index": 2, "label_key": "detail.material",         "field_key": "", "static_value": "Concrete (obelisk), marble (monument)"},
@@ -159,12 +153,6 @@
   {"monument_id": "volgograd_18", "section": "visitors", "order_index": 2, "label_key": "visitor.opening_hours",  "field_key": "opening_hours", "static_value": null},
   {"monument_id": "volgograd_18", "section": "visitors", "order_index": 3, "label_key": "visitor.admission",      "field_key": "admission", "static_value": null},
 
-  {"monument_id": "volgograd_19", "section": "details", "order_index": 1, "label_key": "detail.year_built",       "field_key": "", "static_value": "1973"},
-  {"monument_id": "volgograd_19", "section": "details", "order_index": 2, "label_key": "detail.material",         "field_key": "", "static_value": "Bronze (figures), granite (pedestal)"},
-  {"monument_id": "volgograd_19", "section": "details", "order_index": 3, "label_key": "detail.figures_count",    "field_key": "", "static_value": "3 figures (two male, one female)"},
-  {"monument_id": "volgograd_19", "section": "visitors", "order_index": 1, "label_key": "visitor.address",        "field_key": "address", "static_value": null},
-  {"monument_id": "volgograd_19", "section": "visitors", "order_index": 2, "label_key": "visitor.opening_hours",  "field_key": "opening_hours", "static_value": null},
-  {"monument_id": "volgograd_19", "section": "visitors", "order_index": 3, "label_key": "visitor.admission",      "field_key": "admission", "static_value": null},
 
   {"monument_id": "volgograd_20", "section": "details", "order_index": 1, "label_key": "detail.year_built",       "field_key": "", "static_value": "1961"},
   {"monument_id": "volgograd_20", "section": "details", "order_index": 2, "label_key": "detail.material",         "field_key": "", "static_value": "Bronze (6-figure group), polished dark-grey granite (pedestal)"},

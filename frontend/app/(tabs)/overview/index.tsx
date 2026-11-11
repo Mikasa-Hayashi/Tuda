@@ -1,3 +1,4 @@
+import CoverImage from '@/src/components/CoverImage';
 import { SymbolIcon } from '@/src/components/ListGroup';
 import { MONUMENT_TAG_IDS } from '@/src/data/monumentFilterMeta';
 import { CITIES } from '@/src/data/cities';
@@ -10,24 +11,15 @@ import {
   MonumentPreview,
   searchMonuments,
   setSyncMeta,
-  upsertMonumentFieldConfigsFromApi,
   upsertMonumentsFromApi,
   upsertMonumentTranslationsFromApi,
 } from '@/src/db/monumentRepository';
-import {
-  upsertRoutesFromSync,
-  upsertRouteStopsFromSync,
-  upsertRouteTranslationsFromSync,
-} from '@/src/db/routeRepository';
-import {
-  fetchMonumentsPage,
-  searchMonumentsRemote,
-  syncCityData,
-} from '@/src/services/monumentsApi';
+import { fetchMonumentsPage, searchMonumentsRemote } from '@/src/services/monumentsApi';
 import { getSelectedCityId, markCityDownloaded } from '@/src/storage/citySelection';
 import { useFavorites } from '@/src/storage/favorites';
+import { runCitySync } from '@/src/services/citySync';
+import SkeletonGrid from '@/src/components/SkeletonGrid';
 import { useTheme } from '@/src/theme/ThemeContext';
-import { Image } from 'expo-image';
 import { Link, Stack, useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -39,6 +31,7 @@ import {
   Text,
   useWindowDimensions,
   View,
+  Pressable,
 } from 'react-native';
 
 type SortMode = 'default' | 'name' | 'popularity';
@@ -164,16 +157,10 @@ export default function OverviewTabScreen() {
     });
   }, [lang, refreshLocalMonuments]);
 
-  const runSync = useCallback(async (cityId: string, sinceIso: string) => {
-    const payload = await syncCityData(cityId, sinceIso);
-    upsertMonumentsFromApi(cityId, payload.monuments);
-    upsertMonumentTranslationsFromApi(payload.monument_translations);
-    upsertMonumentFieldConfigsFromApi(payload.monument_field_configs);
-    upsertRoutesFromSync(cityId, payload.routes);
-    upsertRouteStopsFromSync(payload.route_stops);
-    upsertRouteTranslationsFromSync(payload.route_translations);
-    setSyncMeta(cityId, 'last_sync', new Date().toISOString());
-  }, []);
+  const runSync = useCallback(
+    (cityId: string, sinceIso: string) => runCitySync(cityId, sinceIso),
+    [],
+  );
 
   const loadNextPage = useCallback(
     async (cityId: string, force = false) => {
@@ -322,13 +309,14 @@ export default function OverviewTabScreen() {
 
   const renderItem = useCallback(
     ({ item }: { item: MonumentPreview }) => (
-      <Link href={{ pathname: '/info', params: { id: item.id } }}>
+      <Link href={{ pathname: '/info', params: { id: item.id } }} asChild>
         <Link.Trigger>
-          <View style={{ width: cardWidth }}>
-            <Image
+          <Pressable style={{ width: cardWidth }}>
+            <CoverImage
               source={{ uri: item.imageUrl }}
               style={[styles.cardImage, { width: cardWidth, backgroundColor: colors.cardElevated }]}
               contentFit="cover"
+              contentPosition={{ top: 0, left: '50%' }}
               cachePolicy="memory-disk"
               recyclingKey={item.id}
             />
@@ -340,16 +328,14 @@ export default function OverviewTabScreen() {
             <Text style={[styles.cardTitle, { color: colors.text }]} numberOfLines={2}>
               {item.name}
             </Text>
-          </View>
+          </Pressable>
         </Link.Trigger>
         <Link.Menu>
           <Link.MenuAction
             icon={favorites.isFavorite('monument', item.id) ? 'heart.slash' : 'heart'}
             onPress={() => void favorites.toggle('monument', item.id)}
           >
-            {favorites.isFavorite('monument', item.id)
-              ? t('favorites.remove')
-              : t('favorites.add')}
+            {favorites.isFavorite('monument', item.id) ? t('favorites.remove') : t('favorites.add')}
           </Link.MenuAction>
         </Link.Menu>
       </Link>
@@ -359,7 +345,12 @@ export default function OverviewTabScreen() {
 
   const listHeader = isOffline ? (
     <View style={[styles.offlineBanner, { backgroundColor: colors.cardElevated }]}>
-      <SymbolIcon sf="icloud.slash" fallback="cloud-offline-outline" size={16} color={colors.textMuted} />
+      <SymbolIcon
+        sf="icloud.slash"
+        fallback="cloud-offline-outline"
+        size={16}
+        color={colors.textMuted}
+      />
       <Text style={[styles.offlineText, { color: colors.textSecondary }]}>
         {t('overview.offline')}
       </Text>
@@ -367,10 +358,15 @@ export default function OverviewTabScreen() {
   ) : undefined;
 
   const listEmpty = isBootstrapping ? (
-    <ActivityIndicator style={styles.centered} size="large" />
+    <SkeletonGrid cardWidth={cardWidth} columnGap={COLUMN_GAP} />
   ) : (
     <View style={styles.centered}>
-      <SymbolIcon sf="magnifyingglass" fallback="search-outline" size={52} color={colors.textMuted} />
+      <SymbolIcon
+        sf="magnifyingglass"
+        fallback="search-outline"
+        size={52}
+        color={colors.textMuted}
+      />
       <Text style={[styles.emptyTitle, { color: colors.text }]}>{t('menu.notFound')}</Text>
     </View>
   );

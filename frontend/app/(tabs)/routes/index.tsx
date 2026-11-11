@@ -1,16 +1,21 @@
+import CoverImage from '@/src/components/CoverImage';
 import { SymbolIcon } from '@/src/components/ListGroup';
 import { onMonumentCacheCleared } from '@/src/db/monumentCacheEvents';
-import { seedRealRoutesIfEmpty, seedTestMonumentsIfEmpty, seedTestRoutesIfEmpty } from '@/src/db/devSeed';
+import {
+  seedRealRoutesIfEmpty,
+  seedTestMonumentsIfEmpty,
+  seedTestRoutesIfEmpty,
+} from '@/src/db/devSeed';
 import { getAllRoutes, RoutePreview } from '@/src/db/routeRepository';
+import { runCitySync } from '@/src/services/citySync';
 import { getSelectedCityId } from '@/src/storage/citySelection';
 import { useFavorites } from '@/src/storage/favorites';
 import { useTheme } from '@/src/theme/ThemeContext';
-import { Image } from 'expo-image';
 import { Link, Stack, useFocusEffect, useRouter } from 'expo-router';
 import { useAudioGuide } from '@/src/audio/AudioGuideContext';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet, Text, View, Pressable } from 'react-native';
 
 type SortMode = 'default' | 'name';
 
@@ -28,6 +33,7 @@ export default function RoutesTabScreen() {
   const [sortMode, setSortMode] = useState<SortMode>('default');
   const [query, setQuery] = useState('');
   const [cacheVersion, setCacheVersion] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const router = useRouter();
   const { track } = useAudioGuide();
 
@@ -50,6 +56,20 @@ export default function RoutesTabScreen() {
     }, []),
   );
 
+  // Pull to refresh: fetch new routes/texts from the server; offline just keeps what is saved.
+  const handleRefresh = useCallback(async () => {
+    if (!selectedCityId) return;
+    setIsRefreshing(true);
+    try {
+      await runCitySync(selectedCityId);
+      setCacheVersion((v) => v + 1);
+    } catch {
+      // no connection: the saved routes stay
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [selectedCityId]);
+
   const visibleRoutes = useMemo(() => {
     const q = query.trim().toLowerCase();
     const list = q
@@ -65,13 +85,14 @@ export default function RoutesTabScreen() {
 
   const renderItem = useCallback(
     ({ item }: { item: RoutePreview }) => (
-      <Link href={{ pathname: '/route-info', params: { id: item.id } }}>
+      <Link href={{ pathname: '/route-info', params: { id: item.id } }} asChild>
         <Link.Trigger>
-          <View style={styles.card}>
-            <Image
+          <Pressable style={styles.card}>
+            <CoverImage
               source={item.coverImageUrl ? { uri: item.coverImageUrl } : undefined}
               style={[styles.cover, { backgroundColor: colors.cardElevated }]}
               contentFit="cover"
+              contentPosition={{ top: 0, left: '50%' }}
               cachePolicy="memory-disk"
               recyclingKey={item.id}
             />
@@ -82,7 +103,10 @@ export default function RoutesTabScreen() {
               </View>
             )}
             <View style={styles.titleRow}>
-              <Text style={[styles.title, styles.titleText, { color: colors.text }]} numberOfLines={2}>
+              <Text
+                style={[styles.title, styles.titleText, { color: colors.text }]}
+                numberOfLines={2}
+              >
                 {item.name}
               </Text>
             </View>
@@ -104,7 +128,7 @@ export default function RoutesTabScreen() {
                 </Text>
               </View>
             )}
-          </View>
+          </Pressable>
         </Link.Trigger>
         <Link.Menu>
           <Link.MenuAction
@@ -164,6 +188,7 @@ export default function RoutesTabScreen() {
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
         ListEmptyComponent={
           <View style={styles.empty}>
             <SymbolIcon
@@ -176,7 +201,6 @@ export default function RoutesTabScreen() {
           </View>
         }
       />
-
     </>
   );
 }

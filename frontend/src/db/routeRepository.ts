@@ -4,6 +4,7 @@
 
 import type { ApiRoute, ApiRouteStop, ApiRouteTranslation } from '../services/monumentsApi';
 import { db } from './database';
+import { mediaUrl } from '../services/mediaUrl';
 import { ensureCityRow, getMonumentCoords, getMonumentDbIdBySlug } from './monumentRepository';
 
 // ─── Типы ────────────────────────────────────────────────────────────────────
@@ -25,8 +26,8 @@ export type RouteStop = {
 };
 
 export type RouteDetail = RoutePreview & {
-  monumentIds: string[];      // порядковый список ID остановок
-  stops: RouteStop[];         // ID + имя (для отображения в route-info)
+  monumentIds: string[]; // порядковый список ID остановок
+  stops: RouteStop[]; // ID + имя (для отображения в route-info)
 };
 
 export type ResolvedMapPoint = {
@@ -95,7 +96,7 @@ export function getAllRoutes(lang: string, citySlug?: string | null): RoutePrevi
       name: tr?.name ?? '',
       description: tr?.description ?? '',
       stopCount,
-      coverImageUrl: r.image_url ?? '',
+      coverImageUrl: mediaUrl(r.image_url),
     };
   });
 }
@@ -145,17 +146,16 @@ export function getRouteById(id: string, lang: string): RouteDetail | null {
   });
 
   const stopCount =
-    db.getFirstSync<{ cnt: number }>(
-      `SELECT COUNT(*) as cnt FROM route_stops WHERE route_id = ?`,
-      [base.id],
-    )?.cnt ?? 0;
+    db.getFirstSync<{ cnt: number }>(`SELECT COUNT(*) as cnt FROM route_stops WHERE route_id = ?`, [
+      base.id,
+    ])?.cnt ?? 0;
 
   return {
     id: `${base.city_slug}:${base.route_slug}`,
     citySlug: base.city_slug,
     routeSlug: base.route_slug,
     coverMonumentId: base.cover_monument_slug ?? '',
-    coverImageUrl: base.image_url ?? '',
+    coverImageUrl: mediaUrl(base.image_url),
     name: tr?.name ?? '',
     description: tr?.description ?? '',
     stopCount,
@@ -165,10 +165,7 @@ export function getRouteById(id: string, lang: string): RouteDetail | null {
 }
 
 /** Остановки маршрута с координатами (index.tsx — карта) */
-export function getResolvedRouteMapPoints(
-  routeId: string,
-  lang: string,
-): ResolvedMapPoint[] {
+export function getResolvedRouteMapPoints(routeId: string, lang: string): ResolvedMapPoint[] {
   const route = getRouteById(routeId, lang);
   if (!route) return [];
 
@@ -209,10 +206,9 @@ export function getResolvedRouteMapPoints(
 }
 
 function getRouteDbIdBySlug(slug: string): number | null {
-  return db.getFirstSync<{ id: number }>(
-    `SELECT id FROM routes WHERE slug = ?`,
-    [slug],
-  )?.id ?? null;
+  return (
+    db.getFirstSync<{ id: number }>(`SELECT id FROM routes WHERE slug = ?`, [slug])?.id ?? null
+  );
 }
 
 export function upsertRoutesFromSync(citySlug: string, routes: ApiRoute[]): void {
@@ -241,6 +237,11 @@ export function upsertRouteStopsFromSync(routeStops: ApiRouteStop[]): void {
       const routeDbId = getRouteDbIdBySlug(stop.route_id);
       const monumentDbId = getMonumentDbIdBySlug(stop.monument_id);
       if (!routeDbId || !monumentDbId) continue;
+      // A stop that moved to another position must not linger at its old one.
+      db.runSync(
+        `DELETE FROM route_stops WHERE route_id = ? AND monument_id = ? AND order_index <> ?`,
+        [routeDbId, monumentDbId, stop.order_index],
+      );
       db.runSync(
         `INSERT INTO route_stops (route_id, monument_id, order_index)
          VALUES (?, ?, ?)
