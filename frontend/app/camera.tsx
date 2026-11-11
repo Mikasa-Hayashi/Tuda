@@ -1,3 +1,4 @@
+import { achievements } from '@/src/storage/achievements';
 import { LoadingOverlay } from '@/src/components/LoadingOverlay';
 import { ScannerFrame } from '@/src/components/ScannerFrame';
 import { recognizeImage, type RecognitionCandidate } from '@/src/services/recognitionApi';
@@ -88,10 +89,21 @@ export default function CameraScreen() {
     try {
       const result = await recognizeImage(uri, i18n.language);
       if (result.recognized && result.id) {
-        router.push(`/info?id=${result.id}`);
+        achievements.recordScan();
+        router.push({
+          pathname: '/scan-result',
+          params: { id: result.id, p: String(result.confidence) },
+        });
       } else {
         const options = result.top.filter((c) => !c.neg && c.id && c.p >= 0.1).slice(0, 2);
-        showFailure('notFound', options);
+        if (options.length > 0) {
+          router.push({
+            pathname: '/scan-result',
+            params: { alt: options.map((o) => `${o.id}:${o.p}`).join(',') },
+          });
+        } else {
+          showFailure('notFound');
+        }
       }
     } catch {
       showFailure('error');
