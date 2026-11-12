@@ -134,14 +134,18 @@ function RootStack() {
         />
         <Stack.Screen
           name="scan-result"
-          options={{
-            // Result card over the camera: a native detent sheet.
+          options={({ route }) => ({
+            // Result card over the camera: a native detent sheet. The list of candidates is short,
+            // so it opens at half height instead of leaving a big empty area.
             presentation: 'formSheet',
             headerShown: false,
-            sheetAllowedDetents: [0.72, 1],
+            sheetAllowedDetents: (route.params as { alt?: string } | undefined)?.alt
+              ? [0.5, 1]
+              : [0.72, 1],
             sheetGrabberVisible: true,
-          }}
+          })}
         />
+        <Stack.Screen name="scan-history" options={detailScreenOptions} />
         <Stack.Screen
           name="image-viewer"
           options={{

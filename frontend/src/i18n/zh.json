@@ -438,6 +438,14 @@
     "confidence": "置信度",
     "again": "再次扫描",
     "maybe": "可能是：",
-    "notFound": "无法识别"
+    "notFound": "无法识别",
+    "historyTitle": "扫描记录",
+    "history": "扫描记录",
+    "historyEmpty": "暂无扫描",
+    "historyHint": "您扫描过的景点会显示在这里。",
+    "historyClear": "清除记录",
+    "historyClearHint": "所有扫描及其照片将从此设备中删除。",
+    "pick": "可能是以下之一",
+    "pickHint": "请选择正确的景点，或将相机对准整个景点后重试。"
   }
 }

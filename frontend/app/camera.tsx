@@ -1,4 +1,5 @@
 import { achievements } from '@/src/storage/achievements';
+import { scanHistory } from '@/src/storage/scanHistory';
 import { LoadingOverlay } from '@/src/components/LoadingOverlay';
 import { ScannerFrame } from '@/src/components/ScannerFrame';
 import { recognizeImage, type RecognitionCandidate } from '@/src/services/recognitionApi';
@@ -22,9 +23,8 @@ import {
 } from '@expo/ui/swift-ui/modifiers';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import { scanNavigation } from '@/src/utils/scanNavigation';
-import { Stack, useFocusEffect, useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Stack, useRouter } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, StatusBar, StyleSheet, View } from 'react-native';
 
@@ -41,14 +41,6 @@ export default function CameraScreen() {
   const [facing, setFacing] = useState<'back' | 'front'>('back');
   const cameraRef = useRef<CameraView>(null);
   const dark = preferredColorScheme('dark');
-
-  // The result sheet leaves a target here and closes; open it once the sheet is gone.
-  useFocusEffect(
-    useCallback(() => {
-      const href = scanNavigation.take();
-      if (href) router.push(href);
-    }, [router]),
-  );
 
   useEffect(() => {
     if (!permission?.granted && permission?.canAskAgain !== false) requestPermission();
@@ -99,6 +91,12 @@ export default function CameraScreen() {
       const result = await recognizeImage(uri, i18n.language);
       if (result.recognized && result.id) {
         achievements.recordScan();
+        scanHistory.record({
+          monumentId: result.id,
+          confidence: result.confidence,
+          recognized: true,
+          photoUri: uri,
+        });
         router.push({
           pathname: '/scan-result',
           params: { id: result.id, p: String(result.confidence) },
@@ -106,6 +104,12 @@ export default function CameraScreen() {
       } else {
         const options = result.top.filter((c) => !c.neg && c.id && c.p >= 0.1).slice(0, 2);
         if (options.length > 0) {
+          scanHistory.record({
+            monumentId: options[0].id as string,
+            confidence: options[0].p,
+            recognized: false,
+            photoUri: uri,
+          });
           router.push({
             pathname: '/scan-result',
             params: { alt: options.map((o) => `${o.id}:${o.p}`).join(',') },
@@ -153,6 +157,11 @@ export default function CameraScreen() {
         />
       </Stack.Toolbar>
       <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          icon="clock.arrow.circlepath"
+          accessibilityLabel={t('scanResult.history')}
+          onPress={() => router.push('/scan-history')}
+        />
         <Stack.Toolbar.Button
           icon={isTorchOn ? 'bolt.fill' : 'bolt.slash'}
           accessibilityLabel={t('camera.torch')}

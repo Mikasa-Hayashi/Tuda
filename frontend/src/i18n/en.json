@@ -440,6 +440,14 @@
     "confidence": "Confidence",
     "again": "Scan again",
     "maybe": "Maybe it is:",
-    "notFound": "Could not recognise it"
+    "notFound": "Could not recognise it",
+    "historyTitle": "Scan History",
+    "history": "Scan history",
+    "historyEmpty": "No scans yet",
+    "historyHint": "Monuments you scan will appear here.",
+    "historyClear": "Clear history",
+    "historyClearHint": "All scans and their photos will be removed from this device.",
+    "pick": "Maybe it is one of these",
+    "pickHint": "Tap the right monument, or point the camera at the whole monument and try again."
   }
 }

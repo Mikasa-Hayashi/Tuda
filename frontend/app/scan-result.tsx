@@ -28,13 +28,14 @@ import {
   shapes,
 } from '@expo/ui/swift-ui/modifiers';
 import { scanNavigation } from '@/src/utils/scanNavigation';
-import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
-import React, { useMemo } from 'react';
+import { useLocalSearchParams, useNavigation, useRouter, type Href } from 'expo-router';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 
 const CLEAR = '#00000000';
 const FORM_MARGIN = 20;
+const CANDIDATE_THUMB = 64;
 
 /**
  * Result of a scan, as a native sheet over the camera: the recognised monument with its photo and
@@ -45,6 +46,12 @@ export default function ScanResultSheet() {
   const { t, i18n } = useTranslation();
   const { colors, isDark } = useTheme();
   const router = useRouter();
+  const navigation = useNavigation() as unknown as {
+    addListener: (
+      type: 'transitionEnd',
+      cb: (e: { data: { closing: boolean } }) => void,
+    ) => () => void;
+  };
   const { width } = useWindowDimensions();
   const scheme = preferredColorScheme(isDark ? 'dark' : 'light');
   const secondary = foregroundStyle({ type: 'hierarchical', style: 'secondary' });
@@ -60,12 +67,24 @@ export default function ScanResultSheet() {
         .map((pair) => pair.split(':'))
         .flatMap(([cid, cp]) => {
           const m = cid ? getMonumentById(cid, i18n.language) : null;
-          return m ? [{ id: m.id, name: m.name, p: Number(cp) || 0 }] : [];
+          return m ? [{ id: m.id, name: m.name, imageUrl: m.imageUrl, p: Number(cp) || 0 }] : [];
         }),
     [alt, i18n.language],
   );
 
-  /** Closes the sheet; the camera screen then opens the target as a regular full-size screen. */
+  // Open the chosen screen only once the sheet has fully slid away: pushed any earlier, it would
+  // be presented from the still-visible sheet and open inside it.
+  useEffect(
+    () =>
+      navigation.addListener('transitionEnd', (e) => {
+        if (!e.data.closing) return;
+        const href = scanNavigation.take();
+        if (href) router.push(href);
+      }),
+    [navigation, router],
+  );
+
+  /** Closes the sheet; once it is gone the target opens as a regular full-size screen. */
   const openAfterClose = (href: Href) => {
     scanNavigation.set(href);
     router.back();
@@ -79,22 +98,51 @@ export default function ScanResultSheet() {
       <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Host style={styles.container} useViewportSizeMeasurement modifiers={[scheme]}>
           <Form>
-            <Section
-              title={t('scanResult.notFound')}
-              footer={
-                <Text modifiers={[font({ textStyle: 'footnote' })]}>{t('camera.notFoundHint')}</Text>
-              }
-            >
+            <Section>
+              <VStack
+                alignment="leading"
+                spacing={4}
+                modifiers={[
+                  frame({ maxWidth: 10000, alignment: 'leading' }),
+                  listRowInsets({ top: 4, leading: 0, bottom: 4, trailing: 0 }),
+                  listRowBackground(CLEAR),
+                ]}
+              >
+                <Text modifiers={[font({ size: 24, weight: 'bold' })]}>{t('scanResult.pick')}</Text>
+                <Text modifiers={[font({ textStyle: 'subheadline' }), secondary]}>
+                  {t('scanResult.pickHint')}
+                </Text>
+              </VStack>
+            </Section>
+            <Section>
               {candidates.map((c) => (
                 <Button
                   key={c.id}
                   onPress={() => openAfterClose({ pathname: '/info', params: { id: c.id } })}
                   modifiers={[buttonStyle('plain')]}
                 >
-                  <HStack spacing={8} modifiers={[contentShape(shapes.rectangle())]}>
-                    <Text>{c.name}</Text>
+                  <HStack spacing={12} modifiers={[contentShape(shapes.rectangle())]}>
+                    <RNHostView matchContents>
+                      <CoverImage
+                        source={c.imageUrl ? { uri: c.imageUrl } : undefined}
+                        style={{
+                          width: CANDIDATE_THUMB,
+                          height: CANDIDATE_THUMB,
+                          borderRadius: 14,
+                          backgroundColor: colors.cardElevated,
+                        }}
+                        contentFit="cover"
+                        contentPosition={{ top: 0, left: '50%' }}
+                        cachePolicy="memory-disk"
+                      />
+                    </RNHostView>
+                    <VStack alignment="leading" spacing={2}>
+                      <Text modifiers={[font({ textStyle: 'headline' })]}>{c.name}</Text>
+                      <Text modifiers={[font({ textStyle: 'subheadline' }), secondary]}>
+                        {`${t('scanResult.confidence')} ${Math.round(c.p * 100)}%`}
+                      </Text>
+                    </VStack>
                     <Spacer />
-                    <Text modifiers={[secondary]}>{`${Math.round(c.p * 100)}%`}</Text>
                     <SymbolImage systemName="chevron.right" size={12} modifiers={[secondary]} />
                   </HStack>
                 </Button>
