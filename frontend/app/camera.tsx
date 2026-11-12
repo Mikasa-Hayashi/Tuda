@@ -22,8 +22,9 @@ import {
 } from '@expo/ui/swift-ui/modifiers';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import { Stack, useRouter } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
+import { scanNavigation } from '@/src/utils/scanNavigation';
+import { Stack, useFocusEffect, useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, StatusBar, StyleSheet, View } from 'react-native';
 
@@ -40,6 +41,14 @@ export default function CameraScreen() {
   const [facing, setFacing] = useState<'back' | 'front'>('back');
   const cameraRef = useRef<CameraView>(null);
   const dark = preferredColorScheme('dark');
+
+  // The result sheet leaves a target here and closes; open it once the sheet is gone.
+  useFocusEffect(
+    useCallback(() => {
+      const href = scanNavigation.take();
+      if (href) router.push(href);
+    }, [router]),
+  );
 
   useEffect(() => {
     if (!permission?.granted && permission?.canAskAgain !== false) requestPermission();

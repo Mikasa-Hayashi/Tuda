@@ -27,7 +27,8 @@ import {
   preferredColorScheme,
   shapes,
 } from '@expo/ui/swift-ui/modifiers';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { scanNavigation } from '@/src/utils/scanNavigation';
+import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
@@ -64,24 +65,13 @@ export default function ScanResultSheet() {
     [alt, i18n.language],
   );
 
-  /** Closes the sheet and opens a screen over the camera in the same step. */
-  const openAfterClose = (href: Parameters<typeof router.push>[0]) => {
+  /** Closes the sheet; the camera screen then opens the target as a regular full-size screen. */
+  const openAfterClose = (href: Href) => {
+    scanNavigation.set(href);
     router.back();
-    router.push(href);
   };
   const percent = Math.round((Number(p) || 0) * 100);
   const heroWidth = width - FORM_MARGIN * 2;
-
-  const scanAgain = (
-    <Section>
-      <Button onPress={() => router.back()} modifiers={[buttonStyle('plain')]}>
-        <HStack modifiers={[contentShape(shapes.rectangle())]}>
-          <Label title={t('scanResult.again')} systemImage="arrow.counterclockwise" />
-          <Spacer />
-        </HStack>
-      </Button>
-    </Section>
-  );
 
   // The model was unsure: let the user pick one of the closest matches.
   if (!monument) {
@@ -89,7 +79,12 @@ export default function ScanResultSheet() {
       <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Host style={styles.container} useViewportSizeMeasurement modifiers={[scheme]}>
           <Form>
-            <Section title={t('scanResult.notFound')} footer={t('camera.notFoundHint')}>
+            <Section
+              title={t('scanResult.notFound')}
+              footer={
+                <Text modifiers={[font({ textStyle: 'footnote' })]}>{t('camera.notFoundHint')}</Text>
+              }
+            >
               {candidates.map((c) => (
                 <Button
                   key={c.id}
@@ -105,7 +100,6 @@ export default function ScanResultSheet() {
                 </Button>
               ))}
             </Section>
-            {scanAgain}
           </Form>
         </Host>
       </View>
@@ -197,7 +191,6 @@ export default function ScanResultSheet() {
               </Button>
             </VStack>
           </Section>
-          {scanAgain}
         </Form>
       </Host>
     </View>

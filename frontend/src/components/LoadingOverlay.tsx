@@ -1,5 +1,7 @@
+import { Host, ProgressView, Text, VStack } from '@expo/ui/swift-ui';
+import { font, glassEffect, padding } from '@expo/ui/swift-ui/modifiers';
 import React from 'react';
-import { ActivityIndicator, PlatformColor, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 type LoadingOverlayProps = {
   visible: boolean;
@@ -7,17 +9,29 @@ type LoadingOverlayProps = {
 };
 
 /**
- * Full-screen "busy" HUD. Rendered in place (not in a <Modal>) so it can never get stuck
- * above native screen transitions; it swallows touches while visible.
+ * Full-screen "busy" HUD: a native SwiftUI ProgressView on a Liquid Glass card. Rendered in
+ * place (not in a <Modal>) so it can never get stuck above native screen transitions; the
+ * dimming layer swallows touches while visible.
  */
 export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ visible, text }) => {
   if (!visible) return null;
   return (
     <View style={styles.overlay} pointerEvents="auto" accessibilityViewIsModal>
-      <View style={styles.box}>
-        <ActivityIndicator size="large" />
-        {text ? <Text style={styles.text}>{text}</Text> : null}
-      </View>
+      <Host matchContents>
+        <VStack
+          spacing={12}
+          modifiers={[
+            padding({ horizontal: 28, vertical: 22 }),
+            glassEffect({
+              glass: { variant: 'regular' },
+              shape: 'roundedRectangle',
+              cornerRadius: 24,
+            }),
+          ]}>
+          <ProgressView />
+          {text ? <Text modifiers={[font({ size: 15, weight: 'medium' })]}>{text}</Text> : null}
+        </VStack>
+      </Host>
     </View>
   );
 };
@@ -30,14 +44,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 100,
   },
-  box: {
-    minWidth: 120,
-    paddingVertical: 22,
-    paddingHorizontal: 26,
-    borderRadius: 20,
-    gap: 12,
-    alignItems: 'center',
-    backgroundColor: PlatformColor('secondarySystemBackground'),
-  },
-  text: { fontSize: 15, fontWeight: '500', color: PlatformColor('label') },
 });
