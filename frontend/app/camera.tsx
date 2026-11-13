@@ -158,11 +158,6 @@ export default function CameraScreen() {
       </Stack.Toolbar>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
-          icon="clock.arrow.circlepath"
-          accessibilityLabel={t('scanResult.history')}
-          onPress={() => router.push('/scan-history')}
-        />
-        <Stack.Toolbar.Button
           icon={isTorchOn ? 'bolt.fill' : 'bolt.slash'}
           accessibilityLabel={t('camera.torch')}
           onPress={() => setIsTorchOn((v) => !v)}

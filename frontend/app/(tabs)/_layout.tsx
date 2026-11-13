@@ -1,6 +1,7 @@
 import { useAudioGuide } from '@/src/audio/AudioGuideContext';
 import { AiRouteAccessory } from '@/src/components/AiRouteAccessory';
 import { AudioPlayerAccessory } from '@/src/components/AudioPlayerAccessory';
+import { ScanCameraAccessory } from '@/src/components/ScanCameraAccessory';
 import { useTheme } from '@/src/theme/ThemeContext';
 import { useNavigation, usePathname } from 'expo-router';
 import { NativeTabs } from 'expo-router/native-tabs';
@@ -32,6 +33,12 @@ export default function TabsLayout() {
   const nextShowAi = pathname === '/routes' ? true : TAB_PATHS.has(pathname) ? false : showAiAccessory;
   if (nextShowAi !== showAiAccessory) setShowAiAccessory(nextShowAi);
 
+  // Same for the camera capsule of the Scan tab (the camera itself is pushed above the tabs).
+  const [showScanAccessory, setShowScanAccessory] = useState(false);
+  const nextShowScan =
+    pathname === '/scan' ? true : TAB_PATHS.has(pathname) ? false : showScanAccessory;
+  if (nextShowScan !== showScanAccessory) setShowScanAccessory(nextShowScan);
+
   // The root stack lists this screen in the back button's long-press history. Name it after the
   // active tab (not always "Home"); while a screen is pushed above the tabs keep the last tab.
   const navigation = useNavigation();
@@ -48,10 +55,14 @@ export default function TabsLayout() {
         <NativeTabs.BottomAccessory>
           <AudioPlayerAccessory label={t('audioGuide.now')} />
         </NativeTabs.BottomAccessory>
+      ) : showAiAccessory ? (
+        <NativeTabs.BottomAccessory>
+          <AiRouteAccessory label={t('routesScreen.aiPromoTitle')} />
+        </NativeTabs.BottomAccessory>
       ) : (
-        showAiAccessory && (
+        showScanAccessory && (
           <NativeTabs.BottomAccessory>
-            <AiRouteAccessory label={t('routesScreen.aiPromoTitle')} />
+            <ScanCameraAccessory label={t('scan.button')} />
           </NativeTabs.BottomAccessory>
         )
       )}

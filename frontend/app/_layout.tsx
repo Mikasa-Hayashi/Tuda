@@ -145,7 +145,6 @@ function RootStack() {
             sheetGrabberVisible: true,
           })}
         />
-        <Stack.Screen name="scan-history" options={detailScreenOptions} />
         <Stack.Screen
           name="image-viewer"
           options={{
