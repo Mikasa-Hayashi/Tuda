@@ -1,7 +1,7 @@
 import type { TFunction } from 'i18next';
 
 import { monumentFilterMeta } from './monumentFilterMeta';
-import { CURATED_QUIZZES } from './quizCurated';
+import { curatedQuestions } from './quizCurated';
 import { getMonumentById } from '../db/monumentRepository';
 
 export type QuizQuestion = {
@@ -90,11 +90,10 @@ function getAllLocalizedFacts(lang: string): Record<string, QuizFactRow[]> {
 }
 
 export function getQuizQuestions({ monumentId, lang, t }: QuizParams): QuizQuestion[] {
-  // Hand-written quiz first (ru / en, other languages fall back to English).
-  const curated = CURATED_QUIZZES[monumentId];
+  // Hand-written quiz first (ru / en / ar / zh, other languages fall back to English).
+  const curated = curatedQuestions(monumentId, lang);
   if (curated) {
-    const list = lang === 'ru' ? curated.ru : curated.en;
-    return list.map((q) => ({ question: q.question, options: q.options, correctIndex: q.correct }));
+    return curated.map((q) => ({ question: q.question, options: q.options, correctIndex: q.correct }));
   }
 
   const monument = getMonumentById(monumentId, lang);

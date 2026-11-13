@@ -15,6 +15,7 @@ import { BADGE, BadgeLabel } from '@/src/components/BadgeLabel';
 import { useAudioGuide } from '@/src/audio/AudioGuideContext';
 import { getQuizQuestions } from '@/src/data/quiz';
 import { useFavorites } from '@/src/storage/favorites';
+import { useQuizProgress } from '@/src/storage/quizProgress';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
   Button,
@@ -133,6 +134,7 @@ export default function MonumentDetailScreen() {
   }, [id, monumentKnown]);
 
   // The quiz entry is shown only for monuments that actually have a quiz.
+  const quizResult = useQuizProgress()[id ?? ''];
   const hasQuiz = useMemo(
     () => !!id && getQuizQuestions({ monumentId: id, lang: i18n.language, t }).length > 0,
     [id, i18n.language, t],
@@ -395,11 +397,27 @@ export default function MonumentDetailScreen() {
                     })
                   }
                 >
-                  <BadgeLabel
-                    title={t('info.play_quiz')}
-                    systemImage="trophy.fill"
-                    color={BADGE.orange}
-                  />
+                  <HStack spacing={8}>
+                    <BadgeLabel
+                      title={t('info.play_quiz')}
+                      systemImage="trophy.fill"
+                      color={BADGE.orange}
+                    />
+                    {/* Last attempt (e.g. 3/5); a green tick once the quiz has been passed. */}
+                    {quizResult && (
+                      <Text
+                        modifiers={[
+                          font({ textStyle: 'body', design: 'rounded', weight: 'semibold' }),
+                          foregroundStyle({ type: 'hierarchical', style: 'secondary' }),
+                        ]}
+                      >
+                        {`${quizResult.score}/${quizResult.total}`}
+                      </Text>
+                    )}
+                    {quizResult?.passed && (
+                      <SymbolImage systemName="checkmark.circle.fill" size={20} color={BADGE.green} />
+                    )}
+                  </HStack>
                 </Button>
               </Section>
             )}

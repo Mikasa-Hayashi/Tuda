@@ -3117,7 +3117,7 @@
     "monument_id": "rostov_05",
     "lang": "en",
     "field_key": "short_description",
-    "field_value": "Rostov Zoo is one of the largest zoos in Russia and the biggest in the south of the country. It occupies a picturesque area with alleys and flowerbeds, home to hundreds of animal species from all continents. It is a great place for a relaxed family walk and photos with exotic residents."
+    "field_value": "Rostov Zoo is one of the largest zoos in Russia by area, at almost 57 hectares. Its distinctive feature is the extensive park zone, which makes it a popular place for the townspeople to relax, and its plantings are recognised as a natural monument. The zoo takes part in 38 programmes for the conservation of rare and endangered animal species."
   },
   {
     "monument_id": "rostov_05",
@@ -3147,7 +3147,7 @@
     "monument_id": "rostov_05",
     "lang": "ru",
     "field_key": "short_description",
-    "field_value": "Ростовский зоопарк — один из крупнейших зоопарков России и самый большой на юге страны. Он расположен на живописной территории с аллеями и цветниками, где живут сотни видов животных со всех континентов. Это отличное место для спокойной прогулки всей семьёй и фотографий с экзотическими обитателями."
+    "field_value": "Ростовский зоопарк — один из крупнейших по территории зоопарков России: его площадь почти 57 гектаров. Особенность зоопарка — обширная парковая зона, поэтому он популярен у горожан как место отдыха, а его насаждения признаны памятником природы. Зоопарк участвует в 38 программах по сохранению редких и исчезающих видов животных."
   },
   {
     "monument_id": "rostov_05",
@@ -3682,5 +3682,617 @@
     "lang": "ru",
     "field_key": "opening_schedule",
     "field_value": "{\"always\":true}"
+  },
+  {
+    "monument_id": "sirius_01",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Fisht Olympic Stadium"
+  },
+  {
+    "monument_id": "sirius_01",
+    "lang": "en",
+    "field_key": "short_description",
+    "field_value": "Fisht Stadium was built in 2013 for the Sochi Winter Olympics. The opening ceremony of the Games took place here on 7 February 2014, and the closing ceremony on 23 February. In 2018 the arena hosted matches of the FIFA World Cup. The stadium is named after the Fisht mountain peak, a word that means \"white head\" in Adyghe. Its look combines the images of a shell and a snowy summit, and the covered stands are roofed with translucent polycarbonate."
+  },
+  {
+    "monument_id": "sirius_01",
+    "lang": "en",
+    "field_key": "address",
+    "field_value": "Olympic Park, Sirius"
+  },
+  {
+    "monument_id": "sirius_01",
+    "lang": "en",
+    "field_key": "opening_hours",
+    "field_value": "Check opening hours on the official website"
+  },
+  {
+    "monument_id": "sirius_01",
+    "lang": "en",
+    "field_key": "admission",
+    "field_value": "Grounds free; events ticketed"
+  },
+  {
+    "monument_id": "sirius_01",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Олимпийский стадион «Фишт»"
+  },
+  {
+    "monument_id": "sirius_01",
+    "lang": "ru",
+    "field_key": "short_description",
+    "field_value": "Стадион «Фишт» построен в 2013 году к зимним Олимпийским играм в Сочи. Здесь 7 февраля 2014 года прошла церемония открытия Игр, а 23 февраля — церемония закрытия. В 2018 году арена принимала матчи чемпионата мира по футболу. Стадион назван по горной вершине Фишт: с адыгейского это слово переводится как «белая голова». Его облик сочетает образы ракушки и снежной вершины, а крытые трибуны закрыты полупрозрачным поликарбонатом."
+  },
+  {
+    "monument_id": "sirius_01",
+    "lang": "ru",
+    "field_key": "address",
+    "field_value": "Олимпийский парк, Сириус"
+  },
+  {
+    "monument_id": "sirius_01",
+    "lang": "ru",
+    "field_key": "opening_hours",
+    "field_value": "Часы работы уточняйте на официальном сайте"
+  },
+  {
+    "monument_id": "sirius_01",
+    "lang": "ru",
+    "field_key": "admission",
+    "field_value": "Территория бесплатно; мероприятия — по билетам"
+  },
+  {
+    "monument_id": "sirius_02",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Olympic Cauldron"
+  },
+  {
+    "monument_id": "sirius_02",
+    "lang": "en",
+    "field_key": "short_description",
+    "field_value": "The Olympic Cauldron stands in the Olympic Park in Sirius. The flame of the Games was lit during the opening ceremony on 7 February 2014 and burned continuously until the closing of the Olympics on 23 February. The tradition of the flame goes back to the 1928 Olympic Games in Amsterdam. Today the cauldron is one of the main symbols of the Olympic Park and a favourite place for photographs."
+  },
+  {
+    "monument_id": "sirius_02",
+    "lang": "en",
+    "field_key": "address",
+    "field_value": "Olympic Park, Sirius"
+  },
+  {
+    "monument_id": "sirius_02",
+    "lang": "en",
+    "field_key": "opening_hours",
+    "field_value": "Check opening hours on the official website"
+  },
+  {
+    "monument_id": "sirius_02",
+    "lang": "en",
+    "field_key": "admission",
+    "field_value": "Free"
+  },
+  {
+    "monument_id": "sirius_02",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Чаша Олимпийского огня"
+  },
+  {
+    "monument_id": "sirius_02",
+    "lang": "ru",
+    "field_key": "short_description",
+    "field_value": "Чаша Олимпийского огня находится в Олимпийском парке в Сириусе. Огонь Игр зажгли во время церемонии открытия 7 февраля 2014 года, и он горел непрерывно до закрытия Олимпиады 23 февраля. Традиция огня восходит к Олимпийским играм 1928 года в Амстердаме. Сегодня чаша — один из главных символов Олимпийского парка и любимое место для фотографий."
+  },
+  {
+    "monument_id": "sirius_02",
+    "lang": "ru",
+    "field_key": "address",
+    "field_value": "Олимпийский парк, Сириус"
+  },
+  {
+    "monument_id": "sirius_02",
+    "lang": "ru",
+    "field_key": "opening_hours",
+    "field_value": "Часы работы уточняйте на официальном сайте"
+  },
+  {
+    "monument_id": "sirius_02",
+    "lang": "ru",
+    "field_key": "admission",
+    "field_value": "Бесплатно"
+  },
+  {
+    "monument_id": "sirius_03",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Bolshoy Ice Dome"
+  },
+  {
+    "monument_id": "sirius_03",
+    "lang": "en",
+    "field_key": "short_description",
+    "field_value": "The Bolshoy Ice Palace is a multipurpose complex in the Olympic Park. During the 2014 Olympics it was the main ice hockey arena, and today it is the home arena of the Sochi hockey club. The palace seats 12,000 spectators. Architecturally it resembles a frozen drop, and its dome is covered in a pearly white material. It was built in 2009–2012 to a design by the architects Nikita Tsymbal and Alexander Knyazev."
+  },
+  {
+    "monument_id": "sirius_03",
+    "lang": "en",
+    "field_key": "address",
+    "field_value": "Olympic Park, Sirius"
+  },
+  {
+    "monument_id": "sirius_03",
+    "lang": "en",
+    "field_key": "opening_hours",
+    "field_value": "Check opening hours on the official website"
+  },
+  {
+    "monument_id": "sirius_03",
+    "lang": "en",
+    "field_key": "admission",
+    "field_value": "Grounds free; events ticketed"
+  },
+  {
+    "monument_id": "sirius_03",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Ледовый дворец «Большой»"
+  },
+  {
+    "monument_id": "sirius_03",
+    "lang": "ru",
+    "field_key": "short_description",
+    "field_value": "Дворец спорта «Большой» — многофункциональный комплекс в Олимпийском парке. Во время Олимпиады 2014 года он был основной хоккейной ареной, а сегодня это домашняя арена хоккейного клуба «Сочи». Дворец вмещает 12 тысяч зрителей. По архитектуре он напоминает замёрзшую каплю, а купол покрыт жемчужно-белым материалом. Построен в 2009–2012 годах по проекту архитекторов Никиты Цымбала и Александра Князева."
+  },
+  {
+    "monument_id": "sirius_03",
+    "lang": "ru",
+    "field_key": "address",
+    "field_value": "Олимпийский парк, Сириус"
+  },
+  {
+    "monument_id": "sirius_03",
+    "lang": "ru",
+    "field_key": "opening_hours",
+    "field_value": "Часы работы уточняйте на официальном сайте"
+  },
+  {
+    "monument_id": "sirius_03",
+    "lang": "ru",
+    "field_key": "admission",
+    "field_value": "Территория бесплатно; мероприятия — по билетам"
+  },
+  {
+    "monument_id": "sirius_04",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Iceberg Skating Palace"
+  },
+  {
+    "monument_id": "sirius_04",
+    "lang": "en",
+    "field_key": "short_description",
+    "field_value": "The Iceberg Winter Sports Palace is an ice arena seating 12,000 with a main rink and a training rink, each 60 by 30 metres. Competitions began here in October 2012, and in 2014 it hosted the Olympic figure skating and short track events. The building has a total area of almost 68,000 square metres. The arena is known for its snow-white facade reminiscent of an iceberg."
+  },
+  {
+    "monument_id": "sirius_04",
+    "lang": "en",
+    "field_key": "address",
+    "field_value": "Olympic Park, Sirius"
+  },
+  {
+    "monument_id": "sirius_04",
+    "lang": "en",
+    "field_key": "opening_hours",
+    "field_value": "Check opening hours on the official website"
+  },
+  {
+    "monument_id": "sirius_04",
+    "lang": "en",
+    "field_key": "admission",
+    "field_value": "Grounds free; events ticketed"
+  },
+  {
+    "monument_id": "sirius_04",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Дворец зимнего спорта «Айсберг»"
+  },
+  {
+    "monument_id": "sirius_04",
+    "lang": "ru",
+    "field_key": "short_description",
+    "field_value": "Дворец зимнего спорта «Айсберг» — ледовая арена на 12 тысяч мест с основным и тренировочным катками размером 60 на 30 метров. Здесь начали проводить соревнования в октябре 2012 года, а в 2014 году прошли турниры Олимпиады по фигурному катанию и шорт-треку. Площадь здания — почти 68 тысяч квадратных метров. Арена известна белоснежным фасадом, напоминающим айсберг."
+  },
+  {
+    "monument_id": "sirius_04",
+    "lang": "ru",
+    "field_key": "address",
+    "field_value": "Олимпийский парк, Сириус"
+  },
+  {
+    "monument_id": "sirius_04",
+    "lang": "ru",
+    "field_key": "opening_hours",
+    "field_value": "Часы работы уточняйте на официальном сайте"
+  },
+  {
+    "monument_id": "sirius_04",
+    "lang": "ru",
+    "field_key": "admission",
+    "field_value": "Территория бесплатно; мероприятия — по билетам"
+  },
+  {
+    "monument_id": "sirius_05",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Shayba Arena"
+  },
+  {
+    "monument_id": "sirius_05",
+    "lang": "en",
+    "field_key": "short_description",
+    "field_value": "Shayba Arena seats seven thousand and was the second most important stadium of the 2014 Olympics. It hosted ice hockey matches at the Games and sledge hockey at the Paralympics. After the Games the arena became the All-Russian Children's Sports and Wellness Centre, opened on 4 July 2014. The Bolshoy palace and a training arena are next door."
+  },
+  {
+    "monument_id": "sirius_05",
+    "lang": "en",
+    "field_key": "address",
+    "field_value": "Olympic Park, Sirius"
+  },
+  {
+    "monument_id": "sirius_05",
+    "lang": "en",
+    "field_key": "opening_hours",
+    "field_value": "Check opening hours on the official website"
+  },
+  {
+    "monument_id": "sirius_05",
+    "lang": "en",
+    "field_key": "admission",
+    "field_value": "Grounds free; events ticketed"
+  },
+  {
+    "monument_id": "sirius_05",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Ледовая арена «Шайба»"
+  },
+  {
+    "monument_id": "sirius_05",
+    "lang": "ru",
+    "field_key": "short_description",
+    "field_value": "Ледовая арена «Шайба» рассчитана на семь тысяч мест и была вторым по значимости стадионом Олимпиады 2014 года. Здесь проходили хоккейные матчи Игр и соревнования по следж-хоккею на Паралимпиаде. После Игр арену сделали Всероссийским детским спортивно-оздоровительным центром, открытым 4 июля 2014 года. Рядом находятся дворец «Большой» и тренировочный стадион."
+  },
+  {
+    "monument_id": "sirius_05",
+    "lang": "ru",
+    "field_key": "address",
+    "field_value": "Олимпийский парк, Сириус"
+  },
+  {
+    "monument_id": "sirius_05",
+    "lang": "ru",
+    "field_key": "opening_hours",
+    "field_value": "Часы работы уточняйте на официальном сайте"
+  },
+  {
+    "monument_id": "sirius_05",
+    "lang": "ru",
+    "field_key": "admission",
+    "field_value": "Территория бесплатно; мероприятия — по билетам"
+  },
+  {
+    "monument_id": "sirius_06",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Sirius Autodrom"
+  },
+  {
+    "monument_id": "sirius_06",
+    "lang": "en",
+    "field_key": "short_description",
+    "field_value": "Sirius Autodrom is a racing circuit around the Olympic Park, called Sochi Autodrom until 1 April 2024. It operates all year round. The idea is similar to the circuits around the Olympic parks in Montreal and Sydney. The track was designed by Tilke, and 5.8 billion roubles of federal funds were allocated for its construction. It hosted the Formula 1 Russian Grand Prix."
+  },
+  {
+    "monument_id": "sirius_06",
+    "lang": "en",
+    "field_key": "address",
+    "field_value": "Olympic Park, Sirius"
+  },
+  {
+    "monument_id": "sirius_06",
+    "lang": "en",
+    "field_key": "opening_hours",
+    "field_value": "Check opening hours on the official website"
+  },
+  {
+    "monument_id": "sirius_06",
+    "lang": "en",
+    "field_key": "admission",
+    "field_value": "Tickets for races and events"
+  },
+  {
+    "monument_id": "sirius_06",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Сириус Автодром"
+  },
+  {
+    "monument_id": "sirius_06",
+    "lang": "ru",
+    "field_key": "short_description",
+    "field_value": "«Сириус Автодром» — гоночная трасса вокруг Олимпийского парка, до 1 апреля 2024 года называвшаяся «Сочи Автодром». Она работает круглый год. Идея похожа на трассы вокруг олимпийских парков в Монреале и Сиднее. Проект трассы создала компания Tilke, на строительство выделили 5,8 миллиарда рублей из федерального бюджета. Здесь проходил Гран-при России «Формулы-1»."
+  },
+  {
+    "monument_id": "sirius_06",
+    "lang": "ru",
+    "field_key": "address",
+    "field_value": "Олимпийский парк, Сириус"
+  },
+  {
+    "monument_id": "sirius_06",
+    "lang": "ru",
+    "field_key": "opening_hours",
+    "field_value": "Часы работы уточняйте на официальном сайте"
+  },
+  {
+    "monument_id": "sirius_06",
+    "lang": "ru",
+    "field_key": "admission",
+    "field_value": "Входные билеты на гонки и мероприятия"
+  },
+  {
+    "monument_id": "sirius_07",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Sirius Arena (Adler Arena)"
+  },
+  {
+    "monument_id": "sirius_07",
+    "lang": "en",
+    "field_key": "short_description",
+    "field_value": "Sirius Arena, formerly known as Adler Arena and the Olympic Oval speed skating centre, was built for the 2014 Olympics. During the Games it hosted the speed skating events. Construction began in May 2010, and the rink was put into operation in December 2012. Since September 2014 a tennis academy has operated on the arena grounds."
+  },
+  {
+    "monument_id": "sirius_07",
+    "lang": "en",
+    "field_key": "address",
+    "field_value": "Olympic Park, Sirius"
+  },
+  {
+    "monument_id": "sirius_07",
+    "lang": "en",
+    "field_key": "opening_hours",
+    "field_value": "Check opening hours on the official website"
+  },
+  {
+    "monument_id": "sirius_07",
+    "lang": "en",
+    "field_key": "admission",
+    "field_value": "Grounds free; events ticketed"
+  },
+  {
+    "monument_id": "sirius_07",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Сириус Арена (Адлер-Арена)"
+  },
+  {
+    "monument_id": "sirius_07",
+    "lang": "ru",
+    "field_key": "short_description",
+    "field_value": "«Сириус Арена», раньше известная как «Адлер-Арена» и конькобежный центр «Олимпийский овал», построена к Олимпиаде 2014 года. Во время Игр здесь проходили соревнования по конькобежному спорту. Строительство шло с мая 2010 года, а в декабре 2012 каток сдали в эксплуатацию. С сентября 2014 года на территории арены работает теннисная академия."
+  },
+  {
+    "monument_id": "sirius_07",
+    "lang": "ru",
+    "field_key": "address",
+    "field_value": "Олимпийский парк, Сириус"
+  },
+  {
+    "monument_id": "sirius_07",
+    "lang": "ru",
+    "field_key": "opening_hours",
+    "field_value": "Часы работы уточняйте на официальном сайте"
+  },
+  {
+    "monument_id": "sirius_07",
+    "lang": "ru",
+    "field_key": "admission",
+    "field_value": "Территория бесплатно; мероприятия — по билетам"
+  },
+  {
+    "monument_id": "sirius_08",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Sirius Educational Centre"
+  },
+  {
+    "monument_id": "sirius_08",
+    "lang": "en",
+    "field_key": "short_description",
+    "field_value": "The Sirius Educational Centre was created in 2015 by the Talent and Success Foundation on the initiative of the President of Russia, on the basis of the Olympic Park. It supports talented children: about 800 schoolchildren aged 10 to 17 from all regions of the country study here every month. The centre works all year round, and travel and accommodation are free for the children. The town of Sirius became the first federal territory of Russia."
+  },
+  {
+    "monument_id": "sirius_08",
+    "lang": "en",
+    "field_key": "address",
+    "field_value": "Sirius"
+  },
+  {
+    "monument_id": "sirius_08",
+    "lang": "en",
+    "field_key": "opening_hours",
+    "field_value": "Check opening hours on the official website"
+  },
+  {
+    "monument_id": "sirius_08",
+    "lang": "en",
+    "field_key": "admission",
+    "field_value": "Check visiting rules"
+  },
+  {
+    "monument_id": "sirius_08",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Образовательный центр «Сириус»"
+  },
+  {
+    "monument_id": "sirius_08",
+    "lang": "ru",
+    "field_key": "short_description",
+    "field_value": "Образовательный центр «Сириус» создан в 2015 году фондом «Талант и успех» по инициативе президента России на базе Олимпийского парка. Он помогает талантливым детям: ежемесячно здесь занимаются около 800 школьников от 10 до 17 лет из всех регионов страны. Центр работает круглый год, проезд и проживание для детей бесплатные. Посёлок Сириус стал первой федеральной территорией России."
+  },
+  {
+    "monument_id": "sirius_08",
+    "lang": "ru",
+    "field_key": "address",
+    "field_value": "посёлок Сириус"
+  },
+  {
+    "monument_id": "sirius_08",
+    "lang": "ru",
+    "field_key": "opening_hours",
+    "field_value": "Часы работы уточняйте на официальном сайте"
+  },
+  {
+    "monument_id": "sirius_08",
+    "lang": "ru",
+    "field_key": "admission",
+    "field_value": "Территория — уточняйте условия посещения"
+  },
+  {
+    "monument_id": "sirius_09",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Olympic Park"
+  },
+  {
+    "monument_id": "sirius_09",
+    "lang": "en",
+    "field_key": "short_description",
+    "field_value": "The Olympic Park is the main complex site of the 2014 Winter Olympics and one of the venues of the 2018 FIFA World Cup. It lies in the Imeretinskaya Lowland on the Black Sea coast. The main sports venues are here: Fisht Stadium, the ice arenas, the speed skating centre and the Ice Cube curling centre. Construction began in late 2007, and the main work was finished in 2013."
+  },
+  {
+    "monument_id": "sirius_09",
+    "lang": "en",
+    "field_key": "address",
+    "field_value": "Imeretinskaya Lowland, Sirius"
+  },
+  {
+    "monument_id": "sirius_09",
+    "lang": "en",
+    "field_key": "opening_hours",
+    "field_value": "24/7"
+  },
+  {
+    "monument_id": "sirius_09",
+    "lang": "en",
+    "field_key": "admission",
+    "field_value": "Park entry free; events ticketed"
+  },
+  {
+    "monument_id": "sirius_09",
+    "lang": "en",
+    "field_key": "opening_schedule",
+    "field_value": "{\"always\":true}"
+  },
+  {
+    "monument_id": "sirius_09",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Олимпийский парк"
+  },
+  {
+    "monument_id": "sirius_09",
+    "lang": "ru",
+    "field_key": "short_description",
+    "field_value": "Олимпийский парк — главный комплексный объект зимних Олимпийских игр 2014 года и одно из мест чемпионата мира по футболу 2018 года. Он расположен в Имеретинской низменности на берегу Чёрного моря. Здесь находятся главные спортивные сооружения: стадион «Фишт», ледовые арены, конькобежный центр и кёрлинговый центр «Ледяной куб». Строительство началось в конце 2007 года, а основные работы закончили в 2013 году."
+  },
+  {
+    "monument_id": "sirius_09",
+    "lang": "ru",
+    "field_key": "address",
+    "field_value": "Имеретинская низменность, Сириус"
+  },
+  {
+    "monument_id": "sirius_09",
+    "lang": "ru",
+    "field_key": "opening_hours",
+    "field_value": "Круглосуточно"
+  },
+  {
+    "monument_id": "sirius_09",
+    "lang": "ru",
+    "field_key": "admission",
+    "field_value": "Вход в парк бесплатный; события — по билетам"
+  },
+  {
+    "monument_id": "sirius_09",
+    "lang": "ru",
+    "field_key": "opening_schedule",
+    "field_value": "{\"always\":true}"
+  },
+  {
+    "monument_id": "sirius_10",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Southern Cultures Arboretum"
+  },
+  {
+    "monument_id": "sirius_10",
+    "lang": "en",
+    "field_key": "short_description",
+    "field_value": "The Southern Cultures Arboretum lies near the left bank of the Mzymta River. It was laid out in 1910 to a design by the gardener Arthur Regel on the Sluchaynoye estate of General Daniil Drachevsky, on an area of 11 hectares. The park is in the landscape style with a regular parterre, and the central alley leads to a pond. It is a quiet place to rest from the sports arenas."
+  },
+  {
+    "monument_id": "sirius_10",
+    "lang": "en",
+    "field_key": "address",
+    "field_value": "Sirius"
+  },
+  {
+    "monument_id": "sirius_10",
+    "lang": "en",
+    "field_key": "opening_hours",
+    "field_value": "Check opening hours on the official website"
+  },
+  {
+    "monument_id": "sirius_10",
+    "lang": "en",
+    "field_key": "admission",
+    "field_value": "Ticketed"
+  },
+  {
+    "monument_id": "sirius_10",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Дендропарк «Южные культуры»"
+  },
+  {
+    "monument_id": "sirius_10",
+    "lang": "ru",
+    "field_key": "short_description",
+    "field_value": "Дендрологический парк «Южные культуры» находится недалеко от левого берега реки Мзымта. Он разбит в 1910 году по проекту садовода Артура Регеля на землях имения «Случайное» генерала Даниила Драчевского, на площади 11 гектаров. Парк выполнен в ландшафтном стиле с регулярным партером, а центральная аллея ведёт к пруду. Это спокойное место, чтобы отдохнуть от спортивных арен."
+  },
+  {
+    "monument_id": "sirius_10",
+    "lang": "ru",
+    "field_key": "address",
+    "field_value": "посёлок Сириус"
+  },
+  {
+    "monument_id": "sirius_10",
+    "lang": "ru",
+    "field_key": "opening_hours",
+    "field_value": "Часы работы уточняйте на официальном сайте"
+  },
+  {
+    "monument_id": "sirius_10",
+    "lang": "ru",
+    "field_key": "admission",
+    "field_value": "По билетам"
   }
 ]

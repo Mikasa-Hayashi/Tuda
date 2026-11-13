@@ -12,6 +12,7 @@ export const CITIES: City[] = [
   { id: 'krasnodar', lat: 45.0446, lon: 38.9760 },
   { id: 'rostov-on-don', lat: 47.2357, lon: 39.7015 },
   { id: 'sevastopol', lat: 44.6054, lon: 33.5224 },
+  { id: 'sirius', lat: 43.4056, lon: 39.9546 },
 ];
 
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {

@@ -1,4 +1,5 @@
 import { achievements } from '@/src/storage/achievements';
+import { quizProgress } from '@/src/storage/quizProgress';
 import { getQuizQuestions } from '@/src/data/quiz';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
@@ -100,6 +101,8 @@ export default function QuizScreen() {
     if (index === questions.length - 1) {
       setFinished(true);
       achievements.recordQuiz(id ?? '');
+      const finalScore = nextAnswers.filter((a, i) => a === questions[i]?.correctIndex).length;
+      quizProgress.record(id, finalScore, questions.length);
     } else {
       setIndex(index + 1);
       setSelected(null);

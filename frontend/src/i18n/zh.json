@@ -136,6 +136,9 @@
     "loginButton": "登录或创建账户",
     "settings": "设置",
     "about": "关于",
+    "quizzesPassed": "已通过的测验",
+    "quizzesTodo": "未通过的测验",
+    "quizzesEmpty": "暂无",
     "auth": {
       "signIn": "登录",
       "signUp": "注册",
@@ -241,7 +244,8 @@
     "elista": "埃利斯塔",
     "krasnodar": "克拉斯诺达尔",
     "rostov-on-don": "顿河畔罗斯托夫",
-    "sevastopol": "塞瓦斯托波尔"
+    "sevastopol": "塞瓦斯托波尔",
+    "sirius": "西里乌斯"
   },
   "cityTaglines": {
     "maykop": "阿迪格山麓之都",
@@ -250,7 +254,8 @@
     "elista": "佛教草原之都",
     "krasnodar": "库班南方之都",
     "rostov-on-don": "高加索之门",
-    "sevastopol": "俄罗斯荣耀之城"
+    "sevastopol": "俄罗斯荣耀之城",
+    "sirius": "奥林匹克公园与天才之城"
   },
 
   "routes_data": {

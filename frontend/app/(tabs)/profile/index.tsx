@@ -2,7 +2,10 @@ import { BADGE } from '@/src/components/BadgeLabel';
 import { useBadges, type BadgeState } from '@/src/storage/achievements';
 import { auth, useAuth } from '@/src/storage/auth';
 import { pickAvatar, removeAvatar, useAvatar } from '@/src/storage/avatar';
+import { getMonumentById } from '@/src/db/monumentRepository';
+import { QUIZ_MONUMENT_IDS } from '@/src/data/quizCurated';
 import { useFavorites } from '@/src/storage/favorites';
+import { useQuizProgress } from '@/src/storage/quizProgress';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
   Button,
@@ -38,7 +41,7 @@ import {
 } from '@expo/ui/swift-ui/modifiers';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, View } from 'react-native';
 
@@ -55,7 +58,7 @@ const iconLabel = (
 
 export default function ProfileScreen() {
   const { colors, isDark } = useTheme();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const { user } = useAuth();
   const favorites = useFavorites();
@@ -64,6 +67,40 @@ export default function ProfileScreen() {
   const scheme = preferredColorScheme(isDark ? 'dark' : 'light');
   const secondary = foregroundStyle({ type: 'hierarchical', style: 'secondary' });
   const earned = badges.filter((b) => b.earned).length;
+
+  // Quizzes whose monument is in the local DB, split by whether the user has passed them.
+  const quizResults = useQuizProgress();
+  const quizItems = useMemo(
+    () =>
+      QUIZ_MONUMENT_IDS.flatMap((id) => {
+        const m = getMonumentById(id, i18n.language);
+        return m ? [{ id, name: m.name }] : [];
+      }),
+    [i18n.language],
+  );
+  const passedQuizzes = quizItems.filter((q) => quizResults[q.id]?.passed);
+  const todoQuizzes = quizItems.filter((q) => !quizResults[q.id]?.passed);
+
+  const quizRow = (q: { id: string; name: string }) => {
+    const r = quizResults[q.id];
+    return (
+      <Button
+        key={q.id}
+        onPress={() => router.push({ pathname: '/quiz', params: { id: q.id, name: q.name } })}
+        modifiers={[buttonStyle('plain')]}
+      >
+        <HStack spacing={8} modifiers={[contentShape(shapes.rectangle())]}>
+          <Text modifiers={[lineLimit(2)]}>{q.name}</Text>
+          <Spacer />
+          {r && <Text modifiers={[secondary]}>{`${r.score}/${r.total}`}</Text>}
+          {r?.passed && (
+            <SymbolImage systemName="checkmark.circle.fill" size={18} color={BADGE.green} />
+          )}
+          <SymbolImage systemName="chevron.right" size={12} modifiers={[secondary]} />
+        </HStack>
+      </Button>
+    );
+  };
 
   const showBadge = (b: BadgeState) =>
     Alert.alert(
@@ -192,6 +229,25 @@ export default function ProfileScreen() {
               ))}
             </VStack>
           </Section>
+
+          {quizItems.length > 0 && (
+            <>
+              <Section title={`${t('profile.quizzesPassed')} · ${passedQuizzes.length}`}>
+                {passedQuizzes.length > 0 ? (
+                  passedQuizzes.map(quizRow)
+                ) : (
+                  <Text modifiers={[secondary]}>{t('profile.quizzesEmpty')}</Text>
+                )}
+              </Section>
+              <Section title={`${t('profile.quizzesTodo')} · ${todoQuizzes.length}`}>
+                {todoQuizzes.length > 0 ? (
+                  todoQuizzes.map(quizRow)
+                ) : (
+                  <Text modifiers={[secondary]}>{t('profile.quizzesEmpty')}</Text>
+                )}
+              </Section>
+            </>
+          )}
 
           <Section>
             <Button onPress={() => router.push('/favorites')} modifiers={[buttonStyle('plain')]}>

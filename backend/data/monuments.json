@@ -430,5 +430,85 @@
     "lon": 33.52325,
     "image_url": "/static/monuments/sevastopol_07.jpg",
     "sort_order": 7
+  },
+  {
+    "id": "sirius_01",
+    "city_id": "sirius",
+    "lat": 43.40222,
+    "lon": 39.95556,
+    "image_url": "/static/monuments/sirius_01.jpg",
+    "sort_order": 1
+  },
+  {
+    "id": "sirius_02",
+    "city_id": "sirius",
+    "lat": 43.4025,
+    "lon": 39.9548,
+    "image_url": "/static/monuments/sirius_02.jpg",
+    "sort_order": 2
+  },
+  {
+    "id": "sirius_03",
+    "city_id": "sirius",
+    "lat": 43.404754,
+    "lon": 39.949871,
+    "image_url": "/static/monuments/sirius_03.jpg",
+    "sort_order": 3
+  },
+  {
+    "id": "sirius_04",
+    "city_id": "sirius",
+    "lat": 43.4074417,
+    "lon": 39.9575528,
+    "image_url": "/static/monuments/sirius_04.jpg",
+    "sort_order": 4
+  },
+  {
+    "id": "sirius_05",
+    "city_id": "sirius",
+    "lat": 43.4023417,
+    "lon": 39.9519528,
+    "image_url": "/static/monuments/sirius_05.jpg",
+    "sort_order": 5
+  },
+  {
+    "id": "sirius_06",
+    "city_id": "sirius",
+    "lat": 43.40833,
+    "lon": 39.96556,
+    "image_url": "/static/monuments/sirius_06.jpg",
+    "sort_order": 6
+  },
+  {
+    "id": "sirius_07",
+    "city_id": "sirius",
+    "lat": 43.4086167,
+    "lon": 39.9528111,
+    "image_url": "/static/monuments/sirius_07.jpg",
+    "sort_order": 7
+  },
+  {
+    "id": "sirius_08",
+    "city_id": "sirius",
+    "lat": 43.400534,
+    "lon": 39.964789,
+    "image_url": "/static/monuments/sirius_08.jpg",
+    "sort_order": 8
+  },
+  {
+    "id": "sirius_09",
+    "city_id": "sirius",
+    "lat": 43.4056,
+    "lon": 39.9546,
+    "image_url": "/static/monuments/sirius_09.jpg",
+    "sort_order": 9
+  },
+  {
+    "id": "sirius_10",
+    "city_id": "sirius",
+    "lat": 43.418687,
+    "lon": 39.934466,
+    "image_url": "/static/monuments/sirius_10.jpg",
+    "sort_order": 10
   }
 ]

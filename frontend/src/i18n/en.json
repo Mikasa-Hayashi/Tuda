@@ -138,6 +138,9 @@
     "loginButton": "Sign in or create account",
     "settings": "Settings",
     "about": "About",
+    "quizzesPassed": "Completed quizzes",
+    "quizzesTodo": "Quizzes to take",
+    "quizzesEmpty": "Nothing here yet",
     "auth": {
       "signIn": "Sign in",
       "signUp": "Sign up",
@@ -258,7 +261,8 @@
     "elista": "Elista",
     "krasnodar": "Krasnodar",
     "rostov-on-don": "Rostov-on-Don",
-    "sevastopol": "Sevastopol"
+    "sevastopol": "Sevastopol",
+    "sirius": "Sirius"
   },
   "cityTaglines": {
     "maykop": "Foothills of Adygea",
@@ -267,7 +271,8 @@
     "elista": "Buddhist steppe capital",
     "krasnodar": "Kuban's southern capital",
     "rostov-on-don": "Gateway to Caucasus",
-    "sevastopol": "City of Russian glory"
+    "sevastopol": "City of Russian glory",
+    "sirius": "Olympic Park and city of talents"
   },
 
   "monument_fields": {

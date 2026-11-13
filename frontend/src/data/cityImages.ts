@@ -12,6 +12,7 @@ const COVERS = [
   'krasnodar',
   'rostov-on-don',
   'sevastopol',
+  'sirius',
 ];
 
 export const CITY_IMAGES: Record<string, string> = Object.fromEntries(

@@ -2342,5 +2342,357 @@
     "label_key": "visitor.admission",
     "field_key": "admission",
     "static_value": null
+  },
+  {
+    "monument_id": "sirius_01",
+    "section": "details",
+    "order_index": 1,
+    "label_key": "detail.year_built",
+    "field_key": "",
+    "static_value": "2013"
+  },
+  {
+    "monument_id": "sirius_01",
+    "section": "details",
+    "order_index": 2,
+    "label_key": "detail.historical_event",
+    "field_key": "",
+    "static_value": "Sochi 2014 opening & closing ceremonies"
+  },
+  {
+    "monument_id": "sirius_01",
+    "section": "visitors",
+    "order_index": 1,
+    "label_key": "visitor.address",
+    "field_key": "address",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_01",
+    "section": "visitors",
+    "order_index": 2,
+    "label_key": "visitor.opening_hours",
+    "field_key": "opening_hours",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_01",
+    "section": "visitors",
+    "order_index": 3,
+    "label_key": "visitor.admission",
+    "field_key": "admission",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_02",
+    "section": "details",
+    "order_index": 1,
+    "label_key": "detail.historical_event",
+    "field_key": "",
+    "static_value": "Flame lit 7 Feb 2014"
+  },
+  {
+    "monument_id": "sirius_02",
+    "section": "visitors",
+    "order_index": 1,
+    "label_key": "visitor.address",
+    "field_key": "address",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_02",
+    "section": "visitors",
+    "order_index": 2,
+    "label_key": "visitor.opening_hours",
+    "field_key": "opening_hours",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_02",
+    "section": "visitors",
+    "order_index": 3,
+    "label_key": "visitor.admission",
+    "field_key": "admission",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_03",
+    "section": "details",
+    "order_index": 1,
+    "label_key": "detail.year_built",
+    "field_key": "",
+    "static_value": "2012"
+  },
+  {
+    "monument_id": "sirius_03",
+    "section": "details",
+    "order_index": 2,
+    "label_key": "detail.architect",
+    "field_key": "",
+    "static_value": "Nikita Tsymbal, Alexander Knyazev"
+  },
+  {
+    "monument_id": "sirius_03",
+    "section": "visitors",
+    "order_index": 1,
+    "label_key": "visitor.address",
+    "field_key": "address",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_03",
+    "section": "visitors",
+    "order_index": 2,
+    "label_key": "visitor.opening_hours",
+    "field_key": "opening_hours",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_03",
+    "section": "visitors",
+    "order_index": 3,
+    "label_key": "visitor.admission",
+    "field_key": "admission",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_04",
+    "section": "details",
+    "order_index": 1,
+    "label_key": "detail.year_built",
+    "field_key": "",
+    "static_value": "2012"
+  },
+  {
+    "monument_id": "sirius_04",
+    "section": "details",
+    "order_index": 2,
+    "label_key": "detail.area",
+    "field_key": "",
+    "static_value": "67,830 m²"
+  },
+  {
+    "monument_id": "sirius_04",
+    "section": "visitors",
+    "order_index": 1,
+    "label_key": "visitor.address",
+    "field_key": "address",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_04",
+    "section": "visitors",
+    "order_index": 2,
+    "label_key": "visitor.opening_hours",
+    "field_key": "opening_hours",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_04",
+    "section": "visitors",
+    "order_index": 3,
+    "label_key": "visitor.admission",
+    "field_key": "admission",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_05",
+    "section": "details",
+    "order_index": 1,
+    "label_key": "detail.year_built",
+    "field_key": "",
+    "static_value": "2012"
+  },
+  {
+    "monument_id": "sirius_05",
+    "section": "visitors",
+    "order_index": 1,
+    "label_key": "visitor.address",
+    "field_key": "address",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_05",
+    "section": "visitors",
+    "order_index": 2,
+    "label_key": "visitor.opening_hours",
+    "field_key": "opening_hours",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_05",
+    "section": "visitors",
+    "order_index": 3,
+    "label_key": "visitor.admission",
+    "field_key": "admission",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_06",
+    "section": "details",
+    "order_index": 1,
+    "label_key": "detail.historical_event",
+    "field_key": "",
+    "static_value": "Formula 1 Russian Grand Prix"
+  },
+  {
+    "monument_id": "sirius_06",
+    "section": "visitors",
+    "order_index": 1,
+    "label_key": "visitor.address",
+    "field_key": "address",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_06",
+    "section": "visitors",
+    "order_index": 2,
+    "label_key": "visitor.opening_hours",
+    "field_key": "opening_hours",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_06",
+    "section": "visitors",
+    "order_index": 3,
+    "label_key": "visitor.admission",
+    "field_key": "admission",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_07",
+    "section": "details",
+    "order_index": 1,
+    "label_key": "detail.year_built",
+    "field_key": "",
+    "static_value": "2012"
+  },
+  {
+    "monument_id": "sirius_07",
+    "section": "visitors",
+    "order_index": 1,
+    "label_key": "visitor.address",
+    "field_key": "address",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_07",
+    "section": "visitors",
+    "order_index": 2,
+    "label_key": "visitor.opening_hours",
+    "field_key": "opening_hours",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_07",
+    "section": "visitors",
+    "order_index": 3,
+    "label_key": "visitor.admission",
+    "field_key": "admission",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_08",
+    "section": "details",
+    "order_index": 1,
+    "label_key": "detail.year_built",
+    "field_key": "",
+    "static_value": "2015"
+  },
+  {
+    "monument_id": "sirius_08",
+    "section": "visitors",
+    "order_index": 1,
+    "label_key": "visitor.address",
+    "field_key": "address",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_08",
+    "section": "visitors",
+    "order_index": 2,
+    "label_key": "visitor.opening_hours",
+    "field_key": "opening_hours",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_08",
+    "section": "visitors",
+    "order_index": 3,
+    "label_key": "visitor.admission",
+    "field_key": "admission",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_09",
+    "section": "details",
+    "order_index": 1,
+    "label_key": "detail.year_built",
+    "field_key": "",
+    "static_value": "2007–2013"
+  },
+  {
+    "monument_id": "sirius_09",
+    "section": "visitors",
+    "order_index": 1,
+    "label_key": "visitor.address",
+    "field_key": "address",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_09",
+    "section": "visitors",
+    "order_index": 2,
+    "label_key": "visitor.opening_hours",
+    "field_key": "opening_hours",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_09",
+    "section": "visitors",
+    "order_index": 3,
+    "label_key": "visitor.admission",
+    "field_key": "admission",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_10",
+    "section": "details",
+    "order_index": 1,
+    "label_key": "detail.area",
+    "field_key": "",
+    "static_value": "11 ha"
+  },
+  {
+    "monument_id": "sirius_10",
+    "section": "details",
+    "order_index": 2,
+    "label_key": "detail.year_built",
+    "field_key": "",
+    "static_value": "1910"
+  },
+  {
+    "monument_id": "sirius_10",
+    "section": "visitors",
+    "order_index": 1,
+    "label_key": "visitor.address",
+    "field_key": "address",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_10",
+    "section": "visitors",
+    "order_index": 2,
+    "label_key": "visitor.opening_hours",
+    "field_key": "opening_hours",
+    "static_value": null
+  },
+  {
+    "monument_id": "sirius_10",
+    "section": "visitors",
+    "order_index": 3,
+    "label_key": "visitor.admission",
+    "field_key": "admission",
+    "static_value": null
   }
 ]
