@@ -124,3 +124,16 @@ export function useAudioDownloadState(monumentId: string, lang: AudioLang): Audi
   if (snap.downloading.has(name)) return 'downloading';
   return snap.downloaded.has(name) ? 'downloaded' : 'none';
 }
+
+/** Size in bytes of a downloaded guide, or null when it is not on the device. */
+export function audioFileSize(monumentId: string, lang: AudioLang): number | null {
+  if (!downloaded.has(fileName(monumentId, lang))) return null;
+  try {
+    const file = new File(audioDir(), fileName(monumentId, lang));
+    return file.exists ? (file.size ?? 0) : null;
+  } catch {
+    return null;
+  }
+}
+
+export { SUPPORTED as AUDIO_LANGS };

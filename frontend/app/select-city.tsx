@@ -1,23 +1,10 @@
 import { CITIES, findClosestCity } from '@/src/data/cities';
 import { CITY_IMAGES } from '@/src/data/cityImages';
-import {
-  applyDeletedFromSync,
-  upsertMonumentFieldConfigsFromApi,
-  upsertMonumentsFromApi,
-  upsertMonumentTranslationsFromApi,
-} from '@/src/db/monumentRepository';
-import {
-  upsertRoutesFromSync,
-  upsertRouteStopsFromSync,
-  upsertRouteTranslationsFromSync,
-} from '@/src/db/routeRepository';
-import { prefetchCityImages } from '@/src/services/imagePrefetch';
-import { downloadCityData } from '@/src/services/monumentsApi';
+import { hasAnyPack, usePacks } from '@/src/offline/packs';
 import {
   getDownloadedCityIds,
   getOnboardingDone,
   getSelectedCityId,
-  markCityDownloaded,
   setOnboardingDone,
   setSelectedCityId,
 } from '@/src/storage/citySelection';
@@ -150,6 +137,7 @@ function CityRow({
           color="#34C759"
           size={20}
           modifiers={[frame({ width: 28, height: 28 })]}
+          onPress={onDownload}
         />
       ) : (
         <Image
@@ -173,7 +161,7 @@ export default function SelectCityScreen() {
   const [search, setSearch] = useState('');
   const [selectedCityId, setSelectedCityIdState] = useState<string | null>(null);
   const [downloadedCityIds, setDownloadedCityIdsState] = useState<string[]>([]);
-  const [downloadStates, setDownloadStates] = useState<Record<string, DownloadState>>({});
+  const packs = usePacks();
   const [isOnboarding, setIsOnboarding] = useState(false);
   const [detectedCityId, setDetectedCityId] = useState<string | null>(null);
 
@@ -219,28 +207,11 @@ export default function SelectCityScreen() {
     );
   }, [search, t, i18n.language]);
 
-  const handleDownload = useCallback(async (cityId: string) => {
-    setDownloadStates((prev) => ({ ...prev, [cityId]: 'downloading' }));
-    try {
-      const payload = await downloadCityData(cityId);
-      applyDeletedFromSync(payload.deleted_ids);
-      upsertMonumentsFromApi(cityId, payload.monuments);
-      upsertMonumentTranslationsFromApi(payload.monument_translations);
-      upsertMonumentFieldConfigsFromApi(payload.monument_field_configs);
-      upsertRoutesFromSync(cityId, payload.routes);
-      upsertRouteStopsFromSync(payload.route_stops);
-      upsertRouteTranslationsFromSync(payload.route_translations);
-      await prefetchCityImages(cityId);
-      await markCityDownloaded(cityId);
-      setDownloadedCityIdsState((prev) => (prev.includes(cityId) ? prev : [...prev, cityId]));
-      setDownloadStates((prev) => ({ ...prev, [cityId]: 'done' }));
-    } catch {
-      setDownloadStates((prev) => ({ ...prev, [cityId]: 'error' }));
-      setTimeout(() => {
-        setDownloadStates((prev) => ({ ...prev, [cityId]: 'idle' }));
-      }, 2000);
-    }
-  }, []);
+  // The cloud icon opens a sheet where the user picks which packs to download.
+  const handleDownload = useCallback(
+    (cityId: string) => router.push({ pathname: '/download-city', params: { city: cityId } }),
+    [router],
+  );
 
   // Tapping a row only marks it; the choice is saved when the user confirms with "Continue".
   const handleSelect = useCallback((cityId: string) => {
@@ -264,8 +235,8 @@ export default function SelectCityScreen() {
       tagline={t(`cityTaglines.${cityId}`)}
       imageUri={CITY_IMAGES[cityId]}
       selected={cityId === selectedCityId}
-      downloaded={downloadedCityIds.includes(cityId)}
-      downloadState={downloadStates[cityId] ?? 'idle'}
+      downloaded={hasAnyPack(packs[cityId]) || downloadedCityIds.includes(cityId)}
+      downloadState="idle"
       tintColor={colors.primary}
       onSelect={() => handleSelect(cityId)}
       onDownload={() => handleDownload(cityId)}

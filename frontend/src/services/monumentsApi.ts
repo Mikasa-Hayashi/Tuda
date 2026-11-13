@@ -166,3 +166,17 @@ export async function fetchAiRoute(params: AiRouteParams): Promise<AiRouteResult
     clearTimeout(timer);
   }
 }
+
+export type PackSize = { count: number; bytes: number };
+export type PackManifest = {
+  places: PackSize;
+  routes: PackSize;
+  quizzes: PackSize;
+  audio: Record<string, PackSize>;
+};
+
+/** Sizes of a city's downloadable packs (shown before downloading). */
+export async function fetchPackManifest(cityId: string): Promise<PackManifest> {
+  const response = await fetch(`${API_BASE_URL}/packs/${encodeURIComponent(cityId)}`);
+  return readJson<PackManifest>(response);
+}

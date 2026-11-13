@@ -168,6 +168,24 @@ function RootStack() {
           name="favorites"
           options={{ ...detailScreenOptions, title: t('favorites.title') }}
         />
+        <Stack.Screen
+          name="quizzes"
+          options={{ ...detailScreenOptions, title: t('quizzes.title') }}
+        />
+        <Stack.Screen
+          name="offline"
+          options={{ ...detailScreenOptions, title: t('offline.title') }}
+        />
+        <Stack.Screen name="offline-city" options={detailScreenOptions} />
+        <Stack.Screen
+          name="download-city"
+          options={{
+            presentation: 'formSheet',
+            headerShown: false,
+            sheetAllowedDetents: [0.7, 1],
+            sheetGrabberVisible: true,
+          }}
+        />
         <Stack.Screen name="menu" options={{ title: t('tabs.home') }} />
         <Stack.Screen name="about" options={{ ...detailScreenOptions, title: t('about.title') }} />
         <Stack.Screen

@@ -30,14 +30,14 @@ import {
 } from './routeRepository';
 
 /** Bump when the bundled seed changes so existing installs pick the new texts up. */
-const SEED_VERSION = '5';
+const SEED_VERSION = '6';
 const META_KEY = 'bundled_seed_version';
 
-export function applyBundledSeed(): void {
+export function applyBundledSeed(force = false): void {
   const done = db.getFirstSync<{ value: string }>(`SELECT value FROM app_meta WHERE key = ?`, [
     META_KEY,
   ]);
-  if (done?.value === SEED_VERSION) return;
+  if (!force && done?.value === SEED_VERSION) return;
 
   const monumentList = monuments as ApiMonument[];
   const cityOfMonument = new Map(monumentList.map((m) => [m.id, m.city_id]));

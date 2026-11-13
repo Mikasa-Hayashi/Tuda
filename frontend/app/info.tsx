@@ -15,6 +15,7 @@ import { BADGE, BadgeLabel } from '@/src/components/BadgeLabel';
 import { useAudioGuide } from '@/src/audio/AudioGuideContext';
 import { getQuizQuestions } from '@/src/data/quiz';
 import { useFavorites } from '@/src/storage/favorites';
+import { useQuizStoreVersion } from '@/src/offline/quizStore';
 import { useQuizProgress } from '@/src/storage/quizProgress';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
@@ -135,9 +136,11 @@ export default function MonumentDetailScreen() {
 
   // The quiz entry is shown only for monuments that actually have a quiz.
   const quizResult = useQuizProgress()[id ?? ''];
+  const quizVersion = useQuizStoreVersion();
   const hasQuiz = useMemo(
     () => !!id && getQuizQuestions({ monumentId: id, lang: i18n.language, t }).length > 0,
-    [id, i18n.language, t],
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- quizVersion: re-check after a quiz pack download
+    [id, i18n.language, t, quizVersion],
   );
 
   // Closest other monuments (offline, from the local DB).

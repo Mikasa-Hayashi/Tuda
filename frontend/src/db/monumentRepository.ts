@@ -318,6 +318,32 @@ export function getLocalCacheItemCount(): number {
   return monuments + routes;
 }
 
+/**
+ * Removes everything stored for one city (objects, texts, routes, sync state). The bundled core
+ * objects come back via applyBundledSeed(true).
+ */
+export function deleteCityData(citySlug: string): void {
+  db.withTransactionSync(() => {
+    const city = db.getFirstSync<{ id: number }>(`SELECT id FROM cities WHERE slug = ?`, [
+      citySlug,
+    ]);
+    if (!city) return;
+    const routes = `SELECT id FROM routes WHERE city_id = ?`;
+    const monuments = `SELECT id FROM monuments WHERE city_id = ?`;
+    // route_stops.monument_id is ON DELETE RESTRICT: the stops go first.
+    db.runSync(`DELETE FROM route_stops WHERE route_id IN (${routes}) OR monument_id IN (${monuments})`, [
+      city.id,
+      city.id,
+    ]);
+    db.runSync(`DELETE FROM route_translations WHERE route_id IN (${routes})`, [city.id]);
+    db.runSync(`DELETE FROM routes WHERE city_id = ?`, [city.id]);
+    db.runSync(`DELETE FROM monument_field_config WHERE monument_id IN (${monuments})`, [city.id]);
+    db.runSync(`DELETE FROM monument_translations WHERE monument_id IN (${monuments})`, [city.id]);
+    db.runSync(`DELETE FROM monuments WHERE city_id = ?`, [city.id]);
+    db.runSync(`DELETE FROM app_meta WHERE key LIKE ?`, [`sync:${citySlug}:%`]);
+  });
+}
+
 export function clearMonumentCache(): void {
   db.withTransactionSync(() => {
     // route_stops.monument_id uses ON DELETE RESTRICT — remove routes before monuments

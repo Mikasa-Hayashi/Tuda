@@ -1,0 +1,13 @@
+{
+  "_comment": "Objects shipped inside the app (texts, photos, quizzes) so a fresh install works offline. Everything else is downloaded per city.",
+  "cities": {
+    "volgograd": ["volgograd_01", "volgograd_02", "volgograd_05", "volgograd_06", "volgograd_07"],
+    "maykop": ["maykop_01", "maykop_02", "maykop_03", "maykop_04", "maykop_05"],
+    "astrakhan": ["astrakhan_01", "astrakhan_02", "astrakhan_03", "astrakhan_04", "astrakhan_06"],
+    "elista": ["elista_01", "elista_02", "elista_03", "elista_04", "elista_05"],
+    "krasnodar": ["krasnodar_01", "krasnodar_02", "krasnodar_03", "krasnodar_04", "krasnodar_05"],
+    "rostov-on-don": ["rostov_01", "rostov_02", "rostov_03", "rostov_04", "rostov_06"],
+    "sevastopol": ["sevastopol_01", "sevastopol_02", "sevastopol_03", "sevastopol_04", "sevastopol_05"],
+    "sirius": ["sirius_01", "sirius_02", "sirius_03", "sirius_04", "sirius_09"]
+  }
+}

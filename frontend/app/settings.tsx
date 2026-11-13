@@ -1,9 +1,8 @@
 import { BADGE } from '@/src/components/BadgeLabel';
 import { CITIES } from '@/src/data/cities';
-import { notifyMonumentCacheCleared } from '@/src/db/monumentCacheEvents';
-import { clearMonumentCache, getLocalCacheItemCount } from '@/src/db/monumentRepository';
+import { getLocalCacheItemCount } from '@/src/db/monumentRepository';
 import { LANGUAGES } from '@/src/i18n/languages';
-import { clearDownloadedCityIds, getSelectedCityId } from '@/src/storage/citySelection';
+import { getSelectedCityId } from '@/src/storage/citySelection';
 import { auth, useAuth } from '@/src/storage/auth';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
@@ -71,22 +70,6 @@ export default function SettingsScreen() {
     }, [refreshData]),
   );
 
-  const handleClearCache = () => {
-    Alert.alert(t('settings.clearCacheTitle'), t('settings.clearCacheMessage'), [
-      { text: t('settings.cancel'), style: 'cancel' },
-      {
-        text: t('settings.clear'),
-        style: 'destructive',
-        onPress: async () => {
-          clearMonumentCache();
-          await clearDownloadedCityIds();
-          notifyMonumentCacheCleared();
-          refreshData();
-        },
-      },
-    ]);
-  };
-
   const confirmDeleteAccount = () =>
     Alert.alert(t('profile.auth.deleteTitle'), t('profile.auth.deleteMessage'), [
       { text: t('settings.cancel'), style: 'cancel' },
@@ -145,13 +128,16 @@ export default function SettingsScreen() {
           </Section>
 
           <Section>
-            <Button
-              role="destructive"
-              label={`${t('settings.clearCache')} · ${t('settings.cacheItems', {
-                count: cacheItemCount,
-              })}`}
-              onPress={handleClearCache}
-            />
+            <Button onPress={() => router.push('/offline')} modifiers={[buttonStyle('plain')]}>
+              <HStack spacing={8} modifiers={[contentShape(shapes.rectangle())]}>
+                {iconLabel(t('settings.storage'), 'internaldrive.fill', BADGE.gray)}
+                <Spacer />
+                <Text modifiers={[secondary]}>
+                  {t('settings.cacheItems', { count: cacheItemCount })}
+                </Text>
+                <SymbolImage systemName="chevron.right" size={12} modifiers={[secondary]} />
+              </HStack>
+            </Button>
           </Section>
           {user && (
             <Section title={t('profile.account')}>
