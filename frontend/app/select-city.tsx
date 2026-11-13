@@ -257,9 +257,9 @@ export default function SelectCityScreen() {
   const scheme = preferredColorScheme(isDark ? 'dark' : 'light');
   const showDetected = isOnboarding && detectedCityId && !selectedCityId && search.trim() === '';
 
-  const renderRow = (cityId: string) => (
+  const renderRow = (cityId: string, key: string = cityId) => (
     <CityRow
-      key={cityId}
+      key={key}
       name={t(`cities.${cityId}`)}
       tagline={t(`cityTaglines.${cityId}`)}
       imageUri={CITY_IMAGES[cityId]}
@@ -291,6 +291,12 @@ export default function SelectCityScreen() {
       <View style={styles.container}>
         <Host style={styles.list} useViewportSizeMeasurement modifiers={[scheme]}>
           <Form>
+            {/* Static copy of the chosen city, so it stays in view however far the list is scrolled. */}
+            {selectedCityId && (
+              <Section title={t('citySelector.selectedCity')}>
+                {renderRow(selectedCityId, `selected-${selectedCityId}`)}
+              </Section>
+            )}
             {showDetected && detectedCityId ? (
               <Section title={t('citySelector.detected').replace(/:$/, '')}>
                 {renderRow(detectedCityId)}

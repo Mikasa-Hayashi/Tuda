@@ -238,6 +238,7 @@
     "popular": "Популярные",
     "selectHint": "Выберите город для продолжения",
     "detected": "Определено:",
+    "selectedCity": "Выбранный город",
     "select": "Выбрать",
     "searchPlaceholder": "Поиск города...",
     "objectsCount": "{{count}} объектов",

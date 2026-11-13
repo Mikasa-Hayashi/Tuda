@@ -221,6 +221,7 @@
     "popular": "热门",
     "selectHint": "请选择城市以继续",
     "detected": "已检测到：",
+    "selectedCity": "已选城市",
     "select": "选择",
     "searchPlaceholder": "搜索城市...",
     "objectsCount": "{{count}} 个对象",

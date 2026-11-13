@@ -221,6 +221,7 @@
     "popular": "الأكثر شعبية",
     "selectHint": "اختر مدينة للمتابعة",
     "detected": "تم الكشف:",
+    "selectedCity": "المدينة المختارة",
     "select": "اختيار",
     "searchPlaceholder": "ابحث عن مدينة...",
     "objectsCount": "{{count}} عنصر",

@@ -1,14 +1,19 @@
+import { mediaUrl } from '@/src/services/mediaUrl';
+
 /**
- * City cover images for the city picker.
- * PLACEHOLDERS: seeded random photos (need internet). Replace each URL with a real photo of the city
- * (remote URL or a bundled asset) — nothing else needs to change.
+ * City cover images for the city picker. Photos live on the server in
+ * backend/static/cities/<city_id>.jpg (see photo credits in backend/static/Monuments/photo_credits.json).
  */
-export const CITY_IMAGES: Record<string, string> = {
-  maykop: 'https://picsum.photos/seed/tuda-maykop/200/200',
-  astrakhan: 'https://picsum.photos/seed/tuda-astrakhan/200/200',
-  volgograd: 'https://picsum.photos/seed/tuda-volgograd/200/200',
-  elista: 'https://picsum.photos/seed/tuda-elista/200/200',
-  krasnodar: 'https://picsum.photos/seed/tuda-krasnodar/200/200',
-  'rostov-on-don': 'https://picsum.photos/seed/tuda-rostov/200/200',
-  sevastopol: 'https://picsum.photos/seed/tuda-sevastopol/200/200',
-};
+const COVERS = [
+  'maykop',
+  'astrakhan',
+  'volgograd',
+  'elista',
+  'krasnodar',
+  'rostov-on-don',
+  'sevastopol',
+];
+
+export const CITY_IMAGES: Record<string, string> = Object.fromEntries(
+  COVERS.map((id) => [id, mediaUrl(`/static/cities/${id}.jpg`)]),
+);

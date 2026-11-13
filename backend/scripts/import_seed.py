@@ -19,7 +19,7 @@ import asyncio
 import json
 from pathlib import Path
 
-from sqlalchemy import delete
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import AsyncSessionLocal
@@ -60,8 +60,11 @@ async def clear_database(session: AsyncSession) -> None:
     print("  done.\n")
 
 
-async def import_monuments(session: AsyncSession) -> None:
+async def import_monuments(session: AsyncSession, only_new: bool = False) -> set[str]:
     records = load_json("monuments.json")
+    if only_new:
+        existing = set((await session.execute(select(Monument.id))).scalars())
+        records = [r for r in records if r["id"] not in existing]
     for item in records:
         session.add(
             Monument(
@@ -75,10 +78,21 @@ async def import_monuments(session: AsyncSession) -> None:
         )
     await session.commit()
     print(f"  → {len(records)} monuments imported.\n")
+    if not only_new:
+        return {r["id"] for r in records}
+    # monuments that still lack translations (e.g. after an interrupted run)
+    translated = set(
+        (await session.execute(select(MonumentTranslation.monument_id))).scalars()
+    )
+    return {r["id"] for r in load_json("monuments.json")} - translated
 
 
-async def import_monument_translations(session: AsyncSession) -> None:
+async def import_monument_translations(
+    session: AsyncSession, only_ids: set[str] | None = None
+) -> None:
     records = load_json("monument_translations.json")
+    if only_ids is not None:
+        records = [r for r in records if r["monument_id"] in only_ids]
     for item in records:
         session.add(
             MonumentTranslation(
@@ -92,8 +106,12 @@ async def import_monument_translations(session: AsyncSession) -> None:
     print(f"  → {len(records)} monument translations imported.\n")
 
 
-async def import_monument_field_configs(session: AsyncSession) -> None:
+async def import_monument_field_configs(
+    session: AsyncSession, only_ids: set[str] | None = None
+) -> None:
     records = load_json("monument_field_configs.json")
+    if only_ids is not None:
+        records = [r for r in records if r["monument_id"] in only_ids]
     for item in records:
         session.add(
             MonumentFieldConfig(
@@ -158,22 +176,24 @@ async def main(upsert: bool = False) -> None:
             await clear_database(session)
 
         print("Importing monuments…")
-        await import_monuments(session)
+        new_ids = await import_monuments(session, only_new=upsert)
+        only = new_ids if upsert else None
 
         print("Importing monument translations…")
-        await import_monument_translations(session)
+        await import_monument_translations(session, only)
 
         print("Importing monument field configs…")
-        await import_monument_field_configs(session)
+        await import_monument_field_configs(session, only)
 
-        print("Importing routes…")
-        await import_routes(session)
+        if not upsert:
+            print("Importing routes…")
+            await import_routes(session)
 
-        print("Importing route translations…")
-        await import_route_translations(session)
+            print("Importing route translations…")
+            await import_route_translations(session)
 
-        print("Importing route stops…")
-        await import_route_stops(session)
+            print("Importing route stops…")
+            await import_route_stops(session)
 
     print("Seed complete.")
 
@@ -185,7 +205,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--upsert",
         action="store_true",
-        help="Insert/update records without clearing the database first.",
+        help="Add only new monuments (with their translations/field configs) without clearing the database.",
     )
     args = parser.parse_args()
     asyncio.run(main(upsert=args.upsert))

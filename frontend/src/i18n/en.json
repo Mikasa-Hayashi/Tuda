@@ -238,6 +238,7 @@
     "popular": "Popular",
     "selectHint": "Select a city to continue",
     "detected": "Detected:",
+    "selectedCity": "Selected city",
     "select": "Select",
     "searchPlaceholder": "Search city...",
     "objectsCount": "{{count}} objects",
