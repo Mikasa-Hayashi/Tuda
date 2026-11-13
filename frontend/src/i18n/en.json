@@ -57,7 +57,7 @@
     "savedCities": "Saved cities",
     "empty": "No saved cities",
     "emptyHint": "Tap the cloud icon next to a city in the city list to make its data available offline.",
-    "total": "Total used: {{size}}",
+    "total": "Total used",
     "coreNote": "The app always ships with the main objects of every city, the base routes and their quizzes. Everything else is downloaded when you are online.",
     "objects": "Objects",
     "objectsValue": "{{count}}",

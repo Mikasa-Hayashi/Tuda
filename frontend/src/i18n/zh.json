@@ -57,7 +57,7 @@
     "savedCities": "已保存的城市",
     "empty": "暂无已保存的城市",
     "emptyHint": "在城市列表中点按城市旁的云图标，即可离线使用该城市的数据。",
-    "total": "共占用：{{size}}",
+    "total": "共占用",
     "coreNote": "应用始终内置每座城市的主要景点、基础路线及其测验，其余内容在联网时下载。",
     "objects": "景点",
     "objectsValue": "{{count}} 个",

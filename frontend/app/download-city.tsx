@@ -28,14 +28,16 @@ import {
   disabled,
   font,
   foregroundStyle,
-  frame,
+  listRowBackground,
+  listRowInsets,
   preferredColorScheme,
 } from '@expo/ui/swift-ui/modifiers';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, View } from 'react-native';
 
+const CLEAR = '#00000000';
 const AUDIO_ORDER: AudioLang[] = ['ru', 'en', 'ar', 'zh'];
 
 /** Sheet opened from the cloud icon of a city: choose which packs to download for offline use. */
@@ -76,7 +78,11 @@ export default function DownloadCitySheet() {
     return bytes;
   }, [manifest, sel]);
 
-  const nothing = !sel.places && !sel.routes && !sel.quizzes && sel.audio.length === 0;
+  const nothing =
+    !sel.places &&
+    !(sel.routes && (manifest?.routes.count ?? 0) > 0) &&
+    !(sel.quizzes && (manifest?.quizzes.count ?? 0) > 0) &&
+    sel.audio.length === 0;
 
   const start = async () => {
     if (!city) return;
@@ -106,9 +112,15 @@ export default function DownloadCitySheet() {
     isOn: boolean,
     onChange: (v: boolean) => void,
     saved?: boolean,
+    unavailable?: boolean,
   ) => (
     <HStack spacing={8}>
-      <Toggle isOn={isOn} onIsOnChange={onChange} label={label} />
+      <Toggle
+        isOn={isOn}
+        onIsOnChange={onChange}
+        label={label}
+        modifiers={unavailable ? [disabled(true)] : []}
+      />
       <Spacer />
       {done(saved)}
       <Text modifiers={[font({ textStyle: 'footnote' }), secondary]}>{detail}</Text>
@@ -121,10 +133,12 @@ export default function DownloadCitySheet() {
     : t('offline.downloading');
 
   return (
+    <>
+      <Stack.Title>{t('offline.downloadTitle')}</Stack.Title>
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Host style={styles.container} useViewportSizeMeasurement modifiers={[scheme]}>
         <Form>
-          <Section title={t('offline.downloadTitle')} footer={<Text>{t('offline.downloadFooter')}</Text>}>
+          <Section footer={<Text>{t('offline.downloadFooter')}</Text>}>
             {!manifest ? (
               failed ? (
                 <Text modifiers={[secondary]}>{t('offline.failed')}</Text>
@@ -140,22 +154,26 @@ export default function DownloadCitySheet() {
                   (v) => setSel((s) => ({ ...s, places: v })),
                   packs?.places,
                 )}
-                {manifest.routes.count > 0 &&
-                  row(
-                    t('offline.routes'),
-                    t('offline.routesCount', { count: manifest.routes.count }),
-                    sel.routes,
-                    (v) => setSel((s) => ({ ...s, routes: v })),
-                    packs?.routes,
-                  )}
-                {manifest.quizzes.count > 0 &&
-                  row(
-                    t('offline.quizzes'),
-                    `${t('offline.quizCount', { count: manifest.quizzes.count })} · ${formatBytes(manifest.quizzes.bytes, t)}`,
-                    sel.quizzes,
-                    (v) => setSel((s) => ({ ...s, quizzes: v })),
-                    packs?.quizzes,
-                  )}
+                {row(
+                  t('offline.routes'),
+                  manifest.routes.count > 0
+                    ? t('offline.routesCount', { count: manifest.routes.count })
+                    : t('offline.none'),
+                  sel.routes && manifest.routes.count > 0,
+                  (v) => setSel((s) => ({ ...s, routes: v })),
+                  packs?.routes,
+                  manifest.routes.count === 0,
+                )}
+                {row(
+                  t('offline.quizzes'),
+                  manifest.quizzes.count > 0
+                    ? `${t('offline.quizCount', { count: manifest.quizzes.count })} · ${formatBytes(manifest.quizzes.bytes, t)}`
+                    : t('offline.none'),
+                  sel.quizzes && manifest.quizzes.count > 0,
+                  (v) => setSel((s) => ({ ...s, quizzes: v })),
+                  packs?.quizzes,
+                  manifest.quizzes.count === 0,
+                )}
               </>
             )}
           </Section>
@@ -182,21 +200,31 @@ export default function DownloadCitySheet() {
               </HStack>
             ) : (
               <Button
-                label={nothing ? t('offline.nothing') : t('offline.selected', { size: formatBytes(total, t) })}
-                systemImage="icloud.and.arrow.down"
                 onPress={() => void start()}
                 modifiers={[
                   buttonStyle('glassProminent'),
                   controlSize('large'),
-                  frame({ maxWidth: 10000 }),
                   disabled(nothing || !manifest),
+                  listRowBackground(CLEAR),
+                  listRowInsets({ top: 0, leading: 0, bottom: 0, trailing: 0 }),
                 ]}
-              />
+              >
+                {/* Spacers make the label (and so the button) span the full row. */}
+                <HStack spacing={8}>
+                  <Spacer />
+                  <SymbolImage systemName="icloud.and.arrow.down" size={18} color="#FFFFFF" />
+                  <Text>
+                    {nothing ? t('offline.nothing') : t('offline.selected', { size: formatBytes(total, t) })}
+                  </Text>
+                  <Spacer />
+                </HStack>
+              </Button>
             )}
           </Section>
         </Form>
       </Host>
     </View>
+    </>
   );
 }
 

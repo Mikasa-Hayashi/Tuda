@@ -181,7 +181,7 @@ function RootStack() {
           name="overview-filters"
           options={{
             presentation: 'formSheet',
-            headerShown: false,
+            headerShown: true,
             sheetAllowedDetents: [0.6, 1],
             sheetGrabberVisible: true,
           }}
@@ -190,7 +190,7 @@ function RootStack() {
           name="download-city"
           options={{
             presentation: 'formSheet',
-            headerShown: false,
+            headerShown: true,
             sheetAllowedDetents: [0.7, 1],
             sheetGrabberVisible: true,
           }}

@@ -74,7 +74,7 @@ export default function OfflineCityScreen() {
       <Stack.Screen options={{ title: t(`cities.${city}`) }} />
       <Host style={styles.container} useViewportSizeMeasurement modifiers={[scheme]}>
         <Form>
-          <Section title={t('offline.total')} footer={<Text>{t('offline.coreNote')}</Text>}>
+          <Section footer={<Text>{t('offline.coreNote')}</Text>}>
             {info(t('offline.objects'), t('offline.objectsValue', { count: usage.monuments }))}
             {info(t('offline.routes'), String(usage.routes))}
             {info(t('offline.total'), formatBytes(usage.totalBytes, t))}

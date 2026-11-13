@@ -3,6 +3,7 @@ import { overviewFilters, useOverviewTags } from '@/src/storage/overviewFilters'
 import { useTheme } from '@/src/theme/ThemeContext';
 import { Button, Form, Host, HStack, Image as SymbolImage, Section, Spacer, Toggle } from '@expo/ui/swift-ui';
 import { background, foregroundStyle, frame, preferredColorScheme, shapes } from '@expo/ui/swift-ui/modifiers';
+import { Stack } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
@@ -15,10 +16,12 @@ export default function OverviewFiltersSheet() {
   const scheme = preferredColorScheme(isDark ? 'dark' : 'light');
 
   return (
+    <>
+      <Stack.Title>{t('overview.filterTitle')}</Stack.Title>
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Host style={styles.container} useViewportSizeMeasurement modifiers={[scheme]}>
         <Form>
-          <Section title={t('overview.filterTitle')}>
+          <Section>
             {MONUMENT_TAG_IDS.map((tag) => (
               <HStack key={tag} spacing={10}>
                 <SymbolImage
@@ -52,6 +55,7 @@ export default function OverviewFiltersSheet() {
         </Form>
       </Host>
     </View>
+    </>
   );
 }
 
