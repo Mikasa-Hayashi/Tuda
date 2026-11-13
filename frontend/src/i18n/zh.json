@@ -79,6 +79,7 @@
     "downloadFooter": "文件保存在您的设备上，大小来自服务器。",
     "selected": "下载 · {{size}}",
     "nothing": "未选择任何内容",
+    "allDone": "已全部下载",
     "downloading": "正在下载…",
     "downloaded": "已下载",
     "failed": "下载失败，请检查网络连接。",

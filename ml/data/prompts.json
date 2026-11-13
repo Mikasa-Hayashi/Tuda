@@ -1,86 +1,550 @@
 {
   "_comment": "Visual English prompts per monument id (ids match backend/data). Be concrete about what is VISIBLE in the frame. Add reference photos to ml/refs/<id>/ to improve weak classes.",
   "monuments": [
-    {"id": "volgograd_01", "prompts": [
-      "Mamayev Kurgan memorial complex in Volgograd",
-      "a wide view of a hill with a long monumental staircase and a giant white statue on top",
-      "concrete war memorial sculptures on a hill with steps"]},
-    {"id": "volgograd_02", "prompts": [
-      "the Motherland Calls statue in Volgograd",
-      "a giant white concrete statue of a woman raising a sword against the sky",
-      "a monumental female statue holding a sword high"]},
-    {"id": "volgograd_03", "prompts": [
-      "Hall of Military Glory in Volgograd",
-      "a dark round memorial hall with a giant hand holding a torch of flame and names on the walls",
-      "an honor guard soldier standing in a memorial pantheon with red banner mosaics"]},
-    {"id": "volgograd_04", "prompts": [
-      "eternal flame burning at a war memorial in Volgograd",
-      "a flame burning in the center of a stone memorial with a guard of honor",
-      "a war memorial eternal fire in a grey stone hall"]},
-    {"id": "volgograd_05", "prompts": [
-      "Museum-Panorama Battle of Stalingrad building in Volgograd",
-      "a modern museum building with a large cylindrical glass part and a flagpole on the Volga bank",
-      "a big museum building next to the ruins of a burnt brick mill"]},
-    {"id": "volgograd_06", "prompts": [
-      "Gerhardt's Mill in Volgograd",
-      "a ruined red brick mill building left damaged by war with bullet holes",
-      "a burnt-out brick industrial building with broken walls and holes"]},
-    {"id": "volgograd_07", "prompts": [
-      "Pavlov's House in Volgograd",
-      "a four-storey brick apartment building with a long memorial inscription wall at its end",
-      "an old Soviet residential building with a large memorial wall and plaque"]},
-    {"id": "volgograd_08", "enabled": false, "prompts": [
-      "the Memory museum in Volgograd",
-      "a museum building with a memorial exhibition about the Stalingrad battle",
-      "a small museum building with a memorial sign"]},
-    {"id": "volgograd_09", "enabled": false, "prompts": [
-      "Lysaya Gora memorial complex in Volgograd",
-      "a memorial on a bare hill with a monument and a flag",
-      "a war memorial on a hill in the steppe"]},
-    {"id": "volgograd_10", "enabled": false, "prompts": [
-      "Rossoshka Soviet military cemetery",
-      "a large military cemetery with rows of graves and a central obelisk",
-      "a Soviet war memorial cemetery with a monument and green lawn"]},
-    {"id": "volgograd_11", "enabled": false, "prompts": [
-      "German military cemetery at Rossoshka",
-      "a cemetery with rows of dark stone crosses and low stone blocks",
-      "a war cemetery with grey concrete crosses on a lawn"]},
-    {"id": "volgograd_12", "enabled": false, "prompts": [
-      "Soldiers' Field memorial near Volgograd",
-      "a memorial in an open field with a monument and small grave markers",
-      "a war memorial in an open steppe field"]},
-    {"id": "volgograd_13", "prompts": [
-      "Embankment of the 62nd Army in Volgograd",
-      "a wide river embankment with a monumental granite staircase and fountains",
-      "a city embankment with a rotunda and terraced stairs along a river"]},
-    {"id": "volgograd_14", "prompts": [
-      "Alley of Heroes in Volgograd",
-      "a pedestrian alley lined with trees and busts on pedestals",
-      "a boulevard with many bronze portrait busts of heroes"]},
-    {"id": "volgograd_15", "prompts": [
-      "Central Department Store in Volgograd, Paulus headquarters",
-      "a large Soviet neoclassical department store building with columns and a memorial sign",
-      "a big grey city building with tall windows and a commemorative plaque"]},
-    {"id": "volgograd_16", "prompts": [
-      "Lenin monument at the Volga-Don canal",
-      "a gigantic white concrete statue of Lenin standing at the entrance of a canal",
-      "a very tall statue of a standing man in a coat above water locks"]},
-    {"id": "volgograd_17", "prompts": [
-      "Lenin monument on Lenin Square in Volgograd",
-      "a bronze statue of Lenin on a granite pedestal in front of an administrative building",
-      "a statue of a man in a coat on a pedestal in a city square"]},
-    {"id": "volgograd_18", "prompts": [
-      "monument to Prince Grigory Zasekin in Volgograd",
-      "a bronze statue of a medieval Russian nobleman in a long robe and hat",
-      "a historical bronze statue of a boyar with a scroll on a pedestal"]},
-    {"id": "volgograd_19", "enabled": false, "prompts": [
-      "Komsomol monument in Volgograd",
-      "a Soviet sculpture group of young people on a pedestal",
-      "a monument to Komsomol members with figures of young men and women"]},
-    {"id": "volgograd_20", "enabled": false, "prompts": [
-      "monument to the defenders of Tsaritsyn in Volgograd",
-      "a monument to civil war soldiers with a bronze figure and a flag",
-      "a historical soldiers monument with sculpture on a stone base"]}
+    {
+      "id": "volgograd_01",
+      "prompts": [
+        "Mamayev Kurgan memorial complex in Volgograd",
+        "a wide view of a hill with a long monumental staircase and a giant white statue on top",
+        "concrete war memorial sculptures on a hill with steps"
+      ]
+    },
+    {
+      "id": "volgograd_02",
+      "prompts": [
+        "the Motherland Calls statue in Volgograd",
+        "a giant white concrete statue of a woman raising a sword against the sky",
+        "a monumental female statue holding a sword high"
+      ]
+    },
+    {
+      "id": "volgograd_03",
+      "prompts": [
+        "Hall of Military Glory in Volgograd",
+        "a dark round memorial hall with a giant hand holding a torch of flame and names on the walls",
+        "an honor guard soldier standing in a memorial pantheon with red banner mosaics"
+      ]
+    },
+    {
+      "id": "volgograd_04",
+      "prompts": [
+        "eternal flame burning at a war memorial in Volgograd",
+        "a flame burning in the center of a stone memorial with a guard of honor",
+        "a war memorial eternal fire in a grey stone hall"
+      ]
+    },
+    {
+      "id": "volgograd_05",
+      "prompts": [
+        "Museum-Panorama Battle of Stalingrad building in Volgograd",
+        "a modern museum building with a large cylindrical glass part and a flagpole on the Volga bank",
+        "a big museum building next to the ruins of a burnt brick mill"
+      ]
+    },
+    {
+      "id": "volgograd_06",
+      "prompts": [
+        "Gerhardt's Mill in Volgograd",
+        "a ruined red brick mill building left damaged by war with bullet holes",
+        "a burnt-out brick industrial building with broken walls and holes"
+      ]
+    },
+    {
+      "id": "volgograd_07",
+      "prompts": [
+        "Pavlov's House in Volgograd",
+        "a four-storey brick apartment building with a long memorial inscription wall at its end",
+        "an old Soviet residential building with a large memorial wall and plaque"
+      ]
+    },
+    {
+      "id": "volgograd_08",
+      "enabled": false,
+      "prompts": [
+        "the Memory museum in Volgograd",
+        "a museum building with a memorial exhibition about the Stalingrad battle",
+        "a small museum building with a memorial sign"
+      ]
+    },
+    {
+      "id": "volgograd_09",
+      "enabled": false,
+      "prompts": [
+        "Lysaya Gora memorial complex in Volgograd",
+        "a memorial on a bare hill with a monument and a flag",
+        "a war memorial on a hill in the steppe"
+      ]
+    },
+    {
+      "id": "volgograd_10",
+      "enabled": false,
+      "prompts": [
+        "Rossoshka Soviet military cemetery",
+        "a large military cemetery with rows of graves and a central obelisk",
+        "a Soviet war memorial cemetery with a monument and green lawn"
+      ]
+    },
+    {
+      "id": "volgograd_11",
+      "enabled": false,
+      "prompts": [
+        "German military cemetery at Rossoshka",
+        "a cemetery with rows of dark stone crosses and low stone blocks",
+        "a war cemetery with grey concrete crosses on a lawn"
+      ]
+    },
+    {
+      "id": "volgograd_12",
+      "enabled": false,
+      "prompts": [
+        "Soldiers' Field memorial near Volgograd",
+        "a memorial in an open field with a monument and small grave markers",
+        "a war memorial in an open steppe field"
+      ]
+    },
+    {
+      "id": "volgograd_13",
+      "prompts": [
+        "Embankment of the 62nd Army in Volgograd",
+        "a wide river embankment with a monumental granite staircase and fountains",
+        "a city embankment with a rotunda and terraced stairs along a river"
+      ]
+    },
+    {
+      "id": "volgograd_14",
+      "prompts": [
+        "Alley of Heroes in Volgograd",
+        "a pedestrian alley lined with trees and busts on pedestals",
+        "a boulevard with many bronze portrait busts of heroes"
+      ]
+    },
+    {
+      "id": "volgograd_15",
+      "prompts": [
+        "Central Department Store in Volgograd, Paulus headquarters",
+        "a large Soviet neoclassical department store building with columns and a memorial sign",
+        "a Stalinist neoclassical building with a colonnade on a city square"
+      ]
+    },
+    {
+      "id": "volgograd_16",
+      "prompts": [
+        "Lenin monument at the Volga-Don canal",
+        "a gigantic white concrete statue of Lenin standing at the entrance of a canal",
+        "a very tall statue of a standing man in a coat above water locks"
+      ]
+    },
+    {
+      "id": "volgograd_17",
+      "prompts": [
+        "Lenin monument on Lenin Square in Volgograd",
+        "a bronze statue of Lenin on a granite pedestal in front of an administrative building",
+        "a statue of a man in a coat on a pedestal in a city square"
+      ]
+    },
+    {
+      "id": "volgograd_18",
+      "prompts": [
+        "monument to Prince Grigory Zasekin in Volgograd",
+        "a bronze statue of a medieval Russian nobleman in a long robe and hat",
+        "a historical bronze statue of a boyar with a scroll on a pedestal"
+      ]
+    },
+    {
+      "id": "volgograd_19",
+      "enabled": false,
+      "prompts": [
+        "Komsomol monument in Volgograd",
+        "a Soviet sculpture group of young people on a pedestal",
+        "a monument to Komsomol members with figures of young men and women"
+      ]
+    },
+    {
+      "id": "volgograd_20",
+      "enabled": false,
+      "prompts": [
+        "monument to the defenders of Tsaritsyn in Volgograd",
+        "a monument to civil war soldiers with a bronze figure and a flag",
+        "a historical soldiers monument with sculpture on a stone base"
+      ]
+    },
+    {
+      "id": "maykop_01",
+      "prompts": [
+        "Cathedral Mosque in Maykop, Adygea",
+        "a modern white mosque with a large dome and slender minarets in a landscaped park",
+        "a mosque with a big central dome and tall minarets at the end of a long park alley"
+      ]
+    },
+    {
+      "id": "maykop_02",
+      "prompts": [
+        "Pushkin Russian Drama Theatre in Maykop",
+        "a large Soviet neoclassical theatre building with a wide columned portico and a bust in front",
+        "a pale theatre with tall columns and a triangular pediment on a paved square"
+      ]
+    },
+    {
+      "id": "maykop_03",
+      "prompts": [
+        "Maykop kurgan memorial sign in Adygea",
+        "a white stone stele with round relief carvings of a bull and ancient vessels",
+        "a memorial plaque about an ancient burial mound with prehistoric patterns"
+      ]
+    },
+    {
+      "id": "maykop_04",
+      "prompts": [
+        "Lenin monument on Lenin Square in Maykop",
+        "a Soviet statue of Lenin on a low pedestal in front of a large administrative building",
+        "a statue of a standing man in a coat in a city square with trees"
+      ]
+    },
+    {
+      "id": "maykop_05",
+      "prompts": [
+        "Adyghe State University in Maykop",
+        "a university building with a round glass tower entrance and two small domes on the roof",
+        "a light-coloured institute building with a semicircular glass stairwell"
+      ]
+    },
+    {
+      "id": "astrakhan_01",
+      "prompts": [
+        "Astrakhan Kremlin walls and towers",
+        "a long white fortress wall with towers along a city road, seen from above",
+        "an old Russian kremlin fortress with white walls and a cathedral inside, aerial view"
+      ]
+    },
+    {
+      "id": "astrakhan_02",
+      "prompts": [
+        "Assumption Cathedral in the Astrakhan Kremlin",
+        "a close front view of a tall white cathedral with green onion domes and arched gables",
+        "a white cathedral with three green domes on white drums"
+      ]
+    },
+    {
+      "id": "astrakhan_03",
+      "prompts": [
+        "White Mosque in Astrakhan",
+        "a white mosque with bright blue domes and a small tower",
+        "a white building with blue metal domes behind an ornate white fence"
+      ]
+    },
+    {
+      "id": "astrakhan_04",
+      "prompts": [
+        "Astrakhan Opera and Ballet Theatre",
+        "a large white ornate theatre building with tall arched windows and green roofs",
+        "a palace-like opera house with turrets and a green roof"
+      ]
+    },
+    {
+      "id": "astrakhan_05",
+      "prompts": [
+        "Krasnaya Embankment in Astrakhan",
+        "a riverside promenade with benches next to a pale turquoise historic building",
+        "an ornate turquoise and white historic building with a fountain and benches"
+      ]
+    },
+    {
+      "id": "astrakhan_06",
+      "prompts": [
+        "Dogadin Art Gallery in Astrakhan",
+        "a red brick two-storey historic building with arched windows and white trim",
+        "a nineteenth century red brick museum building on a city street"
+      ]
+    },
+    {
+      "id": "elista_01",
+      "prompts": [
+        "Golden Abode of Buddha Shakyamuni in Elista",
+        "a Buddhist temple gate with red pillars and an ornate colourful golden roof",
+        "a Kalmyk Buddhist temple complex with a golden roof and red columns"
+      ]
+    },
+    {
+      "id": "elista_02",
+      "prompts": [
+        "Pagoda of Seven Days in Elista",
+        "a seven-tiered red and gold Buddhist pagoda on a stone platform",
+        "a tall Chinese-style red pagoda with a dark tiered roof and a small bridge"
+      ]
+    },
+    {
+      "id": "elista_03",
+      "prompts": [
+        "City Chess gate in Elista",
+        "a gateway sign saying City Chess with a blue chess knight logo and flags",
+        "an entrance arch with a yellow steel frame and a chess emblem over a road"
+      ]
+    },
+    {
+      "id": "elista_04",
+      "prompts": [
+        "Golden Gates in Elista",
+        "a colourful Buddhist arch with a Chinese-style roof, a clock and red pillars over a pedestrian alley",
+        "an ornate gate with golden roofs and decorative panels in a park alley"
+      ]
+    },
+    {
+      "id": "elista_05",
+      "prompts": [
+        "National Museum of Kalmykia in Elista",
+        "a modern grey building with a glass entrance and the sign National Museum",
+        "a museum entrance with a glass door, a metal canopy and a signboard"
+      ]
+    },
+    {
+      "id": "elista_06",
+      "prompts": [
+        "Kalmyk Drama Theatre in Elista",
+        "a theatre building with a round central entrance part, beige walls and a poster",
+        "a theatre facade with a large central cylinder and a lawn in front"
+      ]
+    },
+    {
+      "id": "krasnodar_01",
+      "prompts": [
+        "Alexander Triumphal Arch in Krasnodar",
+        "a red brick triumphal arch with a pointed tiled roof and small towers",
+        "a Russian-style brick gate with arched passages and green trees"
+      ]
+    },
+    {
+      "id": "krasnodar_02",
+      "prompts": [
+        "Monument to Catherine II in Krasnodar",
+        "a tall bronze monument of Empress Catherine on a large pedestal with Cossack figures",
+        "a monument of a woman on top of a red-brown pedestal with sculpture figures"
+      ]
+    },
+    {
+      "id": "krasnodar_03",
+      "prompts": [
+        "Saint Catherine Cathedral in Krasnodar",
+        "a red brick Orthodox cathedral with a golden dome and smaller domes",
+        "a Byzantine-style brick church with several domes"
+      ]
+    },
+    {
+      "id": "krasnodar_04",
+      "prompts": [
+        "Krasnodar Park, Galitsky Park",
+        "a modern white football stadium behind a park with cypress trees and lavender fields",
+        "a landscaped park with rows of cypresses, purple lavender and a stadium in the distance"
+      ]
+    },
+    {
+      "id": "krasnodar_05",
+      "prompts": [
+        "Kovalenko Art Museum in Krasnodar",
+        "a symmetrical two-storey mansion with projecting side sections and eclectic stucco decoration",
+        "a decorative white historical mansion with a carved facade, a balcony and a wooden door"
+      ]
+    },
+    {
+      "id": "krasnodar_06",
+      "prompts": [
+        "Felitsyn Museum in Krasnodar",
+        "a former Grand Hotel building of the late nineteenth century with an ornate eclectic facade",
+        "an eclectic historic building with stucco, horizontal stripes and a small tower on the roof"
+      ]
+    },
+    {
+      "id": "rostov_01",
+      "prompts": [
+        "Gorky Drama Theatre in Rostov-on-Don",
+        "a giant constructivist theatre building shaped like a tractor with a dark glass wall and a white concrete roof",
+        "a huge angular modern building with a slanted black glass facade and a white cantilevered roof"
+      ]
+    },
+    {
+      "id": "rostov_02",
+      "prompts": [
+        "Cathedral of the Nativity of the Virgin in Rostov-on-Don",
+        "a white cathedral with golden onion domes and a tall bell tower",
+        "a large Orthodox cathedral with several golden domes behind a fence"
+      ]
+    },
+    {
+      "id": "rostov_03",
+      "prompts": [
+        "Don Embankment in Rostov-on-Don",
+        "a wide river embankment with sculptures, fountains and a bridge over the Don in the distance",
+        "a riverside promenade with cafes, boats and sculptures along the river"
+      ]
+    },
+    {
+      "id": "rostov_04",
+      "prompts": [
+        "Rostov Museum of Fine Arts",
+        "a baroque museum mansion with white stucco decoration around the windows and sculptures on the roof",
+        "an ornate classical mansion with arched windows, a balustrade and a decorated cornice"
+      ]
+    },
+    {
+      "id": "rostov_05",
+      "prompts": [
+        "Rostov Zoo entrance",
+        "a zoo entrance gate with a flat concrete canopy and a large Zoo sign",
+        "a modernist entrance pavilion of a zoo park with tall trees"
+      ]
+    },
+    {
+      "id": "rostov_06",
+      "prompts": [
+        "Rostov State Circus",
+        "a monumental neoclassical circus building with columns, a sculptural pediment and an advertising banner",
+        "a big theatre-like building with tall columns and a triangular pediment with sculpture"
+      ]
+    },
+    {
+      "id": "sevastopol_01",
+      "prompts": [
+        "Chersonesus Tauric in Sevastopol",
+        "ancient Greek stone ruins on a seaside plain with a cathedral in the distance",
+        "an archaeological site with low stone walls and foundations of an ancient city"
+      ]
+    },
+    {
+      "id": "sevastopol_02",
+      "prompts": [
+        "Count's Pier in Sevastopol",
+        "a white colonnade at the top of a wide stone staircase leading to the sea",
+        "a classical portico with columns above grand steps with people"
+      ]
+    },
+    {
+      "id": "sevastopol_03",
+      "prompts": [
+        "Monument to the Scuttled Ships in Sevastopol",
+        "a tall column on a rocky base rising from the sea with an eagle on top",
+        "a stone column monument on a rock in the bay"
+      ]
+    },
+    {
+      "id": "sevastopol_04",
+      "prompts": [
+        "Malakhov Kurgan memorial in Sevastopol",
+        "a squat defensive stone tower on top of a hill with old cannons standing around it",
+        "a memorial hill with an eternal flame, a monument to admirals, cannons and cannonballs"
+      ]
+    },
+    {
+      "id": "sevastopol_05",
+      "prompts": [
+        "Panorama Defence of Sevastopol museum",
+        "a large round building with a shallow dome, neoclassical walls and statues",
+        "a circular museum building with a metal dome on a hill in a park"
+      ]
+    },
+    {
+      "id": "sevastopol_06",
+      "prompts": [
+        "Vladimir Cathedral in Sevastopol, Crimea",
+        "a cathedral built of light grey and white striped stone with a small dome, not green and not golden",
+        "a tall stone church in Crimea with a bell tower and an arched porch in Byzantine style"
+      ]
+    },
+    {
+      "id": "sevastopol_07",
+      "prompts": [
+        "Primorsky Boulevard in Sevastopol",
+        "a seaside promenade with benches, old street lamps and a monument column in the bay",
+        "a boulevard along a bay with people walking and a distant column monument"
+      ]
+    },
+    {
+      "id": "sirius_01",
+      "prompts": [
+        "Fisht Olympic Stadium in Sochi",
+        "the inside of a huge stadium with a steel roof truss and rows of seats",
+        "a football stadium interior with an arched white roof structure",
+        "a stadium shaped like a snow-capped peak with a translucent roof"
+      ]
+    },
+    {
+      "id": "sirius_02",
+      "prompts": [
+        "Olympic Cauldron in the Olympic Park in Sochi",
+        "a giant white curved torch-shaped cauldron against the sky",
+        "a tall white sweeping flame bowl monument with a pointed top and flags nearby"
+      ]
+    },
+    {
+      "id": "sirius_03",
+      "prompts": [
+        "Bolshoy Ice Dome in Sochi",
+        "a round arena with a shell-shaped steel and glass roof lit with fireworks",
+        "a large arena with a rounded drop-shaped roof"
+      ]
+    },
+    {
+      "id": "sirius_04",
+      "prompts": [
+        "Iceberg Skating Palace in Sochi",
+        "a building with a wavy blue glass facade like a glacier",
+        "a curved facade of blue and white glass squares like ice"
+      ]
+    },
+    {
+      "id": "sirius_05",
+      "prompts": [
+        "Shayba Arena in Sochi",
+        "a round puck-shaped hockey arena with a wavy snowstorm-like facade of overlapping blue and bronze stripes",
+        "a long low arena with layered horizontal stripes and Olympic rings banners at sunset"
+      ]
+    },
+    {
+      "id": "sirius_06",
+      "prompts": [
+        "Sochi Autodrom racing circuit",
+        "a Formula 1 race track with red and white kerbs and grandstands",
+        "a racing circuit with a pit building and flagpoles"
+      ]
+    },
+    {
+      "id": "sirius_07",
+      "prompts": [
+        "Adler Arena skating centre in Sirius",
+        "a low white oval roof of an arena among palm trees",
+        "a long curved white roof of a speed skating centre above a green lawn with palms"
+      ]
+    },
+    {
+      "id": "sirius_08",
+      "prompts": [
+        "Sirius Educational Centre in Sochi",
+        "an aerial night view of a round perforated golden-brown building next to a long purple-lit building",
+        "a modern campus at night with a ring-shaped building and a rainbow-lit stadium behind"
+      ]
+    },
+    {
+      "id": "sirius_09",
+      "prompts": [
+        "Olympic Park in Sochi, Sirius",
+        "a row of flagpoles with national flags in front of white stadium roofs and snowy mountains",
+        "a wide paved square with many flags and mountains in the distance"
+      ]
+    },
+    {
+      "id": "sirius_10",
+      "prompts": [
+        "Southern Cultures Arboretum in Sochi",
+        "a pond in a botanical garden with blooming magnolia trees",
+        "a landscape park with a lake and blossoming trees"
+      ]
+    },
+    {
+      "id": "sirius_11",
+      "prompts": [
+        "Wall of Champions of the Games in the Olympic Park in Sochi",
+        "a white wall covered with diamond-shaped plaques with names and Olympic rings",
+        "a sculpture of two white pyramids with many golden and silver rhombic plates"
+      ]
+    }
   ],
   "negatives": [
     "a photo of a person's face",

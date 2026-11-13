@@ -6,7 +6,6 @@ import {
 import { formatTime, useAudioGuide, type AudioTrack } from '@/src/audio/AudioGuideContext';
 import { useTransitionDone } from '@/src/hooks/useTransitionDone';
 import { LANGUAGES } from '@/src/i18n/languages';
-import { scanNavigation } from '@/src/utils/scanNavigation';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
   Button,
@@ -36,7 +35,7 @@ import {
   tint,
 } from '@expo/ui/swift-ui/modifiers';
 import { Image } from 'expo-image';
-import { useLocalSearchParams, useNavigation, useRouter, type Href } from 'expo-router';
+import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, View, useWindowDimensions } from 'react-native';
@@ -51,12 +50,6 @@ const ART_MAX = 200;
 export default function AudioGuideScreen() {
   const { colors, isDark } = useTheme();
   const { t } = useTranslation();
-  const navigation = useNavigation() as unknown as {
-    addListener: (
-      type: 'transitionEnd',
-      cb: (e: { data: { closing: boolean } }) => void,
-    ) => () => void;
-  };
   const router = useRouter();
   const { width } = useWindowDimensions();
   const player = useAudioGuide();
@@ -81,19 +74,10 @@ export default function AudioGuideScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transitionDone, requested?.monumentId, currentId]);
 
-  // Opening the monument: close the sheet first, push the screen once it has slid away.
-  useEffect(
-    () =>
-      navigation.addListener('transitionEnd', (e) => {
-        if (!e.data.closing) return;
-        const href = scanNavigation.take();
-        if (href) router.push(href);
-      }),
-    [navigation, router],
-  );
+  // Opening the monument: pop the sheet and push the screen in one go (as the map's place sheet does).
   const openMonument = (id: string) => {
-    scanNavigation.set({ pathname: '/info', params: { id } } as Href);
     router.back();
+    router.push({ pathname: '/info', params: { id } } as Href);
   };
 
   // Slider: while dragging only the local value moves; the player seeks once on release.

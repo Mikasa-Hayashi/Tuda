@@ -1,9 +1,12 @@
 import { audioLang, type AudioLang } from '@/src/audio/audioFiles';
 import { BADGE } from '@/src/components/BadgeLabel';
 import { LANGUAGES } from '@/src/i18n/languages';
+import { getAllMonumentPreviews } from '@/src/db/monumentRepository';
+import { getQuizMonumentIds } from '@/src/offline/quizStore';
 import { formatBytes } from '@/src/offline/format';
 import {
   downloadCityPacks,
+  getCityUsage,
   usePacks,
   type DownloadProgress,
   type PackSelection,
@@ -68,27 +71,53 @@ export default function DownloadCitySheet() {
       .catch(() => setFailed(true));
   }, [city]);
 
+  // Quizzes that ship with the app (core objects) need no download: nothing new = greyed out.
+  const hasNewQuizzes = useMemo(() => {
+    if (!manifest || !city) return false;
+    const local = new Set(getQuizMonumentIds());
+    const have = getAllMonumentPreviews('ru', city).filter((m) => local.has(m.id)).length;
+    return manifest.quizzes.count > have || !!packs?.quizzes;
+  }, [manifest, city, packs]);
+  // Photos are complete when every object of the city already has its photo on the device.
+  const photosDone = useMemo(() => {
+    if (!manifest || !city || !packs?.places) return false;
+    return getCityUsage(city).photos.count >= manifest.places.count;
+  }, [manifest, city, packs]);
+  const hasRoutes = (manifest?.routes.count ?? 0) > 0;
+
   const total = useMemo(() => {
     if (!manifest) return 0;
     let bytes = 0;
-    if (sel.places) bytes += manifest.places.bytes;
-    if (sel.routes) bytes += manifest.routes.bytes;
-    if (sel.quizzes) bytes += manifest.quizzes.bytes;
-    for (const l of sel.audio) bytes += manifest.audio[l]?.bytes ?? 0;
+    if (sel.places && !photosDone) bytes += manifest.places.bytes;
+    if (sel.routes && !packs?.routes) bytes += manifest.routes.bytes;
+    if (sel.quizzes && hasNewQuizzes && !packs?.quizzes) bytes += manifest.quizzes.bytes;
+    for (const l of sel.audio) if (!packs?.audio?.includes(l)) bytes += manifest.audio[l]?.bytes ?? 0;
     return bytes;
-  }, [manifest, sel]);
+  }, [manifest, sel, packs, hasNewQuizzes, photosDone]);
 
+  // Packs already on the device are shown as on and locked; only new ones count.
+  const everythingDone =
+    !!manifest &&
+    photosDone &&
+    (!hasRoutes || !!packs?.routes) &&
+    (!hasNewQuizzes || !!packs?.quizzes) &&
+    AUDIO_ORDER.every((l) => (manifest.audio[l]?.count ?? 0) === 0 || !!packs?.audio?.includes(l));
   const nothing =
-    !sel.places &&
-    !(sel.routes && (manifest?.routes.count ?? 0) > 0) &&
-    !(sel.quizzes && (manifest?.quizzes.count ?? 0) > 0) &&
-    sel.audio.length === 0;
+    !(sel.places && !photosDone) &&
+    !(sel.routes && !packs?.routes && hasRoutes) &&
+    !(sel.quizzes && hasNewQuizzes && !packs?.quizzes) &&
+    !sel.audio.some((l) => !packs?.audio?.includes(l));
 
   const start = async () => {
     if (!city) return;
     setBusy(true);
     try {
-      await downloadCityPacks(city, sel, setProgress);
+      // Only what the city really has: no routes or new quizzes means nothing to fetch.
+      await downloadCityPacks(
+        city,
+        { ...sel, routes: sel.routes && hasRoutes, quizzes: sel.quizzes && hasNewQuizzes },
+        setProgress,
+      );
       router.back();
     } catch {
       Alert.alert(t('offline.failed'));
@@ -114,12 +143,12 @@ export default function DownloadCitySheet() {
     saved?: boolean,
     unavailable?: boolean,
   ) => (
-    <HStack spacing={8}>
+    <HStack key={label} spacing={8}>
       <Toggle
         isOn={isOn}
         onIsOnChange={onChange}
         label={label}
-        modifiers={unavailable ? [disabled(true)] : []}
+        modifiers={unavailable ? [disabled(true), secondary] : []}
       />
       <Spacer />
       {done(saved)}
@@ -150,29 +179,30 @@ export default function DownloadCitySheet() {
                 {row(
                   t('offline.photos'),
                   `${t('offline.placesCount', { count: manifest.places.count })} · ${formatBytes(manifest.places.bytes, t)}`,
-                  sel.places,
+                  sel.places || photosDone,
                   (v) => setSel((s) => ({ ...s, places: v })),
-                  packs?.places,
+                  photosDone,
+                  photosDone,
                 )}
                 {row(
                   t('offline.routes'),
                   manifest.routes.count > 0
                     ? t('offline.routesCount', { count: manifest.routes.count })
                     : t('offline.none'),
-                  sel.routes && manifest.routes.count > 0,
+                  (sel.routes && manifest.routes.count > 0) || (hasRoutes && !!packs?.routes),
                   (v) => setSel((s) => ({ ...s, routes: v })),
-                  packs?.routes,
-                  manifest.routes.count === 0,
+                  hasRoutes && packs?.routes,
+                  manifest.routes.count === 0 || !!packs?.routes,
                 )}
                 {row(
                   t('offline.quizzes'),
-                  manifest.quizzes.count > 0
+                  hasNewQuizzes
                     ? `${t('offline.quizCount', { count: manifest.quizzes.count })} · ${formatBytes(manifest.quizzes.bytes, t)}`
                     : t('offline.none'),
-                  sel.quizzes && manifest.quizzes.count > 0,
+                  (sel.quizzes && hasNewQuizzes) || !!packs?.quizzes,
                   (v) => setSel((s) => ({ ...s, quizzes: v })),
                   packs?.quizzes,
-                  manifest.quizzes.count === 0,
+                  !hasNewQuizzes || !!packs?.quizzes,
                 )}
               </>
             )}
@@ -184,9 +214,10 @@ export default function DownloadCitySheet() {
                 row(
                   langLabel(l),
                   `${t('offline.files', { count: manifest.audio[l].count })} · ${formatBytes(manifest.audio[l].bytes, t)}`,
-                  sel.audio.includes(l),
+                  sel.audio.includes(l) || !!packs?.audio?.includes(l),
                   (v) => toggleAudio(l, v),
                   packs?.audio?.includes(l),
+                  !!packs?.audio?.includes(l),
                 ),
               )}
             </Section>
@@ -214,7 +245,7 @@ export default function DownloadCitySheet() {
                   <Spacer />
                   <SymbolImage systemName="icloud.and.arrow.down" size={18} color="#FFFFFF" />
                   <Text>
-                    {nothing ? t('offline.nothing') : t('offline.selected', { size: formatBytes(total, t) })}
+                    {nothing ? (everythingDone ? t('offline.allDone') : t('offline.nothing')) : t('offline.selected', { size: formatBytes(total, t) })}
                   </Text>
                   <Spacer />
                 </HStack>

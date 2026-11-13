@@ -748,7 +748,7 @@
     "city_id": "sirius",
     "lat": 43.4025,
     "lon": 39.9548,
-    "image_url": "/static/monuments/sirius_02.jpg",
+    "image_url": "/static/monuments/sirius_02_v2.jpg",
     "sort_order": 2,
     "tags": [
       "sport",
@@ -762,7 +762,7 @@
     "city_id": "sirius",
     "lat": 43.404754,
     "lon": 39.949871,
-    "image_url": "/static/monuments/sirius_03.jpg",
+    "image_url": "/static/monuments/sirius_03_v2.jpg",
     "sort_order": 3,
     "tags": [
       "sport",
@@ -775,7 +775,7 @@
     "city_id": "sirius",
     "lat": 43.4074417,
     "lon": 39.9575528,
-    "image_url": "/static/monuments/sirius_04.jpg",
+    "image_url": "/static/monuments/sirius_04_v2.jpg",
     "sort_order": 4,
     "tags": [
       "sport",
@@ -788,7 +788,7 @@
     "city_id": "sirius",
     "lat": 43.4023417,
     "lon": 39.9519528,
-    "image_url": "/static/monuments/sirius_05.jpg",
+    "image_url": "/static/monuments/sirius_05_v2.jpg",
     "sort_order": 5,
     "tags": [
       "sport",
@@ -801,7 +801,7 @@
     "city_id": "sirius",
     "lat": 43.40833,
     "lon": 39.96556,
-    "image_url": "/static/monuments/sirius_06.jpg",
+    "image_url": "/static/monuments/sirius_06_v2.jpg",
     "sort_order": 6,
     "tags": [
       "sport"
@@ -813,7 +813,7 @@
     "city_id": "sirius",
     "lat": 43.4086167,
     "lon": 39.9528111,
-    "image_url": "/static/monuments/sirius_07.jpg",
+    "image_url": "/static/monuments/sirius_07_v2.jpg",
     "sort_order": 7,
     "tags": [
       "sport",
@@ -826,7 +826,7 @@
     "city_id": "sirius",
     "lat": 43.400534,
     "lon": 39.964789,
-    "image_url": "/static/monuments/sirius_08.jpg",
+    "image_url": "/static/monuments/sirius_08_v2.jpg",
     "sort_order": 8,
     "tags": [
       "culture",
@@ -839,7 +839,7 @@
     "city_id": "sirius",
     "lat": 43.4056,
     "lon": 39.9546,
-    "image_url": "/static/monuments/sirius_09.jpg",
+    "image_url": "/static/monuments/sirius_09_v2.jpg",
     "sort_order": 9,
     "tags": [
       "parks",
@@ -853,12 +853,26 @@
     "city_id": "sirius",
     "lat": 43.418687,
     "lon": 39.934466,
-    "image_url": "/static/monuments/sirius_10.jpg",
+    "image_url": "/static/monuments/sirius_10_v2.jpg",
     "sort_order": 10,
     "tags": [
       "nature",
       "parks"
     ],
     "popularity": 64
+  },
+  {
+    "id": "sirius_11",
+    "city_id": "sirius",
+    "lat": 43.4033,
+    "lon": 39.9549,
+    "image_url": "/static/monuments/sirius_11.jpg",
+    "sort_order": 11,
+    "tags": [
+      "memorials",
+      "sport",
+      "history"
+    ],
+    "popularity": 68
   }
 ]

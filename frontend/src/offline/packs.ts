@@ -128,7 +128,8 @@ export async function downloadCityPacks(
       upsertRoutesFromSync(cityId, payload.routes);
       upsertRouteStopsFromSync(payload.route_stops);
       upsertRouteTranslationsFromSync(payload.route_translations);
-      patch(cityId, { routes: true });
+      // A city without routes has nothing to mark as downloaded.
+      if (payload.routes.length > 0) patch(cityId, { routes: true });
     }
   }
 
@@ -171,6 +172,11 @@ export async function downloadCityPacks(
   if (selection.quizzes) {
     onProgress?.({ kind: 'quizzes', done: 0, total: 1 });
     const response = await fetch(remoteMediaUrl(`/static/quizzes/${cityId}.json`));
+    if (response.status === 404) {
+      // the city has no quiz file: nothing to download
+      onProgress?.({ kind: 'quizzes', done: 1, total: 1 });
+      return;
+    }
     if (!response.ok) throw new Error(`quizzes ${response.status}`);
     savePack(cityId, await response.text());
     patch(cityId, { quizzes: true });

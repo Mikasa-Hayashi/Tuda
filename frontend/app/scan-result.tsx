@@ -19,17 +19,19 @@ import {
   buttonStyle,
   contentShape,
   controlSize,
+  fixedSize,
   font,
   foregroundStyle,
   frame,
   listRowBackground,
   listRowInsets,
+  multilineTextAlignment,
+  padding,
   preferredColorScheme,
   shapes,
 } from '@expo/ui/swift-ui/modifiers';
-import { scanNavigation } from '@/src/utils/scanNavigation';
-import { useLocalSearchParams, useNavigation, useRouter, type Href } from 'expo-router';
-import React, { useEffect, useMemo } from 'react';
+import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 
@@ -46,12 +48,6 @@ export default function ScanResultSheet() {
   const { t, i18n } = useTranslation();
   const { colors, isDark } = useTheme();
   const router = useRouter();
-  const navigation = useNavigation() as unknown as {
-    addListener: (
-      type: 'transitionEnd',
-      cb: (e: { data: { closing: boolean } }) => void,
-    ) => () => void;
-  };
   const { width } = useWindowDimensions();
   const scheme = preferredColorScheme(isDark ? 'dark' : 'light');
   const secondary = foregroundStyle({ type: 'hierarchical', style: 'secondary' });
@@ -72,22 +68,11 @@ export default function ScanResultSheet() {
     [alt, i18n.language],
   );
 
-  // Open the chosen screen only once the sheet has fully slid away: pushed any earlier, it would
-  // be presented from the still-visible sheet and open inside it.
-  useEffect(
-    () =>
-      navigation.addListener('transitionEnd', (e) => {
-        if (!e.data.closing) return;
-        const href = scanNavigation.take();
-        if (href) router.push(href);
-      }),
-    [navigation, router],
-  );
-
-  /** Closes the sheet; once it is gone the target opens as a regular full-size screen. */
+  /** Closes the sheet and the camera (a modal) beneath it, then pushes the target onto the main
+   *  stack. Pushed over the camera modal, iOS would present it as a card instead of a screen. */
   const openAfterClose = (href: Href) => {
-    scanNavigation.set(href);
-    router.back();
+    router.dismiss(2);
+    router.push(href);
   };
   const percent = Math.round((Number(p) || 0) * 100);
   const heroWidth = width - FORM_MARGIN * 2;
@@ -108,8 +93,26 @@ export default function ScanResultSheet() {
                   listRowBackground(CLEAR),
                 ]}
               >
-                <Text modifiers={[font({ size: 24, weight: 'bold' })]}>{t('scanResult.pick')}</Text>
-                <Text modifiers={[font({ textStyle: 'subheadline' }), secondary]}>
+                <Text
+                  modifiers={[
+                    font({ size: 24, weight: 'bold' }),
+                    multilineTextAlignment('leading'),
+                    fixedSize({ horizontal: false, vertical: true }),
+                    padding({ leading: 8, trailing: 8 }),
+                  ]}
+                >
+                  {t('scanResult.pick')}
+                </Text>
+                <Text
+                  modifiers={[
+                    font({ textStyle: 'subheadline' }),
+                    secondary,
+                    multilineTextAlignment('leading'),
+                    fixedSize({ horizontal: false, vertical: true }),
+                    // The glyph at the start of a wrapped line was cut by the text bounds.
+                    padding({ leading: 8, trailing: 8 }),
+                  ]}
+                >
                   {t('scanResult.pickHint')}
                 </Text>
               </VStack>
@@ -123,18 +126,21 @@ export default function ScanResultSheet() {
                 >
                   <HStack spacing={12} modifiers={[contentShape(shapes.rectangle())]}>
                     <RNHostView matchContents>
-                      <CoverImage
-                        source={c.imageUrl ? { uri: c.imageUrl } : undefined}
-                        style={{
-                          width: CANDIDATE_THUMB,
-                          height: CANDIDATE_THUMB,
-                          borderRadius: 14,
-                          backgroundColor: colors.cardElevated,
-                        }}
-                        contentFit="cover"
-                        contentPosition={{ top: 0, left: '50%' }}
-                        cachePolicy="memory-disk"
-                      />
+                      {/* The photo is a React Native view: it must not swallow the row's tap. */}
+                      <View pointerEvents="none">
+                        <CoverImage
+                          source={c.imageUrl ? { uri: c.imageUrl } : undefined}
+                          style={{
+                            width: CANDIDATE_THUMB,
+                            height: CANDIDATE_THUMB,
+                            borderRadius: 14,
+                            backgroundColor: colors.cardElevated,
+                          }}
+                          contentFit="cover"
+                          contentPosition={{ top: 0, left: '50%' }}
+                          cachePolicy="memory-disk"
+                        />
+                      </View>
                     </RNHostView>
                     <VStack alignment="leading" spacing={2}>
                       <Text modifiers={[font({ textStyle: 'headline' })]}>{c.name}</Text>

@@ -89,17 +89,20 @@ export default function CameraScreen() {
       [
         ...options.map((o) => ({
           text: t('camera.maybe', { name: o.name }),
-          onPress: () => router.push(`/info?id=${o.id}`),
+          onPress: () => {
+            router.dismiss();
+            router.push(`/info?id=${o.id}`);
+          },
         })),
         { text: t('camera.retry'), style: 'cancel' as const },
       ],
     );
   };
 
-  const processUri = async (rawUri: string) => {
+  const processUri = async (rawUri: string, extraDegrees = 0) => {
     setLoading(true);
     try {
-      const uri = await normalizeOrientation(rawUri);
+      const uri = await normalizeOrientation(rawUri, extraDegrees);
       const result = await recognizeImage(uri, i18n.language);
       if (result.recognized && result.id) {
         achievements.recordScan();
@@ -143,7 +146,8 @@ export default function CameraScreen() {
     setIsProcessing(true);
     try {
       const photo = await cameraRef.current.takePictureAsync({ quality: 0.6 });
-      if (photo?.uri) await processUri(photo.uri);
+      // `rotation` is the angle the icons turn to stay upright; the picture needs the opposite turn.
+      if (photo?.uri) await processUri(photo.uri, -rotation);
     } catch {
       showFailure('error');
     } finally {

@@ -15,11 +15,19 @@ import {
   Form,
   Host,
   HStack,
+  Image as SymbolImage,
   Section,
   Spacer,
   Text,
 } from '@expo/ui/swift-ui';
-import { font, foregroundStyle, preferredColorScheme } from '@expo/ui/swift-ui/modifiers';
+import {
+  buttonStyle,
+  contentShape,
+  font,
+  foregroundStyle,
+  preferredColorScheme,
+  shapes,
+} from '@expo/ui/swift-ui/modifiers';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -46,7 +54,7 @@ export default function OfflineCityScreen() {
   if (!city || !usage) return null;
 
   const confirm = (title: string, action: () => void | Promise<void>) =>
-    Alert.alert(title, t('offline.deletePackTitle'), [
+    Alert.alert(t('offline.deletePackTitle', { pack: title }), undefined, [
       { text: t('settings.cancel'), style: 'cancel' },
       {
         text: t('offline.delete'),
@@ -58,13 +66,24 @@ export default function OfflineCityScreen() {
       },
     ]);
 
-  const info = (label: string, value: string) => (
-    <HStack>
-      <Text>{label}</Text>
-      <Spacer />
-      <Text modifiers={[footnote, secondary]}>{value}</Text>
-    </HStack>
-  );
+  // One pattern for every pack: title, size and a red trash icon; the whole row is the button.
+  const info = (label: string, value: string, onDelete?: () => void) => {
+    const content = (
+      <HStack spacing={12} modifiers={[contentShape(shapes.rectangle())]}>
+        <Text>{label}</Text>
+        <Spacer />
+        <Text modifiers={[footnote, secondary]}>{value}</Text>
+        {onDelete && <SymbolImage systemName="trash" size={17} color="#FF3B30" />}
+      </HStack>
+    );
+    return onDelete ? (
+      <Button key={label} onPress={onDelete} modifiers={[buttonStyle('plain')]}>
+        {content}
+      </Button>
+    ) : (
+      <HStack key={label}>{content}</HStack>
+    );
+  };
 
   const langLabel = (l: AudioLang) => LANGUAGES.find((x) => x.id === l)?.label ?? l;
   const audioLangs = AUDIO_LANGS.filter((l) => usage.audio[l].count > 0);
@@ -82,17 +101,11 @@ export default function OfflineCityScreen() {
 
           <Section>
             {usage.photos.count > 0 ? (
-              <>
-                {info(
-                  t('offline.photos'),
-                  `${usage.photos.count} · ${formatBytes(usage.photos.bytes, t)}`,
-                )}
-                <Button
-                  role="destructive"
-                  label={`${t('offline.delete')}: ${t('offline.photos')}`}
-                  onPress={() => confirm(t('offline.photos'), () => removePhotos(city))}
-                />
-              </>
+              info(
+                t('offline.photos'),
+                `${usage.photos.count} · ${formatBytes(usage.photos.bytes, t)}`,
+                () => confirm(t('offline.photos'), () => removePhotos(city)),
+              )
             ) : (
               info(t('offline.photos'), t('offline.none'))
             )}
@@ -101,35 +114,22 @@ export default function OfflineCityScreen() {
           <Section title={t('offline.audio')}>
             {audioLangs.length === 0
               ? info(t('offline.audio'), t('offline.none'))
-              : audioLangs.map((l) => (
-                  <HStack key={l}>
-                    <Text>{langLabel(l)}</Text>
-                    <Spacer />
-                    <Text modifiers={[footnote, secondary]}>
-                      {`${usage.audio[l].count} · ${formatBytes(usage.audio[l].bytes, t)}`}
-                    </Text>
-                    <Button
-                      systemImage="trash"
-                      role="destructive"
-                      onPress={() => confirm(langLabel(l), () => removeAudio(city, l))}
-                    />
-                  </HStack>
-                ))}
+              : audioLangs.map((l) =>
+                  info(
+                    langLabel(l),
+                    `${usage.audio[l].count} · ${formatBytes(usage.audio[l].bytes, t)}`,
+                    () => confirm(langLabel(l), () => removeAudio(city, l)),
+                  ),
+                )}
           </Section>
 
           <Section>
             {usage.quizzes.bytes > 0 ? (
-              <>
-                {info(
-                  t('offline.quizzes'),
-                  `${t('offline.quizCount', { count: usage.quizzes.count })} · ${formatBytes(usage.quizzes.bytes, t)}`,
-                )}
-                <Button
-                  role="destructive"
-                  label={`${t('offline.delete')}: ${t('offline.quizzes')}`}
-                  onPress={() => confirm(t('offline.quizzes'), () => removeQuizzes(city))}
-                />
-              </>
+              info(
+                t('offline.quizzes'),
+                `${t('offline.quizCount', { count: usage.quizzes.count })} · ${formatBytes(usage.quizzes.bytes, t)}`,
+                () => confirm(t('offline.quizzes'), () => removeQuizzes(city)),
+              )
             ) : (
               info(t('offline.quizzes'), t('offline.none'))
             )}

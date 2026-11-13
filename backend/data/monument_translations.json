@@ -4294,5 +4294,77 @@
     "lang": "ru",
     "field_key": "admission",
     "field_value": "По билетам"
+  },
+  {
+    "monument_id": "sirius_11",
+    "lang": "ru",
+    "field_key": "name",
+    "field_value": "Стена чемпионов Игр"
+  },
+  {
+    "monument_id": "sirius_11",
+    "lang": "ru",
+    "field_key": "short_description",
+    "field_value": "Стена чемпионов Игр — мемориал в Олимпийском парке, рядом с Медальной площадью. Она открыта 7 февраля 2015 года, в годовщину старта Игр в Сочи. Композиция состоит из двух симметричных «пирамид», форма которых напоминает заснеженные вершины гор вокруг парка. На ромбовидных табличках указаны имена призёров зимних Олимпийских и Паралимпийских игр 2014 года, вид спорта и достоинство медали."
+  },
+  {
+    "monument_id": "sirius_11",
+    "lang": "ru",
+    "field_key": "address",
+    "field_value": "Олимпийский парк, Сириус"
+  },
+  {
+    "monument_id": "sirius_11",
+    "lang": "ru",
+    "field_key": "opening_hours",
+    "field_value": "Круглосуточно"
+  },
+  {
+    "monument_id": "sirius_11",
+    "lang": "ru",
+    "field_key": "admission",
+    "field_value": "Бесплатно"
+  },
+  {
+    "monument_id": "sirius_11",
+    "lang": "ru",
+    "field_key": "opening_schedule",
+    "field_value": "{\"always\":true}"
+  },
+  {
+    "monument_id": "sirius_11",
+    "lang": "en",
+    "field_key": "name",
+    "field_value": "Wall of Champions of the Games"
+  },
+  {
+    "monument_id": "sirius_11",
+    "lang": "en",
+    "field_key": "short_description",
+    "field_value": "The Wall of Champions of the Games is a memorial in the Olympic Park, next to the Medals Plaza. It was opened on 7 February 2015, a year after the Sochi Games began. The composition consists of two symmetrical “pyramids” whose shape recalls the snow-capped peaks around the park. Diamond-shaped plates carry the names of the medallists of the 2014 Winter Olympic and Paralympic Games, with the sport and the grade of the medal."
+  },
+  {
+    "monument_id": "sirius_11",
+    "lang": "en",
+    "field_key": "address",
+    "field_value": "Olympic Park, Sirius"
+  },
+  {
+    "monument_id": "sirius_11",
+    "lang": "en",
+    "field_key": "opening_hours",
+    "field_value": "24/7"
+  },
+  {
+    "monument_id": "sirius_11",
+    "lang": "en",
+    "field_key": "admission",
+    "field_value": "Free"
+  },
+  {
+    "monument_id": "sirius_11",
+    "lang": "en",
+    "field_key": "opening_schedule",
+    "field_value": "{\"always\":true}"
   }
 ]
