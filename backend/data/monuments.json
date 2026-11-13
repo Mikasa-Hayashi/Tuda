@@ -1,6 +1,6 @@
 [
   {"id": "volgograd_01", "city_id": "volgograd", "lat": 48.7422, "lon": 44.5358, "image_url": "/static/monuments/volgograd_01_v3.jpg", "sort_order": 1},
-  {"id": "volgograd_02", "city_id": "volgograd", "lat": 48.7424, "lon": 44.5369, "image_url": "/static/monuments/volgograd_02.jpg", "sort_order": 2},
+  {"id": "volgograd_02", "city_id": "volgograd", "lat": 48.7424, "lon": 44.5369, "image_url": "/static/monuments/volgograd_02_v2.jpg", "sort_order": 2},
   {"id": "volgograd_03", "city_id": "volgograd", "lat": 48.7418, "lon": 44.5360, "image_url": "/static/monuments/volgograd_03.jpg", "sort_order": 3},
   {"id": "volgograd_04", "city_id": "volgograd", "lat": 48.7418, "lon": 44.5360, "image_url": "/static/monuments/volgograd_04_v2.jpg", "sort_order": 4},
   {"id": "volgograd_05", "city_id": "volgograd", "lat": 48.7155, "lon": 44.5330, "image_url": "/static/monuments/volgograd_05.jpg", "sort_order": 5},
