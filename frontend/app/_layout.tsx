@@ -178,6 +178,15 @@ function RootStack() {
         />
         <Stack.Screen name="offline-city" options={detailScreenOptions} />
         <Stack.Screen
+          name="overview-filters"
+          options={{
+            presentation: 'formSheet',
+            headerShown: false,
+            sheetAllowedDetents: [0.6, 1],
+            sheetGrabberVisible: true,
+          }}
+        />
+        <Stack.Screen
           name="download-city"
           options={{
             presentation: 'formSheet',

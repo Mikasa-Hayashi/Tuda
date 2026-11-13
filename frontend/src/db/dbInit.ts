@@ -1,6 +1,5 @@
 import { DB_SCHEMA_VERSION, db, ensureMetaTable, getSchemaVersion, initDatabase, isSeeded, resetDomainTables, setSchemaVersion } from './database';
 import { applyBundledSeed } from './bundledSeed';
-import { syncMonumentFilterMetadata } from './monumentRepository';
 import { seedCitiesOnly } from './seed';
 
 export function setupDatabase(): void {
@@ -20,5 +19,4 @@ export function setupDatabase(): void {
   }
 
   applyBundledSeed();
-  syncMonumentFilterMetadata();
 }

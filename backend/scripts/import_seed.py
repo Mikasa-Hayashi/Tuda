@@ -19,7 +19,7 @@ import asyncio
 import json
 from pathlib import Path
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import AsyncSessionLocal
@@ -64,6 +64,17 @@ async def import_monuments(session: AsyncSession, only_new: bool = False) -> set
     records = load_json("monuments.json")
     if only_new:
         existing = set((await session.execute(select(Monument.id))).scalars())
+        # already imported monuments: refresh tags/popularity from the seed
+        for item in records:
+            if item["id"] in existing:
+                await session.execute(
+                    update(Monument)
+                    .where(Monument.id == item["id"])
+                    .values(
+                        tags=item.get("tags", []),
+                        popularity=item.get("popularity", 0),
+                    )
+                )
         records = [r for r in records if r["id"] not in existing]
     for item in records:
         session.add(
@@ -74,6 +85,8 @@ async def import_monuments(session: AsyncSession, only_new: bool = False) -> set
                 lon=item["lon"],
                 image_url=item["image_url"],
                 sort_order=item.get("sort_order", 0),
+                tags=item.get("tags", []),
+                popularity=item.get("popularity", 0),
             )
         )
     await session.commit()

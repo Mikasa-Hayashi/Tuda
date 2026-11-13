@@ -5,7 +5,6 @@
  */
 
 import { glueHyphens } from '@/src/utils/glueHyphens';
-import { monumentFilterMeta } from '../data/monumentFilterMeta';
 import type {
   ApiMonument,
   ApiMonumentFieldConfig,
@@ -13,18 +12,6 @@ import type {
 } from '../services/monumentsApi';
 import { db } from './database';
 import { mediaUrl } from '../services/mediaUrl';
-
-/** Writes tags_json + popularity from monumentFilterMeta (idempotent; run each launch). */
-export function syncMonumentFilterMetadata(): void {
-  for (const [slug, meta] of Object.entries(monumentFilterMeta)) {
-    const tagsJson = JSON.stringify(meta.tags);
-    db.runSync(`UPDATE monuments SET tags_json = ?, popularity = ? WHERE slug = ?`, [
-      tagsJson,
-      meta.popularity,
-      slug,
-    ]);
-  }
-}
 
 export function getMonumentCountsByCity(): Record<string, number> {
   const rows = db.getAllSync<{ city_slug: string; cnt: number }>(
@@ -57,6 +44,7 @@ export type Monument = {
   description: string;
   /** Raw JSON of the `opening_schedule` translation (see utils/openingHours). */
   openingSchedule: string | null;
+  tags: string[];
   details: FieldConfigRow[];
   visitors: FieldConfigRow[];
 };
@@ -135,8 +123,8 @@ export function getAllMonumentPreviews(lang: string, cityId?: string | null): Mo
 
 /** Один памятник со всеми полями */
 export function getMonumentById(id: string, lang: string): Monument | null {
-  const base = db.getFirstSync<{ id: number; slug: string; lat: number; lon: number; image_url: string }>(
-    `SELECT id, slug, lat, lon, image_url FROM monuments WHERE slug = ?`,
+  const base = db.getFirstSync<{ id: number; slug: string; lat: number; lon: number; image_url: string; tags_json: string | null }>(
+    `SELECT id, slug, lat, lon, image_url, tags_json FROM monuments WHERE slug = ?`,
     [id]
   );
   if (!base) return null;
@@ -180,6 +168,7 @@ export function getMonumentById(id: string, lang: string): Monument | null {
     location: translations.get('address') ?? '',
     description: translations.get('short_description') ?? '',
     openingSchedule: translations.get('opening_schedule') ?? null,
+    tags: parseTagsJson(base.tags_json),
     details,
     visitors,
   };
@@ -385,15 +374,28 @@ export function upsertMonumentsFromApi(citySlug: string, monuments: ApiMonument[
   db.withTransactionSync(() => {
     for (const monument of monuments) {
       db.runSync(
-        `INSERT INTO monuments (city_id, slug, lat, lon, image_url, sort_order)
-         VALUES (?, ?, ?, ?, ?, ?)
+        `INSERT INTO monuments (city_id, slug, lat, lon, image_url, sort_order, tags_json, popularity)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
          ON CONFLICT(city_id, slug) DO UPDATE SET
            lat = excluded.lat,
            lon = excluded.lon,
            image_url = excluded.image_url,
            sort_order = excluded.sort_order,
+           tags_json = CASE WHEN ? THEN excluded.tags_json ELSE tags_json END,
+           popularity = CASE WHEN ? THEN excluded.popularity ELSE popularity END,
            updated_at = CURRENT_TIMESTAMP`,
-        [cityDbId, monument.id, monument.lat, monument.lon, monument.image_url, monument.sort_order],
+        [
+          cityDbId,
+          monument.id,
+          monument.lat,
+          monument.lon,
+          monument.image_url,
+          monument.sort_order,
+          JSON.stringify(monument.tags ?? []),
+          monument.popularity ?? 0,
+          monument.tags ? 1 : 0,
+          monument.popularity !== undefined ? 1 : 0,
+        ],
       );
     }
   });

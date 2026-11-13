@@ -1,5 +1,6 @@
 /**
- * Tags and popularity for monument list filters (source of truth for DB sync).
+ * Tags of monuments (filters, category badges). The tags and popularity of every object come from
+ * the backend (`monuments.tags`, `monuments.popularity`) and are stored in the local DB.
  */
 
 export const MONUMENT_TAG_IDS = [
@@ -10,21 +11,29 @@ export const MONUMENT_TAG_IDS = [
   'architecture',
   'parks',
   'history',
+  'religion',
+  'sport',
+  'culture',
 ] as const;
 
 export type MonumentTagId = (typeof MONUMENT_TAG_IDS)[number];
 
-export type MonumentFilterEntry = {
-  tags: MonumentTagId[];
-  popularity: number;
+/** SF Symbol and colour of a tag badge. */
+export const TAG_STYLE: Record<MonumentTagId, { icon: string; color: string }> = {
+  top: { icon: 'star.fill', color: '#FF9500' },
+  museums: { icon: 'building.columns.fill', color: '#AF52DE' },
+  memorials: { icon: 'flame.fill', color: '#FF3B30' },
+  nature: { icon: 'leaf.fill', color: '#34C759' },
+  architecture: { icon: 'building.2.fill', color: '#007AFF' },
+  parks: { icon: 'tree.fill', color: '#30B0C7' },
+  history: { icon: 'clock.fill', color: '#A2845E' },
+  religion: { icon: 'moon.stars.fill', color: '#5856D6' },
+  sport: { icon: 'figure.run', color: '#FF2D55' },
+  culture: { icon: 'theatermasks.fill', color: '#FF6482' },
 };
 
-/** Optional tags/popularity by monument slug (backend-synced ids). */
-export const monumentFilterMeta: Record<string, MonumentFilterEntry> = {
-  'motherland-calls': { tags: ['top', 'memorials', 'architecture', 'history'], popularity: 100 },
-  'lysaya-gora-memorial': { tags: ['memorials', 'nature', 'history'], popularity: 72 },
-  'military-train': { tags: ['memorials', 'history', 'museums'], popularity: 68 },
-  'first-tram-monument': { tags: ['history', 'museums'], popularity: 45 },
-  'volgograd-amphitheatre': { tags: ['architecture', 'nature', 'top'], popularity: 78 },
-  'russia-my-history-park': { tags: ['museums', 'parks', 'top'], popularity: 85 },
-};
+/** The main category of an object: its first tag other than "top". */
+export function mainTag(tags: string[]): MonumentTagId | null {
+  const tag = tags.find((x) => x !== 'top' && x in TAG_STYLE);
+  return (tag as MonumentTagId | undefined) ?? null;
+}

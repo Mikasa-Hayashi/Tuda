@@ -30,7 +30,7 @@ import {
 } from './routeRepository';
 
 /** Bump when the bundled seed changes so existing installs pick the new texts up. */
-const SEED_VERSION = '6';
+const SEED_VERSION = '7';
 const META_KEY = 'bundled_seed_version';
 
 export function applyBundledSeed(force = false): void {

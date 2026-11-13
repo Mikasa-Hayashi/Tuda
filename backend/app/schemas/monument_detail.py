@@ -21,6 +21,8 @@ class MonumentDetailResponse(BaseModel):
     lon: float
     image_url: str
     sort_order: int
+    tags: list[str] = []
+    popularity: int = 0
 
     translations: list[MonumentTranslationResponse]
     field_configs: list[MonumentFieldConfigResponse] = []

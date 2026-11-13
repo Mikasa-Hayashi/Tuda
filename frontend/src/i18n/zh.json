@@ -154,7 +154,10 @@
       "nature": "自然与景观",
       "architecture": "建筑",
       "parks": "公园",
-      "history": "历史"
+      "history": "历史",
+      "religion": "宗教",
+      "sport": "体育",
+      "culture": "文化"
     }
   },
 

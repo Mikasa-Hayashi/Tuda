@@ -7,6 +7,8 @@ export type ApiMonument = {
   lon: number;
   image_url: string;
   sort_order: number;
+  tags?: string[];
+  popularity?: number;
   translations?: ApiMonumentTranslation[];
 };
 

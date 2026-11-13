@@ -1,6 +1,7 @@
 import CoverImage from '@/src/components/CoverImage';
 import { SymbolIcon } from '@/src/components/ListGroup';
-import { MONUMENT_TAG_IDS } from '@/src/data/monumentFilterMeta';
+import { TAG_STYLE, mainTag } from '@/src/data/monumentFilterMeta';
+import { overviewFilters, useOverviewTags } from '@/src/storage/overviewFilters';
 import { CITIES } from '@/src/data/cities';
 import { onMonumentCacheCleared } from '@/src/db/monumentCacheEvents';
 import { seedTestMonumentsIfEmpty } from '@/src/db/devSeed';
@@ -86,7 +87,7 @@ export default function OverviewTabScreen() {
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const [selectedCityName, setSelectedCityName] = useState<string | null>(null);
   const [sortMode, setSortMode] = useState<SortMode>('default');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const selectedTags = useOverviewTags();
   const [allMonuments, setAllMonuments] = useState<MonumentPreview[]>([]);
   const [isBootstrapping, setIsBootstrapping] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -303,10 +304,6 @@ export default function OverviewTabScreen() {
     void loadNextPage(selectedCityId).catch(() => {});
   }, [isOffline, loadNextPage, searchQuery, selectedCityId]);
 
-  const toggleTag = useCallback((id: string) => {
-    setSelectedTags((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
-  }, []);
-
   const renderItem = useCallback(
     ({ item }: { item: MonumentPreview }) => (
       <Link href={{ pathname: '/info', params: { id: item.id } }} asChild>
@@ -328,6 +325,19 @@ export default function OverviewTabScreen() {
             <Text style={[styles.cardTitle, { color: colors.text }]} numberOfLines={2}>
               {item.name}
             </Text>
+            {mainTag(item.tags) && (
+              <View
+                style={[styles.cardTag, { backgroundColor: TAG_STYLE[mainTag(item.tags)!].color }]}
+              >
+                <SymbolIcon
+                  sf={TAG_STYLE[mainTag(item.tags)!].icon as never}
+                  fallback="pricetag"
+                  size={11}
+                  color="#FFFFFF"
+                />
+                <Text style={styles.cardTagText}>{t(`overview.tags.${mainTag(item.tags)}`)}</Text>
+              </View>
+            )}
           </Pressable>
         </Link.Trigger>
         <Link.Menu>
@@ -404,26 +414,18 @@ export default function OverviewTabScreen() {
               </Stack.Toolbar.MenuAction>
             ))}
           </Stack.Toolbar.Menu>
-          <Stack.Toolbar.Menu title={t('overview.filterTitle')} icon="line.3.horizontal.decrease">
-            {MONUMENT_TAG_IDS.map((tagId) => (
-              <Stack.Toolbar.MenuAction
-                key={tagId}
-                isOn={selectedTags.includes(tagId)}
-                onPress={() => toggleTag(tagId)}
-              >
-                {t(`overview.tags.${tagId}`)}
-              </Stack.Toolbar.MenuAction>
-            ))}
-            {filtersActive && (
-              <Stack.Toolbar.MenuAction
-                icon="xmark.circle"
-                destructive
-                onPress={() => setSelectedTags([])}
-              >
-                {t('overview.filterReset')}
-              </Stack.Toolbar.MenuAction>
-            )}
-          </Stack.Toolbar.Menu>
+          <Stack.Toolbar.MenuAction
+            icon="line.3.horizontal.decrease"
+            isOn={filtersActive}
+            onPress={() => router.push('/overview-filters')}
+          >
+            {t('overview.filterTitle')}
+          </Stack.Toolbar.MenuAction>
+          {filtersActive && (
+            <Stack.Toolbar.MenuAction icon="xmark.circle" destructive onPress={overviewFilters.clear}>
+              {t('overview.filterReset')}
+            </Stack.Toolbar.MenuAction>
+          )}
         </Stack.Toolbar.Menu>
       </Stack.Toolbar>
 
@@ -471,6 +473,17 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.7 },
   cardImage: { aspectRatio: 4 / 5, borderRadius: 14 },
   cardTitle: { fontSize: 15, fontWeight: '600', marginTop: 8 },
+  cardTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 4,
+    marginTop: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
+  },
+  cardTagText: { fontSize: 11, fontWeight: '700', color: '#FFFFFF' },
   offlineBanner: {
     flexDirection: 'row',
     alignItems: 'center',

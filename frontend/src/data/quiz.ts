@@ -1,8 +1,7 @@
 import type { TFunction } from 'i18next';
 
-import { monumentFilterMeta } from './monumentFilterMeta';
 import { curatedQuestions } from './quizCurated';
-import { getMonumentById } from '../db/monumentRepository';
+import { getAllMonumentPreviews, getMonumentById } from '../db/monumentRepository';
 
 export type QuizQuestion = {
   question: string;
@@ -75,7 +74,7 @@ function buildOptions(correctValue: string, distractorPool: string[], seed: stri
 function getAllLocalizedFacts(lang: string): Record<string, QuizFactRow[]> {
   const result: Record<string, QuizFactRow[]> = {};
 
-  for (const monumentId of Object.keys(monumentFilterMeta)) {
+  for (const { id: monumentId } of getAllMonumentPreviews(lang, null)) {
     const monument = getMonumentById(monumentId, lang);
     if (!monument) continue;
 

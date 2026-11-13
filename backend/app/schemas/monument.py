@@ -10,6 +10,8 @@ class MonumentResponse(BaseModel):
     lon: float
     image_url: str
     sort_order: int
+    tags: list[str] = []
+    popularity: int = 0
 
     model_config = {
         "from_attributes": True,

@@ -5,7 +5,14 @@
     "lat": 48.7422,
     "lon": 44.5358,
     "image_url": "/static/monuments/volgograd_01_v3.jpg",
-    "sort_order": 1
+    "sort_order": 1,
+    "tags": [
+      "top",
+      "memorials",
+      "history",
+      "parks"
+    ],
+    "popularity": 100
   },
   {
     "id": "volgograd_02",
@@ -13,7 +20,14 @@
     "lat": 48.7424,
     "lon": 44.5369,
     "image_url": "/static/monuments/volgograd_02_v2.jpg",
-    "sort_order": 2
+    "sort_order": 2,
+    "tags": [
+      "top",
+      "memorials",
+      "architecture",
+      "history"
+    ],
+    "popularity": 98
   },
   {
     "id": "volgograd_03",
@@ -21,7 +35,13 @@
     "lat": 48.7418,
     "lon": 44.536,
     "image_url": "/static/monuments/volgograd_03.jpg",
-    "sort_order": 3
+    "sort_order": 3,
+    "tags": [
+      "memorials",
+      "history",
+      "architecture"
+    ],
+    "popularity": 80
   },
   {
     "id": "volgograd_04",
@@ -29,7 +49,12 @@
     "lat": 48.7418,
     "lon": 44.536,
     "image_url": "/static/monuments/volgograd_04_v2.jpg",
-    "sort_order": 4
+    "sort_order": 4,
+    "tags": [
+      "memorials",
+      "history"
+    ],
+    "popularity": 76
   },
   {
     "id": "volgograd_05",
@@ -37,7 +62,13 @@
     "lat": 48.7155,
     "lon": 44.533,
     "image_url": "/static/monuments/volgograd_05.jpg",
-    "sort_order": 5
+    "sort_order": 5,
+    "tags": [
+      "top",
+      "museums",
+      "history"
+    ],
+    "popularity": 92
   },
   {
     "id": "volgograd_06",
@@ -45,7 +76,13 @@
     "lat": 48.7157,
     "lon": 44.5328,
     "image_url": "/static/monuments/volgograd_06_v2.jpg",
-    "sort_order": 6
+    "sort_order": 6,
+    "tags": [
+      "history",
+      "memorials",
+      "museums"
+    ],
+    "popularity": 70
   },
   {
     "id": "volgograd_07",
@@ -53,7 +90,12 @@
     "lat": 48.716,
     "lon": 44.5315,
     "image_url": "/static/monuments/volgograd_07.jpg",
-    "sort_order": 7
+    "sort_order": 7,
+    "tags": [
+      "history",
+      "memorials"
+    ],
+    "popularity": 74
   },
   {
     "id": "volgograd_09",
@@ -61,7 +103,13 @@
     "lat": 48.6405,
     "lon": 44.4482,
     "image_url": "/static/monuments/volgograd_09_v2.jpg",
-    "sort_order": 9
+    "sort_order": 9,
+    "tags": [
+      "memorials",
+      "history",
+      "nature"
+    ],
+    "popularity": 66
   },
   {
     "id": "volgograd_10",
@@ -69,7 +117,12 @@
     "lat": 48.8242,
     "lon": 44.1648,
     "image_url": "/static/monuments/volgograd_10_v2.jpg",
-    "sort_order": 10
+    "sort_order": 10,
+    "tags": [
+      "memorials",
+      "history"
+    ],
+    "popularity": 55
   },
   {
     "id": "volgograd_11",
@@ -77,7 +130,12 @@
     "lat": 48.8242,
     "lon": 44.166,
     "image_url": "/static/monuments/volgograd_11.jpg",
-    "sort_order": 11
+    "sort_order": 11,
+    "tags": [
+      "memorials",
+      "history"
+    ],
+    "popularity": 50
   },
   {
     "id": "volgograd_12",
@@ -85,7 +143,13 @@
     "lat": 48.8142,
     "lon": 44.4463,
     "image_url": "/static/monuments/volgograd_12_v2.jpg",
-    "sort_order": 12
+    "sort_order": 12,
+    "tags": [
+      "memorials",
+      "history",
+      "nature"
+    ],
+    "popularity": 52
   },
   {
     "id": "volgograd_13",
@@ -93,7 +157,12 @@
     "lat": 48.7147,
     "lon": 44.5356,
     "image_url": "/static/monuments/volgograd_13_v2.jpg",
-    "sort_order": 13
+    "sort_order": 13,
+    "tags": [
+      "parks",
+      "architecture"
+    ],
+    "popularity": 72
   },
   {
     "id": "volgograd_14",
@@ -101,7 +170,12 @@
     "lat": 48.7065,
     "lon": 44.5186,
     "image_url": "/static/monuments/volgograd_14_v2.jpg",
-    "sort_order": 14
+    "sort_order": 14,
+    "tags": [
+      "parks",
+      "memorials"
+    ],
+    "popularity": 58
   },
   {
     "id": "volgograd_15",
@@ -109,7 +183,12 @@
     "lat": 48.7069,
     "lon": 44.5177,
     "image_url": "/static/monuments/volgograd_15.jpg",
-    "sort_order": 15
+    "sort_order": 15,
+    "tags": [
+      "history",
+      "architecture"
+    ],
+    "popularity": 60
   },
   {
     "id": "volgograd_16",
@@ -117,7 +196,12 @@
     "lat": 48.5248,
     "lon": 44.5694,
     "image_url": "/static/monuments/volgograd_16_v2.jpg",
-    "sort_order": 16
+    "sort_order": 16,
+    "tags": [
+      "architecture",
+      "history"
+    ],
+    "popularity": 56
   },
   {
     "id": "volgograd_17",
@@ -125,7 +209,12 @@
     "lat": 48.706,
     "lon": 44.5193,
     "image_url": "/static/monuments/volgograd_17_v2.jpg",
-    "sort_order": 17
+    "sort_order": 17,
+    "tags": [
+      "history",
+      "architecture"
+    ],
+    "popularity": 44
   },
   {
     "id": "volgograd_18",
@@ -133,7 +222,12 @@
     "lat": 48.7094,
     "lon": 44.5152,
     "image_url": "/static/monuments/volgograd_18_v2.jpg",
-    "sort_order": 18
+    "sort_order": 18,
+    "tags": [
+      "history",
+      "architecture"
+    ],
+    "popularity": 40
   },
   {
     "id": "volgograd_20",
@@ -141,7 +235,12 @@
     "lat": 48.7618,
     "lon": 44.4957,
     "image_url": "/static/monuments/volgograd_20.jpg",
-    "sort_order": 20
+    "sort_order": 20,
+    "tags": [
+      "memorials",
+      "history"
+    ],
+    "popularity": 42
   },
   {
     "id": "maykop_01",
@@ -149,7 +248,13 @@
     "lat": 44.607435,
     "lon": 40.097667,
     "image_url": "/static/monuments/maykop_01.jpg",
-    "sort_order": 1
+    "sort_order": 1,
+    "tags": [
+      "religion",
+      "architecture",
+      "top"
+    ],
+    "popularity": 90
   },
   {
     "id": "maykop_02",
@@ -157,7 +262,12 @@
     "lat": 44.600468,
     "lon": 40.104602,
     "image_url": "/static/monuments/maykop_02.jpg",
-    "sort_order": 2
+    "sort_order": 2,
+    "tags": [
+      "culture",
+      "architecture"
+    ],
+    "popularity": 62
   },
   {
     "id": "maykop_03",
@@ -165,7 +275,13 @@
     "lat": 44.60982,
     "lon": 40.13125,
     "image_url": "/static/monuments/maykop_03.jpg",
-    "sort_order": 3
+    "sort_order": 3,
+    "tags": [
+      "history",
+      "museums",
+      "top"
+    ],
+    "popularity": 78
   },
   {
     "id": "maykop_04",
@@ -173,7 +289,12 @@
     "lat": 44.6068,
     "lon": 40.1057,
     "image_url": "/static/monuments/maykop_04.jpg",
-    "sort_order": 4
+    "sort_order": 4,
+    "tags": [
+      "history",
+      "architecture"
+    ],
+    "popularity": 40
   },
   {
     "id": "maykop_05",
@@ -181,7 +302,12 @@
     "lat": 44.6049,
     "lon": 40.1099,
     "image_url": "/static/monuments/maykop_05.jpg",
-    "sort_order": 5
+    "sort_order": 5,
+    "tags": [
+      "architecture",
+      "culture"
+    ],
+    "popularity": 36
   },
   {
     "id": "astrakhan_01",
@@ -189,7 +315,13 @@
     "lat": 46.34944,
     "lon": 48.03028,
     "image_url": "/static/monuments/astrakhan_01.jpg",
-    "sort_order": 1
+    "sort_order": 1,
+    "tags": [
+      "top",
+      "architecture",
+      "history"
+    ],
+    "popularity": 100
   },
   {
     "id": "astrakhan_02",
@@ -197,7 +329,13 @@
     "lat": 46.349361,
     "lon": 48.0332861,
     "image_url": "/static/monuments/astrakhan_02.jpg",
-    "sort_order": 2
+    "sort_order": 2,
+    "tags": [
+      "religion",
+      "architecture",
+      "history"
+    ],
+    "popularity": 88
   },
   {
     "id": "astrakhan_03",
@@ -205,7 +343,13 @@
     "lat": 46.34277778,
     "lon": 48.03055556,
     "image_url": "/static/monuments/astrakhan_03.jpg",
-    "sort_order": 3
+    "sort_order": 3,
+    "tags": [
+      "religion",
+      "architecture",
+      "top"
+    ],
+    "popularity": 84
   },
   {
     "id": "astrakhan_04",
@@ -213,7 +357,12 @@
     "lat": 46.36015,
     "lon": 48.04413,
     "image_url": "/static/monuments/astrakhan_04.jpg",
-    "sort_order": 4
+    "sort_order": 4,
+    "tags": [
+      "culture",
+      "architecture"
+    ],
+    "popularity": 64
   },
   {
     "id": "astrakhan_05",
@@ -221,7 +370,12 @@
     "lat": 46.34917,
     "lon": 48.05361,
     "image_url": "/static/monuments/astrakhan_05.jpg",
-    "sort_order": 5
+    "sort_order": 5,
+    "tags": [
+      "parks",
+      "architecture"
+    ],
+    "popularity": 74
   },
   {
     "id": "astrakhan_06",
@@ -229,7 +383,12 @@
     "lat": 46.349238,
     "lon": 48.051837,
     "image_url": "/static/monuments/astrakhan_06.jpg",
-    "sort_order": 6
+    "sort_order": 6,
+    "tags": [
+      "museums",
+      "culture"
+    ],
+    "popularity": 66
   },
   {
     "id": "elista_01",
@@ -237,7 +396,13 @@
     "lat": 46.30944,
     "lon": 44.28389,
     "image_url": "/static/monuments/elista_01.jpg",
-    "sort_order": 1
+    "sort_order": 1,
+    "tags": [
+      "top",
+      "religion",
+      "architecture"
+    ],
+    "popularity": 100
   },
   {
     "id": "elista_02",
@@ -245,7 +410,13 @@
     "lat": 46.308011,
     "lon": 44.269625,
     "image_url": "/static/monuments/elista_02.jpg",
-    "sort_order": 2
+    "sort_order": 2,
+    "tags": [
+      "religion",
+      "architecture",
+      "parks"
+    ],
+    "popularity": 80
   },
   {
     "id": "elista_03",
@@ -253,7 +424,13 @@
     "lat": 46.29694,
     "lon": 44.29778,
     "image_url": "/static/monuments/elista_03.jpg",
-    "sort_order": 3
+    "sort_order": 3,
+    "tags": [
+      "parks",
+      "architecture",
+      "culture"
+    ],
+    "popularity": 70
   },
   {
     "id": "elista_04",
@@ -261,7 +438,12 @@
     "lat": 46.307688,
     "lon": 44.2678,
     "image_url": "/static/monuments/elista_04.jpg",
-    "sort_order": 4
+    "sort_order": 4,
+    "tags": [
+      "architecture",
+      "history"
+    ],
+    "popularity": 56
   },
   {
     "id": "elista_05",
@@ -269,7 +451,12 @@
     "lat": 46.3106,
     "lon": 44.2556,
     "image_url": "/static/monuments/elista_05.jpg",
-    "sort_order": 5
+    "sort_order": 5,
+    "tags": [
+      "museums",
+      "history"
+    ],
+    "popularity": 64
   },
   {
     "id": "elista_06",
@@ -277,7 +464,12 @@
     "lat": 46.3049,
     "lon": 44.2632,
     "image_url": "/static/monuments/elista_06.jpg",
-    "sort_order": 6
+    "sort_order": 6,
+    "tags": [
+      "culture",
+      "architecture"
+    ],
+    "popularity": 50
   },
   {
     "id": "krasnodar_01",
@@ -285,7 +477,13 @@
     "lat": 45.0465,
     "lon": 38.97825,
     "image_url": "/static/monuments/krasnodar_01.jpg",
-    "sort_order": 1
+    "sort_order": 1,
+    "tags": [
+      "top",
+      "architecture",
+      "history"
+    ],
+    "popularity": 88
   },
   {
     "id": "krasnodar_02",
@@ -293,7 +491,12 @@
     "lat": 45.01547222,
     "lon": 38.96844444,
     "image_url": "/static/monuments/krasnodar_02.jpg",
-    "sort_order": 2
+    "sort_order": 2,
+    "tags": [
+      "history",
+      "architecture"
+    ],
+    "popularity": 76
   },
   {
     "id": "krasnodar_03",
@@ -301,7 +504,12 @@
     "lat": 45.020573,
     "lon": 38.974556,
     "image_url": "/static/monuments/krasnodar_03.jpg",
-    "sort_order": 3
+    "sort_order": 3,
+    "tags": [
+      "religion",
+      "architecture"
+    ],
+    "popularity": 78
   },
   {
     "id": "krasnodar_04",
@@ -309,7 +517,14 @@
     "lat": 45.0418,
     "lon": 39.035,
     "image_url": "/static/monuments/krasnodar_04.jpg",
-    "sort_order": 4
+    "sort_order": 4,
+    "tags": [
+      "top",
+      "parks",
+      "sport",
+      "architecture"
+    ],
+    "popularity": 96
   },
   {
     "id": "krasnodar_05",
@@ -317,7 +532,12 @@
     "lat": 45.017639,
     "lon": 38.9677667,
     "image_url": "/static/monuments/krasnodar_05.jpg",
-    "sort_order": 5
+    "sort_order": 5,
+    "tags": [
+      "museums",
+      "culture"
+    ],
+    "popularity": 66
   },
   {
     "id": "krasnodar_06",
@@ -325,7 +545,12 @@
     "lat": 45.0252,
     "lon": 38.9721,
     "image_url": "/static/monuments/krasnodar_06.jpg",
-    "sort_order": 6
+    "sort_order": 6,
+    "tags": [
+      "museums",
+      "history"
+    ],
+    "popularity": 52
   },
   {
     "id": "rostov_01",
@@ -333,7 +558,13 @@
     "lat": 47.22833,
     "lon": 39.74472,
     "image_url": "/static/monuments/rostov_01.jpg",
-    "sort_order": 1
+    "sort_order": 1,
+    "tags": [
+      "top",
+      "culture",
+      "architecture"
+    ],
+    "popularity": 90
   },
   {
     "id": "rostov_02",
@@ -341,7 +572,12 @@
     "lat": 47.2172,
     "lon": 39.7115,
     "image_url": "/static/monuments/rostov_02.jpg",
-    "sort_order": 2
+    "sort_order": 2,
+    "tags": [
+      "religion",
+      "architecture"
+    ],
+    "popularity": 80
   },
   {
     "id": "rostov_03",
@@ -349,7 +585,12 @@
     "lat": 47.21739656,
     "lon": 39.72757101,
     "image_url": "/static/monuments/rostov_03.jpg",
-    "sort_order": 3
+    "sort_order": 3,
+    "tags": [
+      "parks",
+      "architecture"
+    ],
+    "popularity": 86
   },
   {
     "id": "rostov_04",
@@ -357,7 +598,12 @@
     "lat": 47.225417,
     "lon": 39.723472,
     "image_url": "/static/monuments/rostov_04.jpg",
-    "sort_order": 4
+    "sort_order": 4,
+    "tags": [
+      "museums",
+      "culture"
+    ],
+    "popularity": 62
   },
   {
     "id": "rostov_05",
@@ -365,7 +611,13 @@
     "lat": 47.2526,
     "lon": 39.671,
     "image_url": "/static/monuments/rostov_05.jpg",
-    "sort_order": 5
+    "sort_order": 5,
+    "tags": [
+      "nature",
+      "parks",
+      "top"
+    ],
+    "popularity": 84
   },
   {
     "id": "rostov_06",
@@ -373,7 +625,12 @@
     "lat": 47.2245,
     "lon": 39.705,
     "image_url": "/static/monuments/rostov_06.jpg",
-    "sort_order": 6
+    "sort_order": 6,
+    "tags": [
+      "culture",
+      "architecture"
+    ],
+    "popularity": 58
   },
   {
     "id": "sevastopol_01",
@@ -381,7 +638,14 @@
     "lat": 44.61167,
     "lon": 33.49333,
     "image_url": "/static/monuments/sevastopol_01.jpg",
-    "sort_order": 1
+    "sort_order": 1,
+    "tags": [
+      "top",
+      "history",
+      "museums",
+      "architecture"
+    ],
+    "popularity": 100
   },
   {
     "id": "sevastopol_02",
@@ -389,7 +653,13 @@
     "lat": 44.61694444,
     "lon": 33.52694444,
     "image_url": "/static/monuments/sevastopol_02.jpg",
-    "sort_order": 2
+    "sort_order": 2,
+    "tags": [
+      "history",
+      "architecture",
+      "top"
+    ],
+    "popularity": 88
   },
   {
     "id": "sevastopol_03",
@@ -397,7 +667,12 @@
     "lat": 44.618388,
     "lon": 33.524263,
     "image_url": "/static/monuments/sevastopol_03.jpg",
-    "sort_order": 3
+    "sort_order": 3,
+    "tags": [
+      "memorials",
+      "history"
+    ],
+    "popularity": 76
   },
   {
     "id": "sevastopol_04",
@@ -405,7 +680,13 @@
     "lat": 44.603638,
     "lon": 33.549263,
     "image_url": "/static/monuments/sevastopol_04.jpg",
-    "sort_order": 4
+    "sort_order": 4,
+    "tags": [
+      "memorials",
+      "history",
+      "top"
+    ],
+    "popularity": 90
   },
   {
     "id": "sevastopol_05",
@@ -413,7 +694,13 @@
     "lat": 44.5955278,
     "lon": 33.5235472,
     "image_url": "/static/monuments/sevastopol_05.jpg",
-    "sort_order": 5
+    "sort_order": 5,
+    "tags": [
+      "museums",
+      "history",
+      "top"
+    ],
+    "popularity": 86
   },
   {
     "id": "sevastopol_06",
@@ -421,7 +708,13 @@
     "lat": 44.610389,
     "lon": 33.523472,
     "image_url": "/static/monuments/sevastopol_06.jpg",
-    "sort_order": 6
+    "sort_order": 6,
+    "tags": [
+      "religion",
+      "history",
+      "architecture"
+    ],
+    "popularity": 70
   },
   {
     "id": "sevastopol_07",
@@ -429,7 +722,12 @@
     "lat": 44.617,
     "lon": 33.52325,
     "image_url": "/static/monuments/sevastopol_07.jpg",
-    "sort_order": 7
+    "sort_order": 7,
+    "tags": [
+      "parks",
+      "architecture"
+    ],
+    "popularity": 72
   },
   {
     "id": "sirius_01",
@@ -437,7 +735,13 @@
     "lat": 43.40222,
     "lon": 39.95556,
     "image_url": "/static/monuments/sirius_01.jpg",
-    "sort_order": 1
+    "sort_order": 1,
+    "tags": [
+      "top",
+      "sport",
+      "architecture"
+    ],
+    "popularity": 100
   },
   {
     "id": "sirius_02",
@@ -445,7 +749,13 @@
     "lat": 43.4025,
     "lon": 39.9548,
     "image_url": "/static/monuments/sirius_02.jpg",
-    "sort_order": 2
+    "sort_order": 2,
+    "tags": [
+      "sport",
+      "architecture",
+      "top"
+    ],
+    "popularity": 90
   },
   {
     "id": "sirius_03",
@@ -453,7 +763,12 @@
     "lat": 43.404754,
     "lon": 39.949871,
     "image_url": "/static/monuments/sirius_03.jpg",
-    "sort_order": 3
+    "sort_order": 3,
+    "tags": [
+      "sport",
+      "architecture"
+    ],
+    "popularity": 70
   },
   {
     "id": "sirius_04",
@@ -461,7 +776,12 @@
     "lat": 43.4074417,
     "lon": 39.9575528,
     "image_url": "/static/monuments/sirius_04.jpg",
-    "sort_order": 4
+    "sort_order": 4,
+    "tags": [
+      "sport",
+      "architecture"
+    ],
+    "popularity": 68
   },
   {
     "id": "sirius_05",
@@ -469,7 +789,12 @@
     "lat": 43.4023417,
     "lon": 39.9519528,
     "image_url": "/static/monuments/sirius_05.jpg",
-    "sort_order": 5
+    "sort_order": 5,
+    "tags": [
+      "sport",
+      "architecture"
+    ],
+    "popularity": 58
   },
   {
     "id": "sirius_06",
@@ -477,7 +802,11 @@
     "lat": 43.40833,
     "lon": 39.96556,
     "image_url": "/static/monuments/sirius_06.jpg",
-    "sort_order": 6
+    "sort_order": 6,
+    "tags": [
+      "sport"
+    ],
+    "popularity": 62
   },
   {
     "id": "sirius_07",
@@ -485,7 +814,12 @@
     "lat": 43.4086167,
     "lon": 39.9528111,
     "image_url": "/static/monuments/sirius_07.jpg",
-    "sort_order": 7
+    "sort_order": 7,
+    "tags": [
+      "sport",
+      "architecture"
+    ],
+    "popularity": 54
   },
   {
     "id": "sirius_08",
@@ -493,7 +827,12 @@
     "lat": 43.400534,
     "lon": 39.964789,
     "image_url": "/static/monuments/sirius_08.jpg",
-    "sort_order": 8
+    "sort_order": 8,
+    "tags": [
+      "culture",
+      "architecture"
+    ],
+    "popularity": 46
   },
   {
     "id": "sirius_09",
@@ -501,7 +840,13 @@
     "lat": 43.4056,
     "lon": 39.9546,
     "image_url": "/static/monuments/sirius_09.jpg",
-    "sort_order": 9
+    "sort_order": 9,
+    "tags": [
+      "parks",
+      "sport",
+      "top"
+    ],
+    "popularity": 92
   },
   {
     "id": "sirius_10",
@@ -509,6 +854,11 @@
     "lat": 43.418687,
     "lon": 39.934466,
     "image_url": "/static/monuments/sirius_10.jpg",
-    "sort_order": 10
+    "sort_order": 10,
+    "tags": [
+      "nature",
+      "parks"
+    ],
+    "popularity": 64
   }
 ]

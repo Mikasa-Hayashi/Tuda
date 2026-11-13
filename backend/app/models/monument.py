@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Float, Integer, String
+from sqlalchemy import JSON, Float, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -23,6 +23,10 @@ class Monument(Base, TimestampMixin, SoftDeleteMixin):
     image_url: Mapped[str] = mapped_column(String)
 
     sort_order: Mapped[int] = mapped_column(Integer)
+
+    # Filter tags; the first tag other than "top" is the main category. Popularity 0-100.
+    tags: Mapped[list[str]] = mapped_column(JSON, default=list, server_default="[]")
+    popularity: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
 
     translations: Mapped[list["MonumentTranslation"]] = relationship(
         back_populates="monument",

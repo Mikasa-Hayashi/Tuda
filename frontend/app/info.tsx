@@ -12,6 +12,7 @@ import { getOpeningStatus, parseSchedule, type OpeningStatus } from '@/src/utils
 import { MAP_PROVIDERS, openPlaceIn, openRouteIn } from '@/src/map/externalMaps';
 import { fetchMonumentDetail } from '@/src/services/monumentsApi';
 import { BADGE, BadgeLabel } from '@/src/components/BadgeLabel';
+import { TAG_STYLE, type MonumentTagId } from '@/src/data/monumentFilterMeta';
 import { useAudioGuide } from '@/src/audio/AudioGuideContext';
 import { getQuizQuestions } from '@/src/data/quiz';
 import { useFavorites } from '@/src/storage/favorites';
@@ -34,6 +35,7 @@ import {
   VStack,
 } from '@expo/ui/swift-ui';
 import {
+  background,
   buttonStyle,
   contentShape,
   controlSize,
@@ -245,6 +247,40 @@ export default function MonumentDetailScreen() {
                 >
                   {monument.name}
                 </Text>
+                {/* Category badges: coloured capsules with a white glyph, like the achievements. */}
+                {monument.tags.some((x) => x in TAG_STYLE) && (
+                  <HStack spacing={6}>
+                    {[...monument.tags]
+                      .filter((x): x is MonumentTagId => x in TAG_STYLE)
+                      .sort((a, b) => Number(a === 'top') - Number(b === 'top'))
+                      .slice(0, 3)
+                      .map((tag) => (
+                        <HStack
+                          key={tag}
+                          spacing={4}
+                          modifiers={[
+                            padding({ horizontal: 9, vertical: 5 }),
+                            background(TAG_STYLE[tag].color, shapes.capsule()),
+                          ]}
+                        >
+                          <SymbolImage
+                            systemName={TAG_STYLE[tag].icon as React.ComponentProps<typeof SymbolImage>['systemName']}
+                            size={12}
+                            color="#FFFFFF"
+                          />
+                          <Text
+                            modifiers={[
+                              font({ size: 12, weight: 'bold' }),
+                              foregroundStyle('#FFFFFF'),
+                              lineLimit(1),
+                            ]}
+                          >
+                            {t(`overview.tags.${tag}`)}
+                          </Text>
+                        </HStack>
+                      ))}
+                  </HStack>
+                )}
                 {monument.location ? (
                   <HStack spacing={5}>
                     <SymbolImage
