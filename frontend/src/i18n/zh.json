@@ -398,6 +398,7 @@
     "topic_photo": "摄影",
     "build": "生成路线",
     "rebuild": "重新生成",
+    "thinking": "AI 正在规划路线…",
     "edit": "修改选项",
     "duration": "~{{hours}} 小时 · 步行",
     "remove": "移除",
@@ -407,6 +408,11 @@
   },
 
   "audioGuide": {
+    "download": "下载以离线收听",
+    "downloading": "正在下载…",
+    "downloaded": "已下载",
+    "deleteDownload": "删除下载",
+    "downloadFailed": "下载失败",
     "voice": "配音：AI 讲解员",
     "back": "后退 15 秒",
     "forward": "快进 15 秒",

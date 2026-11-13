@@ -3,12 +3,14 @@
  * App-wide audio-guide player state, so the player keeps going after its sheet is dismissed and
  * a mini player (tab-bar accessory / floating capsule) can control it from anywhere.
  *
- * NOTE: there is no audio source in the data yet, so playback is SIMULATED with a timer
- * (DEMO_DURATION seconds). To play real audio, swap the interval in this file for an
- * `expo-audio` player created from the track's audio URL.
+ * Playback uses `expo-audio`: the mp3 comes from the downloaded local copy when there is one,
+ * otherwise it streams from the server (see audioFiles.ts).
  */
 
+import i18n from '@/src/i18n/i18n';
 import { achievements } from '@/src/storage/achievements';
+import { audioLang, audioSource } from './audioFiles';
+import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
 import React, {
   createContext,
   useCallback,
@@ -37,54 +39,96 @@ type AudioGuideState = {
   stop: () => void;
 };
 
-const DEMO_DURATION = 270; // 4:30, same as the old prototype
-const TICK_MS = 250;
-
 const AudioGuideContext = createContext<AudioGuideState | null>(null);
 
 export function AudioGuideProvider({ children }: { children: React.ReactNode }) {
   const [track, setTrack] = useState<AudioTrack | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [speed, setSpeedState] = useState(1);
   const scrubbing = useRef(false);
+  const playerRef = useRef<AudioPlayer | null>(null);
+  const loadedId = useRef<string | null>(null);
+  const speedRef = useRef(1);
 
-  useEffect(() => {
-    if (!isPlaying) return;
-    const timer = setInterval(() => {
-      if (scrubbing.current) return;
-      setPosition((p) => {
-        const next = p + (TICK_MS / 1000) * speed;
-        if (next >= DEMO_DURATION) {
-          setIsPlaying(false);
-          return DEMO_DURATION;
-        }
-        return next;
-      });
-    }, TICK_MS);
-    return () => clearInterval(timer);
-  }, [isPlaying, speed]);
-
-  const start = useCallback((next: AudioTrack) => {
-    achievements.recordAudio(next.monumentId);
-    setTrack((prev) => {
-      if (prev?.monumentId !== next.monumentId) setPosition(0);
-      return next;
+  const getPlayer = useCallback((): AudioPlayer => {
+    if (playerRef.current) return playerRef.current;
+    const player = createAudioPlayer(null, { updateInterval: 250 });
+    player.addListener('playbackStatusUpdate', (status) => {
+      if (!scrubbing.current) setPosition(status.currentTime);
+      if (status.duration > 0) setDuration(status.duration);
+      setIsPlaying(status.playing);
+      if (status.didJustFinish) setIsPlaying(false);
     });
-    setIsPlaying(true);
+    playerRef.current = player;
+    setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
+    return player;
   }, []);
+
+  useEffect(
+    () => () => {
+      playerRef.current?.remove();
+      playerRef.current = null;
+    },
+    [],
+  );
+
+  const start = useCallback(
+    (next: AudioTrack) => {
+      achievements.recordAudio(next.monumentId);
+      const player = getPlayer();
+      setTrack(next);
+      if (loadedId.current !== next.monumentId) {
+        loadedId.current = next.monumentId;
+        setPosition(0);
+        setDuration(0);
+        player.replace({ uri: audioSource(next.monumentId, audioLang(i18n.language)) });
+        player.setPlaybackRate(speedRef.current);
+      }
+      player.play();
+      setIsPlaying(true);
+    },
+    [getPlayer],
+  );
 
   const toggle = useCallback(() => {
-    setPosition((p) => (p >= DEMO_DURATION ? 0 : p));
-    setIsPlaying((v) => !v);
-  }, []);
+    const player = playerRef.current;
+    if (!player) return;
+    if (player.playing) {
+      player.pause();
+      setIsPlaying(false);
+      return;
+    }
+    if (duration > 0 && player.currentTime >= duration - 0.2) {
+      void player.seekTo(0);
+      setPosition(0);
+    }
+    player.play();
+    setIsPlaying(true);
+  }, [duration]);
 
-  const seek = useCallback((seconds: number) => {
-    setPosition(Math.min(DEMO_DURATION, Math.max(0, seconds)));
-  }, []);
+  const seek = useCallback(
+    (seconds: number) => {
+      const target = Math.min(duration || seconds, Math.max(0, seconds));
+      setPosition(target);
+      void playerRef.current?.seekTo(target);
+    },
+    [duration],
+  );
 
-  const skip = useCallback((delta: number) => {
-    setPosition((p) => Math.min(DEMO_DURATION, Math.max(0, p + delta)));
+  const skip = useCallback(
+    (delta: number) => {
+      const current = playerRef.current?.currentTime ?? 0;
+      seek(current + delta);
+    },
+    [seek],
+  );
+
+  const setSpeed = useCallback((value: number) => {
+    speedRef.current = value;
+    setSpeedState(value);
+    playerRef.current?.setPlaybackRate(value);
   }, []);
 
   const setScrubbing = useCallback((value: boolean) => {
@@ -92,9 +136,12 @@ export function AudioGuideProvider({ children }: { children: React.ReactNode }) 
   }, []);
 
   const stop = useCallback(() => {
+    playerRef.current?.pause();
+    loadedId.current = null;
     setIsPlaying(false);
     setTrack(null);
     setPosition(0);
+    setDuration(0);
   }, []);
 
   const value = useMemo<AudioGuideState>(
@@ -102,17 +149,17 @@ export function AudioGuideProvider({ children }: { children: React.ReactNode }) 
       track,
       isPlaying,
       position,
-      duration: DEMO_DURATION,
+      duration,
       speed,
       start,
       toggle,
       seek,
       skip,
-      setSpeed: setSpeedState,
+      setSpeed,
       setScrubbing,
       stop,
     }),
-    [track, isPlaying, position, speed, start, toggle, seek, skip, setScrubbing, stop],
+    [track, isPlaying, position, duration, speed, start, toggle, seek, skip, setSpeed, setScrubbing, stop],
   );
 
   return <AudioGuideContext.Provider value={value}>{children}</AudioGuideContext.Provider>;

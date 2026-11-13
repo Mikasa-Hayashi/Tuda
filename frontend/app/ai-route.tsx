@@ -1,4 +1,7 @@
 import { getAllMonumentPreviews, type MonumentPreview } from '@/src/db/monumentRepository';
+import { LoadingOverlay } from '@/src/components/LoadingOverlay';
+import { fetchAiRoute } from '@/src/services/monumentsApi';
+import { getSelectedCityId } from '@/src/storage/citySelection';
 import { useCustomRoute } from '@/src/storage/customRoute';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
@@ -78,6 +81,8 @@ export default function AiRouteScreen() {
     custom.set(next ? next.map((m) => m.id) : []);
   };
   const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [summary, setSummary] = useState('');
 
   const toggleTopic = (id: string, on: boolean) =>
     setTopics((prev) =>
@@ -85,10 +90,29 @@ export default function AiRouteScreen() {
     );
 
   // Picks a random set of monuments sized to the available time (event handler, not render).
-  const build = () => {
+  const buildLocal = () => {
     const all = getAllMonumentPreviews(i18n.language, null);
     const shuffled = [...all].sort(() => Math.random() - 0.5);
     setResult(shuffled.slice(0, STOP_COUNT[time]));
+    setSummary('');
+  };
+
+  // Asks the AI (backend → GigaChat) for the route; falls back to a random one offline.
+  const build = async () => {
+    setLoading(true);
+    try {
+      const cityId = await getSelectedCityId();
+      const ai = await fetchAiRoute({ cityId, lang: i18n.language, time, age, topics });
+      const byId = new Map(getAllMonumentPreviews(i18n.language, null).map((m) => [m.id, m]));
+      const stops = ai.monumentIds.flatMap((id) => byId.get(id) ?? []);
+      if (stops.length === 0) throw new Error('empty ai route');
+      setResult(stops);
+      setSummary(ai.summary);
+    } catch {
+      buildLocal();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const removeStop = (id: string) => {
@@ -143,6 +167,9 @@ export default function AiRouteScreen() {
                 <Text modifiers={[font({ textStyle: 'subheadline' }), secondary]}>
                   {t('aiRoute.duration', { hours: HOURS[time] })} · {t(`aiRoute.age_${age}`)}
                 </Text>
+                {summary !== '' && (
+                  <Text modifiers={[font({ textStyle: 'footnote' }), secondary]}>{summary}</Text>
+                )}
               </Section>
 
               <Section title={t('aiRoute.stops')}>
@@ -269,6 +296,7 @@ export default function AiRouteScreen() {
             </Form>
           )}
         </Host>
+        <LoadingOverlay visible={loading} text={t('aiRoute.thinking')} />
       </View>
     </>
   );

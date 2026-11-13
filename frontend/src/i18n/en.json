@@ -400,6 +400,7 @@
     "topic_photo": "Photo",
     "build": "Build route",
     "rebuild": "Build again",
+    "thinking": "AI is planning your route…",
     "edit": "Change options",
     "duration": "~{{hours}} h · on foot",
     "remove": "Remove",
@@ -409,6 +410,11 @@
   },
 
   "audioGuide": {
+    "download": "Download for offline",
+    "downloading": "Downloading…",
+    "downloaded": "Downloaded",
+    "deleteDownload": "Remove download",
+    "downloadFailed": "Download failed",
     "voice": "Voice: AI narrator · EN",
     "back": "Back 15 seconds",
     "forward": "Forward 15 seconds",

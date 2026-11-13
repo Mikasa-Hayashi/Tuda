@@ -132,3 +132,37 @@ export async function searchMonumentsRemote(
   const response = await fetch(url);
   return readJson<ApiSearchItem[]>(response);
 }
+
+export type AiRouteParams = {
+  cityId: string | null;
+  lang: string;
+  time: 'couple' | 'half' | 'full';
+  age: 'kids' | 'adults' | 'family';
+  topics: string[];
+};
+
+export type AiRouteResult = { monumentIds: string[]; summary: string };
+
+/** Asks the backend (GigaChat) to pick and order stops. Throws if AI is unavailable. */
+export async function fetchAiRoute(params: AiRouteParams): Promise<AiRouteResult> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 60000);
+  try {
+    const response = await fetch(`${API_BASE_URL}/ai-route`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        city_id: params.cityId,
+        lang: params.lang,
+        time: params.time,
+        age: params.age,
+        topics: params.topics,
+      }),
+      signal: controller.signal,
+    });
+    const data = await readJson<{ monument_ids: string[]; summary: string }>(response);
+    return { monumentIds: data.monument_ids, summary: data.summary };
+  } finally {
+    clearTimeout(timer);
+  }
+}

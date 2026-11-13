@@ -67,7 +67,8 @@
           "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location to show the distance to monuments"
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true,

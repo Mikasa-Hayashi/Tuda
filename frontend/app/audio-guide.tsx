@@ -1,3 +1,9 @@
+import {
+  audioLang,
+  deleteAudio,
+  downloadAudio,
+  useAudioDownloadState,
+} from '@/src/audio/audioFiles';
 import { formatTime, useAudioGuide, type AudioTrack } from '@/src/audio/AudioGuideContext';
 import { useTransitionDone } from '@/src/hooks/useTransitionDone';
 import { useTheme } from '@/src/theme/ThemeContext';
@@ -7,6 +13,7 @@ import {
   HStack,
   Image as SymbolImage,
   Menu,
+  ProgressView,
   RNHostView,
   Slider,
   Spacer,
@@ -30,7 +37,7 @@ import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Alert, StyleSheet, View, useWindowDimensions } from 'react-native';
 
 const SPEEDS = [0.75, 1, 1.25, 1.5, 2];
 const ART_MAX = 200;
@@ -41,7 +48,7 @@ const ART_MAX = 200;
  */
 export default function AudioGuideScreen() {
   const { colors, isDark } = useTheme();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const { width } = useWindowDimensions();
   const player = useAudioGuide();
@@ -65,6 +72,8 @@ export default function AudioGuideScreen() {
   }, [transitionDone, requested?.monumentId, currentId]);
 
   const track = player.track ?? requested;
+  const lang = audioLang(i18n.language);
+  const downloadState = useAudioDownloadState(track?.monumentId ?? '', lang);
   if (!track) {
     return <View style={[styles.container, { backgroundColor: colors.background }]} />;
   }
@@ -111,7 +120,7 @@ export default function AudioGuideScreen() {
             <Slider
               value={player.position}
               min={0}
-              max={player.duration}
+              max={Math.max(player.duration, 1)}
               onValueChange={player.seek}
               onEditingChanged={player.setScrubbing}
             />
@@ -136,7 +145,7 @@ export default function AudioGuideScreen() {
               </Menu>
               <Spacer />
               <Text modifiers={[font({ textStyle: 'caption' }), monospacedDigit(), secondary]}>
-                -{formatTime(player.duration - player.position)}
+                -{formatTime(Math.max(0, player.duration - player.position))}
               </Text>
             </HStack>
           </VStack>
@@ -165,6 +174,42 @@ export default function AudioGuideScreen() {
               modifiers={[buttonStyle('plain'), labelStyle('iconOnly'), font({ size: 34 })]}
             />
           </HStack>
+
+          <Spacer />
+
+          {/* Download for offline listening; by default the guide streams from the server. */}
+          {downloadState === 'downloading' ? (
+            <HStack spacing={8}>
+              <ProgressView />
+              <Text modifiers={[font({ textStyle: 'subheadline' }), secondary]}>
+                {t('audioGuide.downloading')}
+              </Text>
+            </HStack>
+          ) : downloadState === 'downloaded' ? (
+            <Menu
+              label={t('audioGuide.downloaded')}
+              systemImage="checkmark.circle.fill"
+              modifiers={[buttonStyle('plain'), lineLimit(1)]}
+            >
+              <Button
+                label={t('audioGuide.deleteDownload')}
+                systemImage="trash"
+                role="destructive"
+                onPress={() => deleteAudio(track.monumentId, lang)}
+              />
+            </Menu>
+          ) : (
+            <Button
+              label={t('audioGuide.download')}
+              systemImage="arrow.down.circle"
+              onPress={() => {
+                void downloadAudio(track.monumentId, lang).then((ok) => {
+                  if (!ok) Alert.alert(t('audioGuide.downloadFailed'));
+                });
+              }}
+              modifiers={[buttonStyle('plain'), lineLimit(1)]}
+            />
+          )}
 
           <Spacer />
 
