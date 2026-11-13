@@ -11,15 +11,18 @@ import {
   Host,
   HStack,
   Image as SymbolImage,
+  List,
   RNHostView,
   Section,
   Spacer,
+  SwipeActions,
   Text,
   VStack,
 } from '@expo/ui/swift-ui';
 import {
   buttonStyle,
   contentShape,
+  labelStyle,
   font,
   foregroundStyle,
   preferredColorScheme,
@@ -47,7 +50,10 @@ export default function ScanTabScreen() {
   const entries = useScanHistory();
   const transitionDone = useTransitionDone();
   const scheme = preferredColorScheme(isDark ? 'dark' : 'light');
-  const secondary = foregroundStyle({ type: 'hierarchical', style: 'secondary' });
+  const secondary = foregroundStyle({
+    type: 'hierarchical',
+    style: 'secondary',
+  });
 
   // Local DB reads are synchronous: wait for the tab's first render to settle.
   const rows = useMemo<Row[]>(
@@ -64,7 +70,11 @@ export default function ScanTabScreen() {
   const confirmClear = () =>
     Alert.alert(t('scanResult.historyClear'), t('scanResult.historyClearHint'), [
       { text: t('settings.cancel'), style: 'cancel' },
-      { text: t('scanResult.historyClear'), style: 'destructive', onPress: scanHistory.clear },
+      {
+        text: t('scanResult.historyClear'),
+        style: 'destructive',
+        onPress: scanHistory.clear,
+      },
     ]);
 
   const formatDate = (at: number) =>
@@ -106,51 +116,70 @@ export default function ScanTabScreen() {
           ) : (
             <Form>
               <Section title={t('scanResult.historyTitle')}>
-                {rows.map(({ entry, name, imageUrl }) => {
-                  const source = entry.photoUri ?? imageUrl;
-                  return (
-                    <Button
-                      key={entry.id}
-                      onPress={() =>
-                        router.push({ pathname: '/info', params: { id: entry.monumentId } })
-                      }
-                      modifiers={[buttonStyle('plain')]}
-                    >
-                      <HStack spacing={12} modifiers={[contentShape(shapes.rectangle())]}>
-                        <RNHostView matchContents>
-                          <CoverImage
-                            source={source ? { uri: source } : undefined}
-                            style={{
-                              width: THUMB,
-                              height: THUMB,
-                              borderRadius: 12,
-                              backgroundColor: colors.cardElevated,
-                            }}
-                            contentFit="cover"
-                            cachePolicy="memory-disk"
-                          />
-                        </RNHostView>
-                        <VStack alignment="leading" spacing={2}>
-                          <Text modifiers={[font({ textStyle: 'headline' })]}>{name}</Text>
-                          <HStack spacing={5}>
+                <List.ForEach data={rows} keyExtractor={(r) => r.entry.id} recycling={false}>
+                  {({ item: { entry, name, imageUrl } }) => {
+                    const source = entry.photoUri ?? imageUrl;
+                    return (
+                      <SwipeActions>
+                        <Button
+                          onPress={() =>
+                            router.push({
+                              pathname: '/info',
+                              params: { id: entry.monumentId },
+                            })
+                          }
+                          modifiers={[buttonStyle('plain')]}
+                        >
+                          <HStack spacing={12} modifiers={[contentShape(shapes.rectangle())]}>
+                            <RNHostView matchContents>
+                              <CoverImage
+                                source={source ? { uri: source } : undefined}
+                                style={{
+                                  width: THUMB,
+                                  height: THUMB,
+                                  borderRadius: 12,
+                                  backgroundColor: colors.cardElevated,
+                                }}
+                                contentFit="cover"
+                                cachePolicy="memory-disk"
+                              />
+                            </RNHostView>
+                            <VStack alignment="leading" spacing={2}>
+                              <Text modifiers={[font({ textStyle: 'headline' })]}>{name}</Text>
+                              <HStack spacing={5}>
+                                <SymbolImage
+                                  systemName={
+                                    entry.recognized ? 'checkmark.seal.fill' : 'questionmark.circle'
+                                  }
+                                  size={13}
+                                  color={entry.recognized ? '#34C759' : '#FF9F0A'}
+                                />
+                                <Text modifiers={[font({ textStyle: 'subheadline' }), secondary]}>
+                                  {`${Math.round(entry.confidence * 100)}% · ${formatDate(entry.at)}`}
+                                </Text>
+                              </HStack>
+                            </VStack>
+                            <Spacer />
                             <SymbolImage
-                              systemName={
-                                entry.recognized ? 'checkmark.seal.fill' : 'questionmark.circle'
-                              }
-                              size={13}
-                              color={entry.recognized ? '#34C759' : '#FF9F0A'}
+                              systemName="chevron.right"
+                              size={12}
+                              modifiers={[secondary]}
                             />
-                            <Text modifiers={[font({ textStyle: 'subheadline' }), secondary]}>
-                              {`${Math.round(entry.confidence * 100)}% · ${formatDate(entry.at)}`}
-                            </Text>
                           </HStack>
-                        </VStack>
-                        <Spacer />
-                        <SymbolImage systemName="chevron.right" size={12} modifiers={[secondary]} />
-                      </HStack>
-                    </Button>
-                  );
-                })}
+                        </Button>
+                        <SwipeActions.Actions edge="trailing" allowsFullSwipe>
+                          <Button
+                            label={t('scanResult.historyRemove')}
+                            systemImage="trash"
+                            role="destructive"
+                            onPress={() => scanHistory.remove(entry.id)}
+                          modifiers={[labelStyle('iconOnly')]}
+                          />
+                        </SwipeActions.Actions>
+                      </SwipeActions>
+                    );
+                  }}
+                </List.ForEach>
               </Section>
             </Form>
           )}
