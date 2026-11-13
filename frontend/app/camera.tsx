@@ -1,6 +1,8 @@
 import { achievements } from '@/src/storage/achievements';
 import { scanHistory } from '@/src/storage/scanHistory';
 import { LoadingOverlay } from '@/src/components/LoadingOverlay';
+import { useDeviceRotation } from '@/src/hooks/useDeviceRotation';
+import { normalizeOrientation } from '@/src/services/imageOrientation';
 import { ScannerFrame } from '@/src/components/ScannerFrame';
 import { recognizeImage, type RecognitionCandidate } from '@/src/services/recognitionApi';
 import {
@@ -13,13 +15,16 @@ import {
   VStack,
 } from '@expo/ui/swift-ui';
 import {
+  Animation,
+  accessibilityLabel,
+  animation,
   buttonBorderShape,
   buttonStyle,
   controlSize,
   frame,
-  labelStyle,
   padding,
   preferredColorScheme,
+  rotationEffect,
 } from '@expo/ui/swift-ui/modifiers';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
@@ -41,6 +46,12 @@ export default function CameraScreen() {
   const [facing, setFacing] = useState<'back' | 'front'>('back');
   const cameraRef = useRef<CameraView>(null);
   const dark = preferredColorScheme('dark');
+  // Only the glyphs turn with the phone (the screen stays portrait), like the system Camera.
+  const rotation = useDeviceRotation();
+  const turn = [
+    rotationEffect(rotation),
+    animation(Animation.easeInOut({ duration: 0.3 }), rotation),
+  ];
 
   useEffect(() => {
     if (!permission?.granted && permission?.canAskAgain !== false) requestPermission();
@@ -85,9 +96,10 @@ export default function CameraScreen() {
     );
   };
 
-  const processUri = async (uri: string) => {
+  const processUri = async (rawUri: string) => {
     setLoading(true);
     try {
+      const uri = await normalizeOrientation(rawUri);
       const result = await recognizeImage(uri, i18n.language);
       if (result.recognized && result.id) {
         achievements.recordScan();
@@ -183,16 +195,17 @@ export default function CameraScreen() {
             <Spacer />
             <HStack modifiers={[padding({ horizontal: 28, bottom: 16 })]}>
               <Button
-                label={t('camera.gallery')}
-                systemImage="photo.on.rectangle"
                 onPress={handlePickFromGallery}
                 modifiers={[
                   buttonStyle('glass'),
+                  buttonBorderShape('circle'),
                   controlSize('large'),
-                  labelStyle('iconOnly'),
                   frame({ width: SIDE_BUTTON, height: SIDE_BUTTON }),
+                  accessibilityLabel(t('camera.gallery')),
                 ]}
-              />
+              >
+                <SymbolImage systemName="photo.on.rectangle" size={22} color="#FFFFFF" modifiers={turn} />
+              </Button>
               <Spacer />
               {/* Shutter: white disc inside a glass ring, like the system Camera. */}
               <Button
@@ -211,16 +224,17 @@ export default function CameraScreen() {
               </Button>
               <Spacer />
               <Button
-                label={t('camera.flip')}
-                systemImage="arrow.triangle.2.circlepath.camera"
                 onPress={() => setFacing((f) => (f === 'back' ? 'front' : 'back'))}
                 modifiers={[
                   buttonStyle('glass'),
+                  buttonBorderShape('circle'),
                   controlSize('large'),
-                  labelStyle('iconOnly'),
                   frame({ width: SIDE_BUTTON, height: SIDE_BUTTON }),
+                  accessibilityLabel(t('camera.flip')),
                 ]}
-              />
+              >
+                <SymbolImage systemName="arrow.triangle.2.circlepath.camera" size={22} color="#FFFFFF" modifiers={turn} />
+              </Button>
             </HStack>
           </VStack>
         </Host>
