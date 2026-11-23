@@ -1,5 +1,9 @@
 .venv/
 __pycache__/
-refs/*/
+refs/*/*
+!refs/*/print_card.jpg
+!refs/*/card_in_hand.jpg
+!refs/*/card_on_table.jpg
 !refs/.gitkeep
+refs_off/
 debug/

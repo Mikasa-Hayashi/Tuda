@@ -103,7 +103,7 @@ class Classifier:
         margin: float = 0.15,
         ref_floor: float = 0.80,
         ref_full: float = 0.93,
-        ref_gain: float = 0.15,
+        ref_gain: float = 0.13,
     ) -> None:
         self.backend = backend or SigLIP()
         self.threshold = threshold

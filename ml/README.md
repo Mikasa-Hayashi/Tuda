@@ -15,8 +15,13 @@ Frontend: set `EXPO_PUBLIC_ML_URL=http://<laptop-LAN-IP>:8001` in `frontend/.env
 ## Tuning
 - `data/prompts.json` — visual English prompts per monument. `"enabled": false` removes a class
   (vague classes steal frames from good ones). Keep only recognisable objects for the fair.
-- `refs/<monument_id>/*.jpg` — 3–10 real photos per monument are blended into the class
-  prototype (few-shot, no training). Biggest accuracy gain for the least work.
+- `refs/<monument_id>/*.jpg` — reference images give a class a bonus when image similarity
+  exceeds 0.80, reaching the full bonus of 0.13 at 0.93. Text prototypes remain unchanged; no training.
+  References load at startup. `TUDA_NO_REFS=1` disables them.
+- `data/exhibition_refs.json` records the nine exhibition cards and source filenames.
+  Each has a print image extracted with Word cropping preserved, a photo in hand, and a photo on
+  the table: 27 references total. All supplied photos are references; validation needs new photos.
+  Earlier references are preserved locally in `refs_off/` (excluded from Git).
 - `TUDA_THRESHOLD` (default 0.45) / `TUDA_MARGIN` (0.15) — confidence and gap to 2nd place.
 - `TUDA_MODEL` — e.g. `google/siglip2-so400m-patch14-384` (slower, more accurate).
 - Negative classes in `prompts.json` keep faces / rooms / random objects from matching a monument.

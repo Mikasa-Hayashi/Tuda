@@ -1,0 +1,104 @@
+{
+  "description": "Nine printed exhibition cards. Word srcRect cropping preserved. All 18 supplied photos are references; no independent holdout remains.",
+  "cards": [
+    {
+      "monument_id": "sirius_11",
+      "document_image": 1,
+      "references": [
+        "print_card.jpg",
+        "card_in_hand.jpg",
+        "card_on_table.jpg"
+      ],
+      "hand_source": "photo_2026-11-20_21-56-54.jpg",
+      "table_source": "photo_2026-11-23_18-44-03.jpg"
+    },
+    {
+      "monument_id": "sirius_08",
+      "document_image": 2,
+      "references": [
+        "print_card.jpg",
+        "card_in_hand.jpg",
+        "card_on_table.jpg"
+      ],
+      "hand_source": "photo_2026-11-20_21-56-53.jpg",
+      "table_source": "photo_2026-11-23_18-43-47.jpg"
+    },
+    {
+      "monument_id": "rostov_06",
+      "document_image": 3,
+      "references": [
+        "print_card.jpg",
+        "card_in_hand.jpg",
+        "card_on_table.jpg"
+      ],
+      "hand_source": "photo_2026-11-20_21-55-39.jpg",
+      "table_source": "photo_2026-11-23_18-43-36.jpg"
+    },
+    {
+      "monument_id": "krasnodar_02",
+      "document_image": 4,
+      "references": [
+        "print_card.jpg",
+        "card_in_hand.jpg",
+        "card_on_table.jpg"
+      ],
+      "hand_source": "photo_2026-11-20_21-55-46.jpg",
+      "table_source": "photo_2026-11-23_18-43-43.jpg"
+    },
+    {
+      "monument_id": "krasnodar_03",
+      "document_image": 5,
+      "references": [
+        "print_card.jpg",
+        "card_in_hand.jpg",
+        "card_on_table.jpg"
+      ],
+      "hand_source": "photo_2026-11-20_21-57-03.jpg",
+      "table_source": "photo_2026-11-23_18-44-05.jpg"
+    },
+    {
+      "monument_id": "elista_04",
+      "document_image": 6,
+      "references": [
+        "print_card.jpg",
+        "card_in_hand.jpg",
+        "card_on_table.jpg"
+      ],
+      "hand_source": "photo_2026-11-20_21-56-57.jpg",
+      "table_source": "photo_2026-11-23_18-44-00.jpg"
+    },
+    {
+      "monument_id": "sevastopol_05",
+      "document_image": 7,
+      "references": [
+        "print_card.jpg",
+        "card_in_hand.jpg",
+        "card_on_table.jpg"
+      ],
+      "hand_source": "photo_2026-11-20_21-57-01.jpg",
+      "table_source": "photo_2026-11-23_18-44-08.jpg"
+    },
+    {
+      "monument_id": "volgograd_02",
+      "document_image": 8,
+      "references": [
+        "print_card.jpg",
+        "card_in_hand.jpg",
+        "card_on_table.jpg"
+      ],
+      "hand_source": "photo_2026-11-20_21-56-59.jpg",
+      "table_source": "photo_2026-11-23_18-43-58.jpg"
+    },
+    {
+      "monument_id": "volgograd_05",
+      "document_image": 9,
+      "references": [
+        "print_card.jpg",
+        "card_in_hand.jpg",
+        "card_on_table.jpg"
+      ],
+      "hand_source": "photo_2026-11-20_21-55-22.jpg",
+      "table_source": "photo_2026-11-23_18-44-10.jpg"
+    }
+  ]
+}
