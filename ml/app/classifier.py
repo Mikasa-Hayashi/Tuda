@@ -3,8 +3,10 @@
 Each monument is described by several visual text prompts (data/prompts.json).
 The image embedding is compared to the mean prompt embedding of every class,
 plus "negative" classes (faces, rooms, ...), and a softmax is taken over all
-classes. Optional reference photos in refs/<monument_id>/ are blended into the
-class prototype (few-shot, no training required).
+classes. Optional reference photos in refs/<monument_id>/ give a class a bonus
+only when the frame is a near-duplicate of a reference: image-image cosine is on
+a much higher scale than image-text, so blending refs into the prototype made
+those classes swallow every other object. No training required.
 """
 
 from __future__ import annotations
@@ -99,12 +101,19 @@ class Classifier:
         refs_dir: Path = HERE / "refs",
         threshold: float = 0.45,
         margin: float = 0.15,
-        ref_weight: float = 0.5,
+        ref_floor: float = 0.80,
+        ref_full: float = 0.93,
+        ref_gain: float = 0.15,
     ) -> None:
         self.backend = backend or SigLIP()
         self.threshold = threshold
         self.margin = margin
-        self.ref_weight = ref_weight
+        # Same object (rotated/cropped/darker) scores 0.91-0.99 against its ref, anything
+        # else (other objects, other photos of the same place) stays <= ~0.76.
+        self.ref_floor = ref_floor
+        self.ref_full = ref_full
+        self.ref_gain = ref_gain
+        self.ref_embs: dict[int, np.ndarray] = {}
 
         cfg = json.loads(Path(config_path).read_text(encoding="utf-8"))
         names = _load_names()
@@ -124,7 +133,6 @@ class Classifier:
             self.classes.append({"id": None, "names": {"en": text}, "neg": True})
 
         self.text_protos = np.stack(protos)
-        self.protos = self.text_protos.copy()
         self.n_refs = self._load_refs(Path(refs_dir))
 
     def _load_refs(self, refs_dir: Path) -> int:
@@ -141,16 +149,19 @@ class Classifier:
             if not files:
                 continue
             imgs = [Image.open(p).convert("RGB") for p in files]
-            emb = self.backend.encode_images(imgs).mean(axis=0)
-            mixed = (1 - self.ref_weight) * self.text_protos[idx]
-            mixed = mixed + self.ref_weight * _unit(emb)
-            self.protos[idx] = _unit(mixed)
+            self.ref_embs[idx] = self.backend.encode_images(imgs)
             total += len(files)
         return total
 
     def scores(self, image: Image.Image) -> np.ndarray:
         emb = self.backend.encode_images([image.convert("RGB")])[0]
-        logits = self.backend.logit_scale * (self.protos @ emb)
+        scale = self.backend.logit_scale
+        logits = scale * (self.text_protos @ emb)
+        span = max(self.ref_full - self.ref_floor, 1e-6)
+        for idx, refs in self.ref_embs.items():
+            sim = float((refs @ emb).max())
+            ramp = min(max((sim - self.ref_floor) / span, 0.0), 1.0)
+            logits[idx] += scale * self.ref_gain * ramp
         logits -= logits.max()
         p = np.exp(logits)
         return p / p.sum()
@@ -193,7 +204,10 @@ class Classifier:
 
 
 def load_classifier() -> Classifier:
+    # TUDA_NO_REFS=1 -> pure zero-shot, reference photos in refs/ are ignored.
+    no_refs = os.environ.get("TUDA_NO_REFS", "") not in ("", "0")
     return Classifier(
+        refs_dir=HERE / "refs_disabled" if no_refs else HERE / "refs",
         threshold=float(os.environ.get("TUDA_THRESHOLD", 0.45)),
         margin=float(os.environ.get("TUDA_MARGIN", 0.15)),
     )

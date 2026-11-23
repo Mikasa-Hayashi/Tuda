@@ -691,16 +691,17 @@
   {
     "id": "sevastopol_05",
     "city_id": "sevastopol",
-    "lat": 44.5955278,
-    "lon": 33.5235472,
+    "lat": 44.6109,
+    "lon": 33.4926,
     "image_url": "/static/monuments/sevastopol_05.jpg",
     "sort_order": 5,
     "tags": [
-      "museums",
+      "religion",
       "history",
+      "architecture",
       "top"
     ],
-    "popularity": 86
+    "popularity": 84
   },
   {
     "id": "sevastopol_06",

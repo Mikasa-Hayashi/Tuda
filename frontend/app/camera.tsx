@@ -31,10 +31,12 @@ import * as ImagePicker from 'expo-image-picker';
 import { Stack, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, StatusBar, StyleSheet, View } from 'react-native';
+import { Alert, StatusBar, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 const SIDE_BUTTON = 56;
 const SHUTTER_SIZE = 78;
+/** Space between the scan frame and the screen edge. */
+const FRAME_MARGIN = 24;
 
 export default function CameraScreen() {
   const router = useRouter();
@@ -46,6 +48,11 @@ export default function CameraScreen() {
   const [facing, setFacing] = useState<'back' | 'front'>('back');
   const cameraRef = useRef<CameraView>(null);
   const dark = preferredColorScheme('dark');
+  // The photo is 3:4 and the ML service crops its centre square (side = width). So the preview is
+  // 3:4 across the full width, and the scan frame is that same square.
+  const { width: screenWidth } = useWindowDimensions();
+  const frameSize = screenWidth - 2 * FRAME_MARGIN;
+  const frameShare = frameSize / screenWidth; // sent to the ML service as the crop
   // Only the glyphs turn with the phone (the screen stays portrait), like the system Camera.
   const rotation = useDeviceRotation();
   const turn = [
@@ -99,11 +106,11 @@ export default function CameraScreen() {
     );
   };
 
-  const processUri = async (rawUri: string, extraDegrees = 0) => {
+  const processUri = async (rawUri: string, extraDegrees = 0, crop?: number) => {
     setLoading(true);
     try {
       const uri = await normalizeOrientation(rawUri, extraDegrees);
-      const result = await recognizeImage(uri, i18n.language);
+      const result = await recognizeImage(uri, i18n.language, crop);
       if (result.recognized && result.id) {
         achievements.recordScan();
         scanHistory.record({
@@ -147,7 +154,7 @@ export default function CameraScreen() {
     try {
       const photo = await cameraRef.current.takePictureAsync({ quality: 0.6 });
       // `rotation` is the angle the icons turn to stay upright; the picture needs the opposite turn.
-      if (photo?.uri) await processUri(photo.uri, -rotation);
+      if (photo?.uri) await processUri(photo.uri, -rotation, frameShare);
     } catch {
       showFailure('error');
     } finally {
@@ -182,14 +189,16 @@ export default function CameraScreen() {
 
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <CameraView
-          ref={cameraRef}
-          style={StyleSheet.absoluteFill}
-          facing={facing}
-          enableTorch={isTorchOn && facing === 'back'}
-        />
+        <View style={styles.previewWrap}>
+          <CameraView
+            ref={cameraRef}
+            style={{ width: screenWidth, height: (screenWidth * 4) / 3 }}
+            facing={facing}
+            enableTorch={isTorchOn && facing === 'back'}
+          />
+        </View>
         <View style={styles.frameWrap} pointerEvents="none">
-          <ScannerFrame />
+          <ScannerFrame size={frameSize} />
         </View>
 
         {/* Native glass controls. The SwiftUI host fills the screen and lays the row out inside the
@@ -251,5 +260,6 @@ export default function CameraScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'black' },
+  previewWrap: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
   frameWrap: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
 });

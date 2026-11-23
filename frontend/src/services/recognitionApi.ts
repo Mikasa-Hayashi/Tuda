@@ -20,7 +20,12 @@ export type RecognitionResult = {
   ms: number;
 };
 
-export async function recognizeImage(uri: string, lang: string): Promise<RecognitionResult> {
+/** `crop` = share of the photo width inside the on-screen scan frame (the server crops that centre square). */
+export async function recognizeImage(
+  uri: string,
+  lang: string,
+  crop?: number,
+): Promise<RecognitionResult> {
   const form = new FormData();
   if (Platform.OS === 'web') {
     const blob = await (await fetch(uri)).blob();
@@ -30,6 +35,7 @@ export async function recognizeImage(uri: string, lang: string): Promise<Recogni
     form.append('image', new File(uri) as unknown as Blob, 'photo.jpg');
   }
   form.append('lang', lang);
+  if (crop) form.append('crop', String(crop));
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 45000);
