@@ -89,6 +89,7 @@ export default function FavoritesScreen() {
                     <Link.Trigger>
                       <Pressable style={{ width: cardWidth }}>
                         <CoverImage
+                          monumentId={m.id}
                           source={{ uri: m.imageUrl }}
                           style={[
                             styles.monumentImage,

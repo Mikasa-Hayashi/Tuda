@@ -133,6 +133,7 @@ export default function ScanTabScreen() {
                           <HStack spacing={12} modifiers={[contentShape(shapes.rectangle())]}>
                             <RNHostView matchContents>
                               <CoverImage
+                                monumentId={entry.monumentId}
                                 source={source ? { uri: source } : undefined}
                                 style={{
                                   width: THUMB,

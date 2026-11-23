@@ -1,4 +1,5 @@
 import { Image, type ImageProps } from 'expo-image';
+import { MONUMENT_IMAGE_POSITIONS } from '@/src/data/monumentImagePositions';
 import React from 'react';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
@@ -10,11 +11,18 @@ import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
  */
 export default function CoverImage({
   style,
+  monumentId,
+  contentPosition,
   ...imageProps
-}: Omit<ImageProps, 'style'> & { style?: StyleProp<ViewStyle> }) {
+}: Omit<ImageProps, 'style'> & { style?: StyleProp<ViewStyle>; monumentId?: string }) {
   return (
     <View style={[styles.clip, style]}>
-      <Image transition={200} {...imageProps} style={StyleSheet.absoluteFill} />
+      <Image
+        transition={200}
+        {...imageProps}
+        contentPosition={(monumentId && MONUMENT_IMAGE_POSITIONS[monumentId]) || contentPosition}
+        style={StyleSheet.absoluteFill}
+      />
     </View>
   );
 }

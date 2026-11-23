@@ -215,6 +215,7 @@ export default function MonumentDetailScreen() {
               >
                 <RNHostView matchContents>
                   <PhotoLink
+                    monumentId={monument.id}
                     uri={monument.imageUrl}
                     style={{
                       width: heroWidth,

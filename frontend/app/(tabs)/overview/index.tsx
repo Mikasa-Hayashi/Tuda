@@ -310,6 +310,7 @@ export default function OverviewTabScreen() {
         <Link.Trigger>
           <Pressable style={{ width: cardWidth }}>
             <CoverImage
+              monumentId={item.id}
               source={{ uri: item.imageUrl }}
               style={[styles.cardImage, { width: cardWidth, backgroundColor: colors.cardElevated }]}
               contentFit="cover"

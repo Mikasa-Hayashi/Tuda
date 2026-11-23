@@ -9,14 +9,17 @@ import { Pressable, type StyleProp, type ViewStyle } from 'react-native';
  */
 export default function PhotoLink({
   uri,
+  monumentId,
   style,
 }: {
   uri: string | null | undefined;
+  monumentId?: string;
   style: StyleProp<ViewStyle>;
 }) {
   const [size, setSize] = useState<{ width: number; height: number } | null>(null);
   const image = (
     <CoverImage
+      monumentId={monumentId}
       source={uri ? { uri } : undefined}
       style={style}
       contentFit="cover"

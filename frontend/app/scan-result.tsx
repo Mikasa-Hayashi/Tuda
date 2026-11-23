@@ -129,6 +129,7 @@ export default function ScanResultSheet() {
                       {/* The photo is a React Native view: it must not swallow the row's tap. */}
                       <View pointerEvents="none">
                         <CoverImage
+                          monumentId={c.id}
                           source={c.imageUrl ? { uri: c.imageUrl } : undefined}
                           style={{
                             width: CANDIDATE_THUMB,
@@ -176,6 +177,7 @@ export default function ScanResultSheet() {
             >
               <RNHostView matchContents>
                 <CoverImage
+                  monumentId={monument.id}
                   source={monument.imageUrl ? { uri: monument.imageUrl } : undefined}
                   style={{
                     width: heroWidth,
