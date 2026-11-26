@@ -26,12 +26,13 @@ SYSTEM = (
 
 
 async def _candidates(
-    db: AsyncSession, city_id: str | None, lang: str
+    db: AsyncSession, city_id: str, lang: str
 ) -> list[dict[str, object]]:
-    stmt = select(Monument).where(Monument.deleted.is_(False))
-    if city_id:
-        stmt = stmt.where(Monument.city_id == city_id)
-    stmt = stmt.order_by(Monument.sort_order)
+    stmt = (
+        select(Monument)
+        .where(Monument.deleted.is_(False), Monument.city_id == city_id)
+        .order_by(Monument.sort_order)
+    )
     monuments = (await db.execute(stmt)).scalars().all()
 
     items: list[dict[str, object]] = []

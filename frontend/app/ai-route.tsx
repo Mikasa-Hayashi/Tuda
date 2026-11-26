@@ -38,8 +38,8 @@ import {
   shapes,
   tag,
 } from '@expo/ui/swift-ui/modifiers';
-import { Stack, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { Stack, useFocusEffect, useRouter } from 'expo-router';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, View } from 'react-native';
 
@@ -62,6 +62,10 @@ const TOPICS = [
 const STOP_COUNT: Record<TimeOption, number> = { couple: 3, half: 5, full: 8 };
 const HOURS: Record<TimeOption, string> = { couple: '2.5', half: '5', full: '8' };
 
+function pickRandomStop(pool: MonumentPreview[]): MonumentPreview | undefined {
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
 export default function AiRouteScreen() {
   const { isDark } = useTheme();
   const { t, i18n } = useTranslation();
@@ -72,14 +76,38 @@ export default function AiRouteScreen() {
   const [age, setAge] = useState<AgeOption>('adults');
   const [topics, setTopics] = useState<string[]>(['history']);
   const custom = useCustomRoute();
-  // Starts from the user's own route (stops added on the map), if there is one.
-  const [result, setResultState] = useState<MonumentPreview[] | null>(() => {
-    if (custom.ids.length === 0) return null;
-    const byId = new Map(getAllMonumentPreviews(i18n.language, null).map((m) => [m.id, m]));
-    const stops = custom.ids.flatMap((id) => byId.get(id) ?? []);
-    return stops.length > 0 ? stops : null;
-  });
+  const [cityId, setCityId] = useState<string | null>(null);
+  const [draftIds, setDraftIds] = useState<string[] | null>(custom.ids);
+  useFocusEffect(
+    useCallback(() => {
+      let focused = true;
+      getSelectedCityId().then(
+        (id) => {
+          if (focused) setCityId(id);
+        },
+        () => {
+          if (focused) setCityId(null);
+        },
+      );
+      return () => {
+        focused = false;
+      };
+    }, []),
+  );
+  const cityMonuments = useMemo(
+    () => (cityId ? getAllMonumentPreviews(i18n.language, cityId) : []),
+    [cityId, i18n.language],
+  );
+  const byId = useMemo(() => new Map(cityMonuments.map((m) => [m.id, m])), [cityMonuments]);
+  const stops = draftIds?.flatMap((id) => byId.get(id) ?? []) ?? [];
+  const result = stops.length > 0 ? stops : null;
   const saved = useSavedRoutes();
+  const citySaved = saved.flatMap((route) => {
+    const monumentIds = route.monumentIds.filter((id) => byId.has(id));
+    if (monumentIds.length === 0) return [];
+    const summary = monumentIds.length === route.monumentIds.length ? route.summary : '';
+    return [{ ...route, monumentIds, summary }];
+  });
   const resultIds = result ? result.map((m) => m.id) : [];
   const sameIds = (a: readonly string[], b: readonly string[]) =>
     a.length === b.length && a.every((id, i) => id === b[i]);
@@ -87,9 +115,10 @@ export default function AiRouteScreen() {
   // from then on edits made here keep the map route in sync.
   const onMap = resultIds.length > 0 && sameIds(resultIds, custom.ids);
   const isSaved = resultIds.length > 0 && saved.some((r) => sameIds(r.monumentIds, resultIds));
-  const setResult = (next: MonumentPreview[] | null) => {
-    setResultState(next);
-    if (onMap && next) custom.set(next.map((m) => m.id));
+  const setResult = (next: MonumentPreview[]) => {
+    const ids = next.map((m) => m.id);
+    setDraftIds(ids);
+    if (onMap) custom.set(ids);
   };
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -100,27 +129,20 @@ export default function AiRouteScreen() {
       on ? [...prev.filter((x) => x !== id), id] : prev.filter((x) => x !== id),
     );
 
-  // Picks a random set of monuments sized to the available time (event handler, not render).
-  const buildLocal = () => {
-    const all = getAllMonumentPreviews(i18n.language, null);
-    const shuffled = [...all].sort(() => Math.random() - 0.5);
-    setResult(shuffled.slice(0, STOP_COUNT[time]));
-    setSummary('');
-  };
-
   // Asks the AI (backend → GigaChat) for the route; falls back to a random one offline.
   const build = async () => {
+    if (!cityId || cityMonuments.length === 0 || loading) return;
     setLoading(true);
     try {
-      const cityId = await getSelectedCityId();
       const ai = await fetchAiRoute({ cityId, lang: i18n.language, time, age, topics });
-      const byId = new Map(getAllMonumentPreviews(i18n.language, null).map((m) => [m.id, m]));
       const stops = ai.monumentIds.flatMap((id) => byId.get(id) ?? []);
       if (stops.length === 0) throw new Error('empty ai route');
       setResult(stops);
-      setSummary(ai.summary);
+      setSummary(stops.length === ai.monumentIds.length ? ai.summary : '');
     } catch {
-      buildLocal();
+      const shuffled = [...cityMonuments].sort(() => Math.random() - 0.5);
+      setResult(shuffled.slice(0, STOP_COUNT[time]));
+      setSummary('');
     } finally {
       setLoading(false);
     }
@@ -134,9 +156,9 @@ export default function AiRouteScreen() {
   const replaceStop = (id: string) => {
     if (!result) return;
     const taken = new Set(result.map((m) => m.id));
-    const pool = getAllMonumentPreviews(i18n.language, null).filter((m) => !taken.has(m.id));
-    if (pool.length === 0) return;
-    const pick = pool[Math.floor(Math.random() * pool.length)];
+    const pool = cityMonuments.filter((m) => !taken.has(m.id));
+    const pick = pickRandomStop(pool);
+    if (!pick) return;
     setResult(result.map((m) => (m.id === id ? pick : m)));
   };
 
@@ -168,13 +190,10 @@ export default function AiRouteScreen() {
   };
 
   const openSaved = (route: SavedRoute) => {
-    const byId = new Map(getAllMonumentPreviews(i18n.language, null).map((m) => [m.id, m]));
-    const stops = route.monumentIds.flatMap((id) => byId.get(id) ?? []);
-    if (stops.length === 0) return;
     setTime(route.time);
     setAge(route.age);
     setSummary(route.summary);
-    setResultState(stops);
+    setDraftIds(route.monumentIds);
   };
 
   const secondary = foregroundStyle({ type: 'hierarchical', style: 'secondary' });
@@ -290,16 +309,16 @@ export default function AiRouteScreen() {
                   systemImage="slider.horizontal.3"
                   onPress={() => {
                     setEditing(false);
-                    setResultState(null);
+                    setDraftIds(null);
                   }}
                 />
               </Section>
             </Form>
           ) : (
             <Form>
-              {saved.length > 0 && (
+              {citySaved.length > 0 && (
                 <Section title={t('aiRoute.savedTitle')}>
-                  <List.ForEach data={[...saved]} keyExtractor={(r) => r.id} recycling={false}>
+                  <List.ForEach data={citySaved} keyExtractor={(r) => r.id} recycling={false}>
                     {({ item: route }) => (
                       <SwipeActions>
                         <Button onPress={() => openSaved(route)} modifiers={[buttonStyle('plain')]}>
@@ -381,6 +400,7 @@ export default function AiRouteScreen() {
                   modifiers={[
                     buttonStyle('glassProminent'),
                     controlSize('large'),
+                    disabled(cityMonuments.length === 0),
                     listRowBackground(CLEAR),
                     listRowInsets({ top: 0, leading: 0, bottom: 0, trailing: 0 }),
                   ]}

@@ -136,7 +136,7 @@ export async function searchMonumentsRemote(
 }
 
 export type AiRouteParams = {
-  cityId: string | null;
+  cityId: string;
   lang: string;
   time: 'couple' | 'half' | 'full';
   age: 'kids' | 'adults' | 'family';

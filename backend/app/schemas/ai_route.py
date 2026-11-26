@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 
 
 class AiRouteRequest(BaseModel):
-    city_id: str | None = None
+    city_id: str = Field(min_length=1)
     lang: str = "ru"
     time: Literal["couple", "half", "full"] = "half"
     age: Literal["kids", "adults", "family"] = "adults"
