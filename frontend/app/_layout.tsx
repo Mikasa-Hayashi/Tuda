@@ -1,10 +1,10 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider as NavThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AudioGuideProvider } from '../src/audio/AudioGuideContext';
-import '../src/i18n/i18n';
+import { i18nReady } from '../src/i18n/i18n';
 import { ThemeProvider, useTheme } from '../src/theme/ThemeContext';
 import { setupDatabase } from '../src/db/dbInit';
 
@@ -230,6 +230,20 @@ function RootStack() {
 }
 
 export default function RootLayout() {
+  const [languageReady, setLanguageReady] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    void i18nReady.then(() => {
+      if (mounted) setLanguageReady(true);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (!languageReady) return null;
+
   return (
     <ThemeProvider>
       <AudioGuideProvider>

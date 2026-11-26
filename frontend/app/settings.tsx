@@ -1,6 +1,7 @@
 import { BADGE } from '@/src/components/BadgeLabel';
 import { CITIES } from '@/src/data/cities';
 import { getLocalCacheItemCount } from '@/src/db/monumentRepository';
+import { setAppLanguage } from '@/src/i18n/i18n';
 import { LANGUAGES } from '@/src/i18n/languages';
 import { getSelectedCityId } from '@/src/storage/citySelection';
 import { auth, useAuth } from '@/src/storage/auth';
@@ -92,7 +93,7 @@ export default function SettingsScreen() {
               <Spacer />
               <Picker
                 selection={i18n.language}
-                onSelectionChange={(id: string) => void i18n.changeLanguage(id)}
+                onSelectionChange={setAppLanguage}
                 modifiers={[pickerStyle('menu')]}
               >
                 {LANGUAGES.map((l) => (
