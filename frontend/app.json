@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "ivania",
-    "slug": "ivania",
+    "name": "Туда",
+    "slug": "tuda",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "ivania",
+    "scheme": "tuda",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true

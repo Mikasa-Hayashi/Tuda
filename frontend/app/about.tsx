@@ -28,6 +28,7 @@ import { StyleSheet, View } from 'react-native';
 
 const CLEAR = '#00000000';
 const ICON_SIZE = 84;
+const ICON_RADIUS = 19;
 
 export default function AboutScreen() {
   const { colors, isDark } = useTheme();
@@ -61,11 +62,14 @@ export default function AboutScreen() {
               ]}
             >
               <RNHostView matchContents>
-                <Image
-                  source={require('../assets/images/icon.png')}
-                  style={{ width: ICON_SIZE, height: ICON_SIZE, borderRadius: 19 }}
-                  contentFit="cover"
-                />
+                <View style={styles.icon}>
+                  <Image
+                    source={require('../assets/images/icon.png')}
+                    style={StyleSheet.absoluteFill}
+                    contentFit="cover"
+                  />
+                  {isDark && <View style={styles.iconOutline} />}
+                </View>
               </RNHostView>
               <Text modifiers={[font({ textStyle: 'title2', weight: 'bold' })]}>Туда</Text>
               <Text
@@ -101,4 +105,18 @@ export default function AboutScreen() {
   );
 }
 
-const styles = StyleSheet.create({ container: { flex: 1 } });
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  icon: {
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+    borderRadius: ICON_RADIUS,
+    overflow: 'hidden',
+  },
+  iconOutline: {
+    ...StyleSheet.absoluteFill,
+    borderRadius: ICON_RADIUS,
+    borderWidth: 1,
+    borderColor: '#626264',
+  },
+});
