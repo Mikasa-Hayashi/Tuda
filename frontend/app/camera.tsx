@@ -1,4 +1,5 @@
 import { achievements } from '@/src/storage/achievements';
+import { personalData } from '@/src/storage/personalData';
 import { scanHistory } from '@/src/storage/scanHistory';
 import { LoadingOverlay } from '@/src/components/LoadingOverlay';
 import { useDeviceRotation } from '@/src/hooks/useDeviceRotation';
@@ -107,14 +108,17 @@ export default function CameraScreen() {
   };
 
   const processUri = async (rawUri: string, extraDegrees = 0, crop?: number) => {
+    const ownerId = personalData.ownerId();
     setLoading(true);
     try {
       const uri = await normalizeOrientation(rawUri, extraDegrees);
       const result = await recognizeImage(uri, i18n.language, crop);
+      if (personalData.ownerId() !== ownerId) return;
       if (result.recognized && result.id) {
         achievements.recordScan();
         scanHistory.record({
           monumentId: result.id,
+          monumentName: result.name,
           confidence: result.confidence,
           recognized: true,
           photoUri: uri,
@@ -128,6 +132,7 @@ export default function CameraScreen() {
         if (options.length > 0) {
           scanHistory.record({
             monumentId: options[0].id as string,
+            monumentName: options[0].name,
             confidence: options[0].p,
             recognized: false,
             photoUri: uri,

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, func
+from sqlalchemy import JSON, DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base
@@ -29,3 +29,14 @@ class AuthToken(Base):
     )
     token_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+
+class UserPersonalData(Base):
+    __tablename__ = "user_personal_data"
+
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
+    )
+    revision: Mapped[int] = mapped_column(Integer, nullable=False)
+    data: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False)
+    writers: Mapped[dict[str, str]] = mapped_column(JSON, nullable=False)

@@ -3,6 +3,7 @@ import { useBadges, type BadgeState } from '@/src/storage/achievements';
 import { auth, useAuth } from '@/src/storage/auth';
 import { pickAvatar, removeAvatar, useAvatar } from '@/src/storage/avatar';
 import { useFavorites } from '@/src/storage/favorites';
+import { usePersonalDataSynced } from '@/src/storage/personalData';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
   Button,
@@ -58,6 +59,7 @@ export default function ProfileScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const { user } = useAuth();
+  const dataSynced = usePersonalDataSynced();
   const favorites = useFavorites();
   const badges = useBadges(favorites.count);
   const avatarUri = useAvatar(user?.id ?? null);
@@ -161,6 +163,11 @@ export default function ProfileScreen() {
                 <Text modifiers={[font({ textStyle: 'subheadline' }), secondary, lineLimit(3)]}>
                   {user ? (user.email ?? `@${user.username}`) : t('profile.guestDesc')}
                 </Text>
+                {user && (
+                  <Text modifiers={[font({ textStyle: 'caption' }), secondary]}>
+                    {t(dataSynced ? 'profile.dataSynced' : 'profile.dataSyncPending')}
+                  </Text>
+                )}
               </VStack>
               <Spacer />
             </HStack>

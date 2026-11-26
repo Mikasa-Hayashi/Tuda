@@ -193,7 +193,9 @@
   "profile": {
     "title": "Profile",
     "guestTitle": "You're a guest",
-    "guestDesc": "Sign in to save favourites, mark visited spots, and collect achievements.",
+    "guestDesc": "Sign in to save your progress to your account and restore it on another device.",
+    "dataSynced": "Progress saved to your account",
+    "dataSyncPending": "Progress waiting to sync",
     "loginButton": "Sign in or create account",
     "settings": "Settings",
     "about": "About",
@@ -525,7 +527,8 @@
     "historyHint": "Monuments you scan will appear here.",
     "historyClear": "Clear history",
     "historyRemove": "Remove from history",
-    "historyClearHint": "All scans and their photos will be removed from this device.",
+    "historyClearHint": "All entries will be removed from your history. Their photos will be deleted from this device.",
+    "historyUnavailableName": "Place unavailable in the catalog",
     "pick": "Maybe it is one of these",
     "pickHint": "Tap the right monument, or point the camera at the whole monument and try again."
   }

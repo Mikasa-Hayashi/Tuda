@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AudioGuideProvider } from '../src/audio/AudioGuideContext';
 import { i18nReady } from '../src/i18n/i18n';
+import { authReady } from '../src/storage/auth';
 import { ThemeProvider, useTheme } from '../src/theme/ThemeContext';
 import { setupDatabase } from '../src/db/dbInit';
 
@@ -71,7 +72,6 @@ function RootStack() {
   return (
     <NavThemeProvider value={navTheme}>
       <Stack
-        initialRouteName="index"
         screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}
         screenListeners={{
           focus: logNav('focus'),
@@ -230,19 +230,19 @@ function RootStack() {
 }
 
 export default function RootLayout() {
-  const [languageReady, setLanguageReady] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let mounted = true;
-    void i18nReady.then(() => {
-      if (mounted) setLanguageReady(true);
+    void Promise.all([i18nReady, authReady]).then(() => {
+      if (mounted) setReady(true);
     });
     return () => {
       mounted = false;
     };
   }, []);
 
-  if (!languageReady) return null;
+  if (!ready) return null;
 
   return (
     <ThemeProvider>

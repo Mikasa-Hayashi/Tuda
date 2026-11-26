@@ -1,3 +1,5 @@
+import type { PersonalData, PersonalDataWrite } from '@/src/storage/personalDataTypes';
+
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL ?? 'http://localhost:8000/api';
 
 export type AuthUser = {
@@ -8,6 +10,7 @@ export type AuthUser = {
 };
 
 export type AuthResponse = { token: string; user: AuthUser };
+type SyncResponse = { revision: number; data: PersonalData | null; applied: boolean };
 
 /** Failure reasons the UI turns into messages. */
 export type AuthErrorCode = 'wrong_credentials' | 'taken' | 'invalid' | 'network' | 'unknown';
@@ -63,6 +66,11 @@ export const authApi = {
       body: JSON.stringify({ username, email: email || null, password }),
     }),
   me: (token: string) => request<AuthUser>('/me', {}, token),
+  syncProgress: (token: string, revision: number, write: PersonalDataWrite | null) =>
+    request<SyncResponse>('/progress/sync', {
+      method: 'POST',
+      body: JSON.stringify({ revision, write }),
+    }, token),
   logout: (token: string) => request<void>('/logout', { method: 'POST' }, token),
   deleteAccount: (token: string) => request<void>('/me', { method: 'DELETE' }, token),
 };

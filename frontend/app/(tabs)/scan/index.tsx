@@ -22,6 +22,7 @@ import {
 import {
   buttonStyle,
   contentShape,
+  disabled,
   labelStyle,
   font,
   foregroundStyle,
@@ -35,7 +36,7 @@ import { Alert, StyleSheet, View } from 'react-native';
 
 const THUMB = 56;
 
-type Row = { entry: ScanEntry; name: string; imageUrl: string | null };
+type Row = { entry: ScanEntry; name: string; hasMonument: boolean };
 
 /**
  * Scan tab: history of past scans (the photo, the best match and how sure the model was). The
@@ -59,12 +60,16 @@ export default function ScanTabScreen() {
   const rows = useMemo<Row[]>(
     () =>
       transitionDone
-        ? entries.flatMap((entry) => {
+        ? entries.map((entry) => {
             const m = getMonumentById(entry.monumentId, i18n.language);
-            return m ? [{ entry, name: m.name, imageUrl: m.imageUrl || null }] : [];
+            return {
+              entry,
+              name: m?.name || entry.monumentName || t('scanResult.historyUnavailableName'),
+              hasMonument: !!m,
+            };
           })
         : [],
-    [entries, transitionDone, i18n.language],
+    [entries, transitionDone, i18n.language, t],
   );
 
   const confirmClear = () =>
@@ -117,8 +122,7 @@ export default function ScanTabScreen() {
             <Form>
               <Section title={t('scanResult.historyTitle')}>
                 <List.ForEach data={rows} keyExtractor={(r) => r.entry.id} recycling={false}>
-                  {({ item: { entry, name, imageUrl } }) => {
-                    const source = entry.photoUri ?? imageUrl;
+                  {({ item: { entry, name, hasMonument } }) => {
                     return (
                       <SwipeActions>
                         <Button
@@ -128,13 +132,12 @@ export default function ScanTabScreen() {
                               params: { id: entry.monumentId },
                             })
                           }
-                          modifiers={[buttonStyle('plain')]}
+                          modifiers={[buttonStyle('plain'), disabled(!hasMonument)]}
                         >
                           <HStack spacing={12} modifiers={[contentShape(shapes.rectangle())]}>
                             <RNHostView matchContents>
                               <CoverImage
-                                monumentId={entry.monumentId}
-                                source={source ? { uri: source } : undefined}
+                                source={entry.photoUri ? { uri: entry.photoUri } : undefined}
                                 style={{
                                   width: THUMB,
                                   height: THUMB,
@@ -161,11 +164,13 @@ export default function ScanTabScreen() {
                               </HStack>
                             </VStack>
                             <Spacer />
-                            <SymbolImage
-                              systemName="chevron.right"
-                              size={12}
-                              modifiers={[secondary]}
-                            />
+                            {hasMonument && (
+                              <SymbolImage
+                                systemName="chevron.right"
+                                size={12}
+                                modifiers={[secondary]}
+                              />
+                            )}
                           </HStack>
                         </Button>
                         <SwipeActions.Actions edge="trailing" allowsFullSwipe>
