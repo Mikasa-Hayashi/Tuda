@@ -1,4 +1,4 @@
-import { AuthError } from '@/src/services/authApi';
+import { AuthError, type AuthField } from '@/src/services/authApi';
 import { auth } from '@/src/storage/auth';
 import { useTheme } from '@/src/theme/ThemeContext';
 import {
@@ -42,6 +42,12 @@ const ERROR_KEYS: Record<string, string> = {
   network: 'profile.auth.errNetwork',
 };
 
+const FIELD_ERROR_KEYS: Record<AuthField, string> = {
+  username: 'profile.auth.errUsername',
+  email: 'profile.auth.errEmail',
+  password: 'profile.auth.errPassword',
+};
+
 /** Sign-in / sign-up sheet: a native SwiftUI form, login or e-mail + password. */
 export default function AuthScreen() {
   const { colors, isDark } = useTheme();
@@ -66,8 +72,10 @@ export default function AuthScreen() {
       else await auth.register(login, email, password);
       router.back();
     } catch (e) {
-      const code = e instanceof AuthError ? e.code : 'unknown';
-      setError(t(ERROR_KEYS[code] ?? 'profile.auth.errUnknown'));
+      const key = e instanceof AuthError
+        ? (e.field ? FIELD_ERROR_KEYS[e.field] : ERROR_KEYS[e.code])
+        : undefined;
+      setError(t(key ?? 'profile.auth.errUnknown'));
     } finally {
       setBusy(false);
     }

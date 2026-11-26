@@ -14,12 +14,25 @@ type SyncResponse = { revision: number; data: PersonalData | null; applied: bool
 
 /** Failure reasons the UI turns into messages. */
 export type AuthErrorCode = 'wrong_credentials' | 'taken' | 'invalid' | 'network' | 'unknown';
+export type AuthField = 'username' | 'email' | 'password';
 
 export class AuthError extends Error {
   code: AuthErrorCode;
-  constructor(code: AuthErrorCode) {
+  field?: AuthField;
+  constructor(code: AuthErrorCode, field?: AuthField) {
     super(code);
     this.code = code;
+    this.field = field;
+  }
+}
+
+async function registrationErrorField(response: Response): Promise<AuthField | undefined> {
+  const body = await response.json().catch(() => null) as { detail?: { loc?: unknown[] }[] } | null;
+  if (!Array.isArray(body?.detail)) return;
+  for (const issue of body.detail) {
+    if (!Array.isArray(issue?.loc) || issue.loc[0] !== 'body') continue;
+    const field = issue.loc[1];
+    if (field === 'username' || field === 'email' || field === 'password') return field;
   }
 }
 
@@ -48,7 +61,10 @@ async function request<T>(path: string, init: RequestInit = {}, token?: string):
   if (!response.ok) {
     if (response.status === 401) throw new AuthError('wrong_credentials');
     if (response.status === 409) throw new AuthError('taken');
-    if (response.status === 422) throw new AuthError('invalid');
+    if (response.status === 422) {
+      const field = path === '/register' ? await registrationErrorField(response) : undefined;
+      throw new AuthError('invalid', field);
+    }
     throw new AuthError('unknown');
   }
   return (await response.json()) as T;

@@ -28,6 +28,7 @@ import {
   listRowBackground,
   listRowInsets,
   listRowSeparator,
+  minimumScaleFactor,
   preferredColorScheme,
   shapes,
 } from '@expo/ui/swift-ui/modifiers';
@@ -163,6 +164,8 @@ export default function PlaceSheet() {
                   systemImage={inRoute ? 'checkmark' : 'plus'}
                   modifiers={[
                     frame({ maxWidth: 10000 }),
+                    lineLimit(1),
+                    minimumScaleFactor(0.85),
                     foregroundStyle({ type: 'hierarchical', style: 'primary' }),
                   ]}
                 />
