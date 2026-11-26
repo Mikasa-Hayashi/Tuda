@@ -19,7 +19,8 @@ import asyncio
 import json
 from pathlib import Path
 
-from sqlalchemy import delete, select, update
+from sqlalchemy import delete, func, select, update
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import AsyncSessionLocal
@@ -64,13 +65,15 @@ async def import_monuments(session: AsyncSession, only_new: bool = False) -> set
     records = load_json("monuments.json")
     if only_new:
         existing = set((await session.execute(select(Monument.id))).scalars())
-        # already imported monuments: refresh tags/popularity from the seed
+        # Refresh map coordinates and catalog metadata for existing monuments.
         for item in records:
             if item["id"] in existing:
                 await session.execute(
                     update(Monument)
                     .where(Monument.id == item["id"])
                     .values(
+                        lat=item["lat"],
+                        lon=item["lon"],
                         tags=item.get("tags", []),
                         popularity=item.get("popularity", 0),
                     )
@@ -89,7 +92,6 @@ async def import_monuments(session: AsyncSession, only_new: bool = False) -> set
                 popularity=item.get("popularity", 0),
             )
         )
-    await session.commit()
     print(f"  → {len(records)} monuments imported.\n")
     if not only_new:
         return {r["id"] for r in records}
@@ -101,21 +103,20 @@ async def import_monuments(session: AsyncSession, only_new: bool = False) -> set
 
 
 async def import_monument_translations(
-    session: AsyncSession, only_ids: set[str] | None = None
+    session: AsyncSession, upsert: bool = False
 ) -> None:
     records = load_json("monument_translations.json")
-    if only_ids is not None:
-        records = [r for r in records if r["monument_id"] in only_ids]
-    for item in records:
-        session.add(
-            MonumentTranslation(
-                monument_id=item["monument_id"],
-                lang=item["lang"],
-                field_key=item["field_key"],
-                field_value=item["field_value"],
+    if upsert and records:
+        stmt = insert(MonumentTranslation).values(records)
+        await session.execute(
+            stmt.on_conflict_do_update(
+                index_elements=["monument_id", "lang", "field_key"],
+                set_={"field_value": stmt.excluded.field_value, "updated_at": func.now()},
+                where=MonumentTranslation.field_value.is_distinct_from(stmt.excluded.field_value),
             )
         )
-    await session.commit()
+    else:
+        session.add_all(MonumentTranslation(**item) for item in records)
     print(f"  → {len(records)} monument translations imported.\n")
 
 
@@ -193,9 +194,10 @@ async def main(upsert: bool = False) -> None:
         only = new_ids if upsert else None
 
         print("Importing monument translations…")
-        await import_monument_translations(session, only)
+        await import_monument_translations(session, upsert=upsert)
 
         print("Importing monument field configs…")
+        # This commits the monument rows, translations and field configs together.
         await import_monument_field_configs(session, only)
 
         if not upsert:
@@ -218,7 +220,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--upsert",
         action="store_true",
-        help="Add only new monuments (with their translations/field configs) without clearing the database.",
+        help="Refresh coordinates, catalog metadata and translations and add new monuments without clearing the database.",
     )
     args = parser.parse_args()
     asyncio.run(main(upsert=args.upsert))

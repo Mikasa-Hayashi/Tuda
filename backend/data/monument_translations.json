@@ -1107,37 +1107,109 @@
     "monument_id": "volgograd_20",
     "lang": "en",
     "field_key": "name",
-    "field_value": "Monument to Defenders of Tsaritsyn"
+    "field_value": "Mass Grave of the Defenders of Red Tsaritsyn"
   },
   {
     "monument_id": "volgograd_20",
     "lang": "ru",
     "field_key": "name",
-    "field_value": "Памятник защитникам Царицына"
+    "field_value": "Братская могила защитников Красного Царицына"
+  },
+  {
+    "monument_id": "volgograd_20",
+    "lang": "ar",
+    "field_key": "name",
+    "field_value": "المقبرة الجماعية للمدافعين عن تساريتسين الحمراء"
+  },
+  {
+    "monument_id": "volgograd_20",
+    "lang": "ar",
+    "field_key": "short_description",
+    "field_value": "دُفن في هذه المقبرة الجماعية قرب محطة فولغوغراد الثانية عمال السكك الحديدية الذين قُتلوا أثناء الدفاع عن تساريتسين في الحرب الأهلية الروسية. ويتضمن النصب المبني من الطوب مجسماً فولاذياً لجزء من قطار مدرّع."
+  },
+  {
+    "monument_id": "volgograd_20",
+    "lang": "ar",
+    "field_key": "address",
+    "field_value": "الساحة بجوار محطة فولغوغراد الثانية، شارع ميليتسيونيرا بوخانتسيفا، حي فوروشيلوفسكي، فولغوغراد"
+  },
+  {
+    "monument_id": "volgograd_20",
+    "lang": "ar",
+    "field_key": "opening_hours",
+    "field_value": "على مدار الساعة"
+  },
+  {
+    "monument_id": "volgograd_20",
+    "lang": "ar",
+    "field_key": "admission",
+    "field_value": "مجاناً"
+  },
+  {
+    "monument_id": "volgograd_20",
+    "lang": "ar",
+    "field_key": "opening_schedule",
+    "field_value": "{\"always\":true}"
+  },
+  {
+    "monument_id": "volgograd_20",
+    "lang": "zh",
+    "field_key": "name",
+    "field_value": "红色察里津保卫者集体墓"
+  },
+  {
+    "monument_id": "volgograd_20",
+    "lang": "zh",
+    "field_key": "short_description",
+    "field_value": "这座集体墓位于伏尔加格勒第二火车站旁，安葬着在俄国内战期间保卫察里津而牺牲的铁路工人。砖砌纪念碑上嵌有模拟装甲列车局部的钢制浮雕。"
+  },
+  {
+    "monument_id": "volgograd_20",
+    "lang": "zh",
+    "field_key": "address",
+    "field_value": "伏尔加格勒市伏罗希洛夫区，米利齐奥涅拉·布汉采夫街，伏尔加格勒第二火车站旁的小广场"
+  },
+  {
+    "monument_id": "volgograd_20",
+    "lang": "zh",
+    "field_key": "opening_hours",
+    "field_value": "全天开放"
+  },
+  {
+    "monument_id": "volgograd_20",
+    "lang": "zh",
+    "field_key": "admission",
+    "field_value": "免费"
+  },
+  {
+    "monument_id": "volgograd_20",
+    "lang": "zh",
+    "field_key": "opening_schedule",
+    "field_value": "{\"always\":true}"
   },
   {
     "monument_id": "volgograd_20",
     "lang": "en",
     "field_key": "short_description",
-    "field_value": "The Monument to Defenders of Tsaritsyn, erected in 1961 on Metallurgov Square, honours the workers and Red Army soldiers who repelled White Guard forces during the Russian Civil War defence of Tsaritsyn (1918–1919). Six bronze figures led by a central commander represent the struggle, mounted on a polished dark-grey granite pedestal. The monument stands in the industrial Krasnooktyabrsky District, near the historic Krasny Oktyabr steel plant."
+    "field_value": "Railway workers killed while defending Tsaritsyn during the Russian Civil War are buried in this mass grave beside Volgograd II railway station. The brick memorial incorporates a steel relief shaped like part of an armoured train."
   },
   {
     "monument_id": "volgograd_20",
     "lang": "ru",
     "field_key": "short_description",
-    "field_value": "Памятник защитникам Царицына, установленный в 1961 году на площади Металлургов, чтит память рабочих и красноармейцев, отразивших белогвардейцев в годы обороны Царицына (1918–1919). Шесть бронзовых фигур во главе с командиром воплощают образ борьбы на полированном постаменте из тёмно-серого гранита. Памятник расположен в промышленном Краснооктябрьском районе, вблизи исторического завода «Красный Октябрь»."
+    "field_value": "В братской могиле у вокзала Волгоград‑2 похоронены железнодорожники, погибшие при обороне Царицына в годы Гражданской войны. В кирпичную стелу мемориала встроен стальной рельеф в виде фрагмента бронепоезда."
   },
   {
     "monument_id": "volgograd_20",
     "lang": "en",
     "field_key": "address",
-    "field_value": "Metallurgov Square, Krasnooktyabrsky District, Volgograd"
+    "field_value": "Square by Volgograd II railway station, Militsionera Bukhantseva Street, Voroshilovsky District, Volgograd"
   },
   {
     "monument_id": "volgograd_20",
     "lang": "ru",
     "field_key": "address",
-    "field_value": "Площадь Металлургов, Краснооктябрьский район, Волгоград"
+    "field_value": "Сквер у вокзала Волгоград‑2, улица Милиционера Буханцева, Ворошиловский район, Волгоград"
   },
   {
     "monument_id": "volgograd_20",

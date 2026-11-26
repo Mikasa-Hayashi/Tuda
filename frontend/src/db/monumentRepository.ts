@@ -184,29 +184,11 @@ export function getMonumentCoords(id: string): { lat: number; lon: number } | nu
 
 /** Поиск памятников по имени */
 export function searchMonuments(query: string, lang: string, cityId?: string | null): MonumentPreview[] {
-  const rows = db.getAllSync<{
-    id: number;
-    slug: string;
-    lat: number;
-    lon: number;
-    image_url: string;
-    field_value: string;
-    sort_order: number;
-    popularity: number;
-    tags_json: string | null;
-  }>(
-    `SELECT m.id, m.slug, m.lat, m.lon, m.image_url, m.sort_order, m.popularity, m.tags_json, mt.field_value
-     FROM monuments m
-     JOIN cities c ON c.id = m.city_id
-     JOIN monument_translations mt
-       ON mt.monument_id = m.id AND mt.lang = ? AND mt.field_key = 'name'
-     WHERE mt.field_value LIKE ?
-       AND (? IS NULL OR c.slug = ?)
-     ORDER BY m.sort_order`,
-    [lang, `%${query}%`, cityId ?? null, cityId ?? null]
+  // SQLite's built-in LIKE only ignores case for ASCII. Match Unicode names in JS.
+  const normalizedQuery = glueHyphens(query).toLowerCase();
+  return getAllMonumentPreviews(lang, cityId).filter(
+    (monument) => monument.name !== '' && monument.name.toLowerCase().includes(normalizedQuery),
   );
-
-  return rows.map(mapPreviewRow);
 }
 
 /** Ближайшие памятники к точке (GPS-поиск, офлайн) */

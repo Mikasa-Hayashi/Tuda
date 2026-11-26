@@ -32,8 +32,8 @@
   {
     "id": "volgograd_03",
     "city_id": "volgograd",
-    "lat": 48.7418,
-    "lon": 44.536,
+    "lat": 48.742389,
+    "lon": 44.539014,
     "image_url": "/static/monuments/volgograd_03.jpg",
     "sort_order": 3,
     "tags": [
@@ -46,8 +46,8 @@
   {
     "id": "volgograd_04",
     "city_id": "volgograd",
-    "lat": 48.7418,
-    "lon": 44.536,
+    "lat": 48.742389,
+    "lon": 44.539014,
     "image_url": "/static/monuments/volgograd_04_v2.jpg",
     "sort_order": 4,
     "tags": [
@@ -100,8 +100,8 @@
   {
     "id": "volgograd_09",
     "city_id": "volgograd",
-    "lat": 48.6405,
-    "lon": 44.4482,
+    "lat": 48.642383,
+    "lon": 44.392341,
     "image_url": "/static/monuments/volgograd_09_v2.jpg",
     "sort_order": 9,
     "tags": [
@@ -154,8 +154,8 @@
   {
     "id": "volgograd_13",
     "city_id": "volgograd",
-    "lat": 48.7147,
-    "lon": 44.5356,
+    "lat": 48.704071,
+    "lon": 44.521234,
     "image_url": "/static/monuments/volgograd_13_v2.jpg",
     "sort_order": 13,
     "tags": [
@@ -180,8 +180,8 @@
   {
     "id": "volgograd_15",
     "city_id": "volgograd",
-    "lat": 48.7069,
-    "lon": 44.5177,
+    "lat": 48.70861,
+    "lon": 44.51639,
     "image_url": "/static/monuments/volgograd_15.jpg",
     "sort_order": 15,
     "tags": [
@@ -193,8 +193,8 @@
   {
     "id": "volgograd_16",
     "city_id": "volgograd",
-    "lat": 48.5248,
-    "lon": 44.5694,
+    "lat": 48.52778,
+    "lon": 44.55917,
     "image_url": "/static/monuments/volgograd_16_v2.jpg",
     "sort_order": 16,
     "tags": [
@@ -206,8 +206,8 @@
   {
     "id": "volgograd_17",
     "city_id": "volgograd",
-    "lat": 48.706,
-    "lon": 44.5193,
+    "lat": 48.71639,
+    "lon": 44.53,
     "image_url": "/static/monuments/volgograd_17_v2.jpg",
     "sort_order": 17,
     "tags": [
@@ -219,8 +219,8 @@
   {
     "id": "volgograd_18",
     "city_id": "volgograd",
-    "lat": 48.7094,
-    "lon": 44.5152,
+    "lat": 48.7111,
+    "lon": 44.5222,
     "image_url": "/static/monuments/volgograd_18_v2.jpg",
     "sort_order": 18,
     "tags": [
@@ -232,8 +232,8 @@
   {
     "id": "volgograd_20",
     "city_id": "volgograd",
-    "lat": 48.7618,
-    "lon": 44.4957,
+    "lat": 48.6925,
+    "lon": 44.48028,
     "image_url": "/static/monuments/volgograd_20.jpg",
     "sort_order": 20,
     "tags": [

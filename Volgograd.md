@@ -19,7 +19,7 @@
 17. Monument to Lenin on Lenin Square (Памятник В.И. Ленину на площади Ленина)
 18. Monument to Prince Grigory Zasekin (Памятник князю Григорию Засекину)
 19. Komsomol Monument (Памятник комсомольцам)
-20. Monument to Defenders of Tsaritsyn (Памятник защитникам Царицына)
+20. Mass Grave of the Defenders of Red Tsaritsyn (Братская могила защитников Красного Царицына)
 21. Monument to Marshal Georgy Zhukov (Памятник маршалу Г.К. Жукову)
 22. Monument to General Vasily Chuikov (Памятник генералу В.И. Чуйкову)
 23. Monument to Mikhail Panikakha (Памятник Михаилу Паникахе)

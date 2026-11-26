@@ -1,4 +1,5 @@
 import { getOnboardingDone } from '@/src/storage/citySelection';
+import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect } from 'react';
@@ -7,7 +8,7 @@ import { StyleSheet, View } from 'react-native';
 /**
  * Entry route. The visible splash is the native launch screen (configured in app.json via the
  * expo-splash-screen plugin and held by SplashScreen.preventAutoHideAsync in _layout.tsx).
- * This screen only decides where to go, then releases the native splash.
+ * The same logo covers the transition on platforms that show the entry route.
  */
 export default function Entry() {
   const router = useRouter();
@@ -30,10 +31,18 @@ export default function Entry() {
     };
   }, [router]);
 
-  // Same color as the native splash, in case a frame is visible before it hides.
-  return <View style={styles.container} />;
+  return (
+    <View style={styles.container}>
+      <Image
+        source={require('../assets/images/splash-icon.png')}
+        style={styles.logo}
+        contentFit="contain"
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#007AFF' },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#000000' },
+  logo: { width: 180, height: 180 },
 });

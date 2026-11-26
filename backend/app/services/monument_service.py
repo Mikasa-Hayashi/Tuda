@@ -84,7 +84,7 @@ async def search_monuments(
         Monument.deleted.is_(False),
         MonumentTranslation.field_key == "name",
         MonumentTranslation.lang == lang,
-        MonumentTranslation.field_value.ilike(f"%{query}%"),
+        MonumentTranslation.field_value.icontains(query, autoescape=True),
     ]
     if city_id is not None:
         filters.append(Monument.city_id == city_id)
